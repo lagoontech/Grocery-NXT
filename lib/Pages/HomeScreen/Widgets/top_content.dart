@@ -7,6 +7,8 @@ import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/home_controller.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/category_item.dart';
+import 'package:grocery_nxt/Pages/HomeScreen/Models/home_categories_model.dart';
+import 'package:flutter/foundation.dart' hide Category;
 
 class TopContent extends StatelessWidget {
   TopContent({super.key});
@@ -19,9 +21,9 @@ class TopContent extends StatelessWidget {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       hc.sc.animateTo(
           -20,
-          duration: const Duration(milliseconds: 1000), curve: Curves.easeIn);
+          duration: const Duration(milliseconds: 1000),
+          curve: Curves.easeIn);
     });
-
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -29,7 +31,7 @@ class TopContent extends StatelessWidget {
         ClipPath(
           clipper: BottomOutwardBezierClipper(),
           child: Container(
-            height: MediaQuery.of(context).size.height * 0.26,
+            height: MediaQuery.of(context).size.height * 0.3,
             color: AppColors.primaryColor,
           ),
         ),
@@ -38,25 +40,37 @@ class TopContent extends StatelessWidget {
           top: 40.h,
           child: SizedBox(
             width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height*0.26,
+            height: MediaQuery.of(context).size.height*0.3,
             child: NotificationListener(
               onNotification: (ScrollNotification v){
                 hc.update();
                 return true;
               },
-              child: ListView.builder(
-                  controller: hc.sc,
-                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.16),
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: 8,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) {
-                    return CategoryItem(index:index).animate(
-                      effects: [
-                        const FadeEffect()
-                      ]
-                    );
-                  }),
+              child: GetBuilder<HomeController>(
+                id: "categories",
+                builder: (vc) {
+                  return ListView.builder(
+                      controller: hc.sc,
+                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.2),
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: vc.categories.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        if(vc.categories.isEmpty){
+                          return const SizedBox();
+                        }
+                        var category = vc.categories[index];
+                        return CategoryItem(
+                            index:index,
+                            category: category
+                        ).animate(
+                          effects: [
+                            const FadeEffect()
+                          ]
+                        );
+                      }) ;
+                }
+              ),
             ),
           ),
         )

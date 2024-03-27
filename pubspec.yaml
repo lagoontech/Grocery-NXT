@@ -45,6 +45,7 @@ dependencies:
   lottie:
   pin_code_fields: ^8.0.1
   flutter_animate:
+  cached_network_image:
 
 dev_dependencies:
   flutter_test:
