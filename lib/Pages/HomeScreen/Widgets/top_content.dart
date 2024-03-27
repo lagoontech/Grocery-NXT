@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/home_controller.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/category_item.dart';
@@ -16,6 +15,12 @@ class TopContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      hc.sc.animateTo(
+          -20,
+          duration: const Duration(milliseconds: 1000), curve: Curves.easeIn);
+    });
 
     return Stack(
       clipBehavior: Clip.none,
@@ -41,11 +46,16 @@ class TopContent extends StatelessWidget {
               },
               child: ListView.builder(
                   controller: hc.sc,
-                  padding: EdgeInsets.symmetric(horizontal: 4.w),
-                  itemCount: 20,
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.16),
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: 8,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
-                    return CategoryItem(index:index);
+                    return CategoryItem(index:index).animate(
+                      effects: [
+                        const FadeEffect()
+                      ]
+                    );
                   }),
             ),
           ),

@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 class HomeController extends GetxController{
 
-  ScrollController sc = ScrollController();
+  ScrollController sc = ScrollController(initialScrollOffset: 300);
 
   @override
   void onInit() {

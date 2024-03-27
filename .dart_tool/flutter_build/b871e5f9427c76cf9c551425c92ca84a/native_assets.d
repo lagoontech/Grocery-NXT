@@ -1,0 +1,1 @@
+ C:\\Users\\anlin\\Git\ Projects\\Grocery-NXT\\.dart_tool\\flutter_build\\b871e5f9427c76cf9c551425c92ca84a\\native_assets.yaml: 
