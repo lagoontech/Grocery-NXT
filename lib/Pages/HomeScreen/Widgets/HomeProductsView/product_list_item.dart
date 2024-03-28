@@ -1,12 +1,21 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
 
+import 'curved_cart_add_container.dart';
 import 'curved_product_container.dart';
 
 class ProductListItem extends StatelessWidget {
    ProductListItem({super.key,this.index});
 
+   final GlobalKey widgetKey = GlobalKey();
    int ?index;
+
+   CartController cc = Get.find<CartController>();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -19,12 +28,15 @@ class ProductListItem extends StatelessWidget {
           EdgeInsets.only(top: 16.h, left: 8.w, right: 8.w),
           child: Column(
             children: [
-              Image.asset(
-                index == 0
-                    ? "assets/demo assets/image 17.png"
-                    : "assets/demo assets/front_en.195 1.png",
-                width: MediaQuery.of(context).size.width * 0.38 * 0.6,
-                height: MediaQuery.of(context).size.height * 0.3*0.3,
+              Container(
+                key: widgetKey,
+                child: Image.asset(
+                  index == 0
+                      ? "assets/demo assets/image 17.png"
+                      : "assets/demo assets/front_en.195 1.png",
+                  width: MediaQuery.of(context).size.width * 0.38 * 0.6,
+                  height: MediaQuery.of(context).size.height * 0.3*0.3,
+                ),
               ),
               SizedBox(height: 8.h),
               SizedBox(
@@ -62,16 +74,20 @@ class ProductListItem extends StatelessWidget {
                 ],
               ),
 
-              SizedBox(height: 12.h),
+              SizedBox(height: 20.h),
 
-              SizedBox(
+              Container(
                 width: double.infinity,
-                height: 28.h,
+                height: 24.h,
                 child: CustomPaint(
-                  painter: CurvedProductContainer(
+                  painter: CurvedCartAddContainer(
                       curvePercent: 1
                   ),
-                  child: Center(child: Icon(Icons.add,color: Colors.green,)),
+                  child: GestureDetector(
+                      onTap: () async {
+                        await cc.runAddToCartAnimation(widgetKey);
+                      },
+                      child: Center(child: Icon(Icons.add,color: Colors.green,))),
                 ),
               )
 

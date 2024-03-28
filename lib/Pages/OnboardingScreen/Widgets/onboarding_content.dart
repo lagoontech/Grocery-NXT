@@ -78,27 +78,21 @@ class OnboardingContent extends StatelessWidget {
           GetBuilder<OnboardingController>(
             builder: (vc) {
               return SizedBox(
-                  height: vc.isSubmitting
-                      ? 12.h
-                      : 60.h);
+                  height: 60.h);
             }
           ),
 
           GetBuilder<OnboardingController>(
             builder: (vc) {
-              return !vc.isSubmitting?CustomButton(
+              return CustomButton(
                 text: "Shop Now",
                 onTap: (){
                   vc.isSubmitting = true;
                   vc.update();
-                  Future.delayed(const Duration(milliseconds: 3000),(){
+                  Future.delayed(const Duration(milliseconds: 300),(){
                     Get.to(()=> LoginScreen());
                   });
                 },
-              ):SizedBox(
-                  width: MediaQuery.of(context).size.width*0.5,
-                  height: MediaQuery.of(context).size.height*0.16,
-                  child: Lottie.asset("assets/animations/onboarding_animation.json")
               );
             }
           )

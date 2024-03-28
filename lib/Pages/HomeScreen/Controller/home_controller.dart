@@ -8,7 +8,8 @@ import 'package:http/http.dart' as http;
 
 class HomeController extends GetxController{
 
-  ScrollController sc = ScrollController(initialScrollOffset: 300);
+  ScrollController sc = ScrollController();
+  int bottomIndex = 0;
 
   List<CategoryModel?> categories = [];
 
@@ -20,7 +21,7 @@ class HomeController extends GetxController{
       if(result is http.Response){
         if(result.statusCode == 200 || result.statusCode==201){
           categories = homeCategoriesModelFromJson(result.body)!.categories!;
-          Future.delayed(const Duration(milliseconds: 1000),(){
+          Future.delayed(const Duration(milliseconds: 100),(){
             sc.animateTo(
                 -20,
                 duration: const Duration(milliseconds: 500),

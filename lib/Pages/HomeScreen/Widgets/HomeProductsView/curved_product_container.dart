@@ -24,7 +24,9 @@ class CurvedProductContainer extends CustomPainter {
 
     // Define a Paint object for filling the path
     var fillPaint = Paint()
-      ..color = Colors.transparent // Set the fill color
+      ..color = curvePercent!=null
+          ? const Color(0xfff5f5f5)
+          : Colors.white // Set the fill color
       ..style = PaintingStyle.fill; // Set the painting style to fill
 
     // Draw the filled area of the path
