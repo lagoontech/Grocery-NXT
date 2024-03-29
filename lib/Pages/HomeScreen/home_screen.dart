@@ -10,6 +10,7 @@ import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/home_controller.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/CarouselView/carousel_view.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/HomeProductsView/home_products_view.dart';
+import 'package:grocery_nxt/Pages/HomeScreen/Widgets/ScrollIndicator/scroll_indicator.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/Top%20Content/appbar_content.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/Top%20Content/top_content.dart';
 
@@ -48,7 +49,6 @@ class HomeScreen extends StatelessWidget {
           body: Stack(
             children: [
               NestedScrollView(
-                //color: Color(0xffF5F8F7),
                 body: CustomScrollView(
                   slivers: <Widget>[
                     SliverList(
@@ -56,6 +56,7 @@ class HomeScreen extends StatelessWidget {
                         [
                           TopContent(),
                           SizedBox(height: 52.h),
+                          const ScrollIndicator(),
                           HomeProductsView(),
                           CarouselView(),
                         ],

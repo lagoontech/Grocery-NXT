@@ -9,6 +9,7 @@ import 'package:grocery_nxt/Pages/HomeScreen/Controller/home_controller.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/Top%20Content/category_item.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Models/home_categories_model.dart';
 import 'package:flutter/foundation.dart' hide Category;
+import 'package:grocery_nxt/Pages/HomeScreen/Widgets/ScrollIndicator/category_scroll_indicator.dart';
 
 class TopContent extends StatelessWidget {
   TopContent({super.key});
@@ -24,57 +25,61 @@ class TopContent extends StatelessWidget {
           duration: const Duration(milliseconds: 1000),
           curve: Curves.easeIn);
     });
-    return Stack(
-      clipBehavior: Clip.none,
+    return Column(
       children: [
+        Stack(
+          clipBehavior: Clip.none,
+          children: [
 
-        ClipPath(
-          clipper: BottomOutwardBezierClipper(),
-          child: Container(
-            height: MediaQuery.of(context).size.height * 0.3,
-            color: AppColors.primaryColor,
-          ),
-        ),
-
-        Positioned(
-          top: 40.h,
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height*0.3,
-            child: NotificationListener(
-              onNotification: (ScrollNotification v){
-                hc.update();
-                return true;
-              },
-              child: GetBuilder<HomeController>(
-                id: "categories",
-                builder: (vc) {
-                  return ListView.builder(
-                      controller: hc.sc,
-                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.2,left: 24.w),
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: vc.categories.length,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) {
-                        if(vc.categories.isEmpty){
-                          return const SizedBox();
-                        }
-                        var category = vc.categories[index];
-                        return CategoryItem(
-                            index:index,
-                            category: category
-                        ).animate(
-                          effects: [
-                            const FadeEffect()
-                          ]
-                        );
-                      }) ;
-                }
+            ClipPath(
+              clipper: BottomOutwardBezierClipper(),
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.3,
+                color: AppColors.primaryColor,
               ),
             ),
-          ),
-        )
-        
+
+            Positioned(
+              top: 40.h,
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height*0.3,
+                child: NotificationListener(
+                  onNotification: (ScrollNotification v){
+                    hc.update();
+                    return true;
+                  },
+                  child: GetBuilder<HomeController>(
+                    id: "categories",
+                    builder: (vc) {
+                      return ListView.builder(
+                          controller: hc.sc,
+                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.2,left: 24.w),
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: vc.categories.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            if(vc.categories.isEmpty){
+                              return const SizedBox();
+                            }
+                            var category = vc.categories[index];
+                            return CategoryItem(
+                                index:index,
+                                category: category
+                            ).animate(
+                              effects: [
+                                const FadeEffect()
+                              ]
+                            );
+                          }) ;
+                    }
+                  ),
+                ),
+              ),
+            )
+
+          ],
+        ),
       ],
     );
   }

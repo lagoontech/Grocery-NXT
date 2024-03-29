@@ -17,7 +17,7 @@ class HomeProductsView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 8.h),
+          padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 12.h),
           child: Row(
             children: [
 

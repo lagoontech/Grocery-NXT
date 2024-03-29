@@ -2,6 +2,7 @@ import 'package:add_to_cart_animation/add_to_cart_icon.dart';
 import 'package:add_to_cart_animation/badge_options.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -41,6 +42,7 @@ class BottomBar extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
+
                     BottomBarItem(
                         child: SvgPicture.asset(
                           "assets/icons/home.svg",
@@ -52,6 +54,7 @@ class BottomBar extends StatelessWidget {
                           vc.bottomIndex = 0;
                           vc.update(["bottomBar"]);
                         }),
+
                     BottomBarItem(
                         child: SvgPicture.asset(
                           "assets/icons/grid.svg",
@@ -64,19 +67,42 @@ class BottomBar extends StatelessWidget {
                           vc.update(["bottomBar"]);
                         }),
 
-                    Transform.translate(
-                      offset: const Offset(0, -20),
-                      child: Stack(
-                        children: [
+                    Expanded(
+                      child: Transform.translate(
+                        offset: const Offset(0, -20),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
 
-                          Container(
-                            width: 44.w,
-                            height: 44.w,
-                          ),
-
-                        ],
+                            Badge(
+                              label: const Text("2"),
+                              child: Container(
+                                width: 44.w,
+                                height: 44.w,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: AppColors.primaryColor),
+                                child: AddToCartIcon(
+                                  key: cc.cartIconKey,
+                                  badgeOptions: const BadgeOptions(
+                                    width: 0,
+                                    height: 0,
+                                    active: false
+                                  ),
+                                  icon: Image.asset(
+                                    "assets/icons/basket.png",
+                                    width: 20.w,
+                                    height: 20.w,
+                                  ),
+                                ),
+                              ),
+                            ),
+                      
+                          ],
+                        ),
                       ),
                     ),
+
                     BottomBarItem(
                         child: SvgPicture.asset(
                           "assets/icons/truck-fast.svg",
@@ -88,6 +114,7 @@ class BottomBar extends StatelessWidget {
                           vc.bottomIndex = 3;
                           vc.update(["bottomBar"]);
                         }),
+
                     BottomBarItem(
                         child: SvgPicture.asset(
                           "assets/icons/profile.svg",
@@ -99,34 +126,11 @@ class BottomBar extends StatelessWidget {
                           vc.bottomIndex = 4;
                           vc.update(["bottomBar"]);
                         }),
+
                   ],
                 ),
               ),
 
-              Transform.translate(
-                offset: const Offset(0, -20),
-                child: Stack(
-                  children: [
-
-                    Container(
-                      width: 44.w,
-                      height: 44.w,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.primaryColor),
-                      child: AddToCartIcon(
-                        key: cc.cartIconKey,
-                        icon: Image.asset(
-                          "assets/icons/basket.png",
-                          width: 16.w,
-                          height: 16.w,
-                        ),
-                      ),
-                    ),
-
-                  ],
-                ),
-              )
             ],
           );
         });
@@ -137,9 +141,14 @@ class BottomBar extends StatelessWidget {
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
-        child: Center(
-          child:
-          SizedBox(width: 20.w, height: 20.w, child: Center(child: child)),
+        child: Container(
+          child: Center(
+            child:
+            SizedBox(
+                width: 24.w,
+                height: 24.w,
+                child: Center(child: child)),
+          ),
         ),
       ),
     );

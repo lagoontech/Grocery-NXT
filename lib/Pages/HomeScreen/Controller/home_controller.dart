@@ -10,6 +10,9 @@ class HomeController extends GetxController{
 
   ScrollController sc = ScrollController();
   int bottomIndex = 0;
+  double categoryScrollProgress = 0.0;
+  double currentCategoryScrollProgress = 0.0;
+
 
   List<CategoryModel?> categories = [];
 
@@ -37,11 +40,22 @@ class HomeController extends GetxController{
     update(["categories"]);
   }
 
+  //
+  calculateCurrentScrollPosition(){
+
+    final maxScrollExtent = sc.position.maxScrollExtent;
+    final currentScrollOffset = sc.position.pixels;
+    categoryScrollProgress = currentCategoryScrollProgress;
+    currentCategoryScrollProgress = (currentScrollOffset / maxScrollExtent)*100;
+    update(["scrollIndicator"]);
+  }
+
   @override
   void onInit() {
     super.onInit();
     fetchCategories();
     sc.addListener(() {
+      calculateCurrentScrollPosition();
       update();
     });
   }
