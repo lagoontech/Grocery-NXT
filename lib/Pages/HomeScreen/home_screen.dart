@@ -14,13 +14,12 @@ import 'package:grocery_nxt/Pages/HomeScreen/Widgets/ScrollIndicator/scroll_indi
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/Top%20Content/appbar_content.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/Top%20Content/top_content.dart';
 
-import 'Widgets/BottomBar/bottom_bar.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
 
   HomeController hc = Get.put(HomeController());
-  CartController cc = Get.put(CartController());
+  CartController cc = Get.find<CartController>();
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +71,6 @@ class HomeScreen extends StatelessWidget {
               AppBarContent()
             ],
           ),
-          bottomNavigationBar: BottomBar()
       ),
     );
   }

@@ -48,6 +48,10 @@ dependencies:
   cached_network_image:
   flutter_svg:
   add_to_cart_animation:
+  flutter_staggered_animations:
+  flutter_html:
+  readmore: ^3.0.0
+  skeletonizer:
 
 dev_dependencies:
   flutter_test:

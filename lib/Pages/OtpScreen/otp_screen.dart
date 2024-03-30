@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:grocery_nxt/Pages/DashBoardView/dashboard_view.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/home_screen.dart';
 import 'package:grocery_nxt/Pages/OtpScreen/Controller/otp_controller.dart';
 import 'package:numpad/numpad.dart';
@@ -109,7 +110,7 @@ class OtpScreen extends StatelessWidget {
                       width: MediaQuery.of(context).size.width*0.8,
                       text: "Continue",
                       onTap: () {
-                         Get.to(()=> HomeScreen());
+                         Get.to(()=> DashboardView());
                       },
                     ),
 

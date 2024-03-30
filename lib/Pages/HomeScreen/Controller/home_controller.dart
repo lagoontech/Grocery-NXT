@@ -46,7 +46,9 @@ class HomeController extends GetxController{
     final maxScrollExtent = sc.position.maxScrollExtent;
     final currentScrollOffset = sc.position.pixels;
     categoryScrollProgress = currentCategoryScrollProgress;
-    currentCategoryScrollProgress = (currentScrollOffset / maxScrollExtent)*100;
+    if(!currentScrollOffset.isNegative) {
+      currentCategoryScrollProgress = (currentScrollOffset / maxScrollExtent);
+    }
     update(["scrollIndicator"]);
   }
 

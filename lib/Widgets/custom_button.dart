@@ -39,7 +39,7 @@ class CustomButton extends StatelessWidget {
             child: Container(
               child: isLoading!
                   ? CustomCircularLoader()
-                  : Text(
+                  : child??Text(
                       text!,
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 14.sp, color: Colors.white),

@@ -25,7 +25,7 @@ class CategoryScrollIndicator extends CustomPainter {
       ..close();
 
     var fillGradient = LinearGradient(
-      colors: [Colors.green, Colors.white], // Adjust colors as needed
+      colors: const [Colors.green, Colors.white], // Adjust colors as needed
       begin: Alignment.centerLeft,
       stops: [progress,1],
       end: Alignment.centerRight,
@@ -33,7 +33,7 @@ class CategoryScrollIndicator extends CustomPainter {
 
     var fillPaint = Paint()
       ..shader = fillGradient.createShader(
-        Rect.fromLTWH(0, 0, fillWidth, height),
+        Rect.fromLTWH(0, 0, fillWidth??0, height??0),
       )
       ..style = PaintingStyle.fill;
 
