@@ -33,9 +33,9 @@ class AllProductsCurvedProductContainer extends CustomPainter {
 
     // Define a Paint object for drawing the border
     var borderPaint = Paint()
-      ..color = Colors.grey.shade400 // Set the border color
+      ..color = Colors.grey.shade100 // Set the border color
       ..style = PaintingStyle.stroke // Set the painting style to stroke
-      ..strokeWidth = 0.4; // Set the border width
+      ..strokeWidth = 0.0; // Set the border width
 
     // Draw the border of the path
     canvas.drawPath(path, borderPaint);

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:grocery_nxt/Constants/app_colors.dart';
+import 'package:grocery_nxt/Pages/AllProductsView/all_products_view.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/home_controller.dart';
+import 'package:grocery_nxt/Pages/HomeScreen/Models/home_categories_model.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/HomeProductsView/product_list_item.dart';
 import 'package:lottie/lottie.dart';
 
@@ -35,14 +38,19 @@ class HomeProductsView extends StatelessWidget {
               ),
 
               Expanded(
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    "See All",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 16.sp,
-                        color: Colors.blue),
+                child: GestureDetector(
+                  onTap: (){
+                    Get.to(()=>AllProductsView(category: CategoryModel(id: 0,name: "All",imageUrl: ""),));
+                  },
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      "See All",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 16.sp,
+                          color: AppColors.primaryColor),
+                    ),
                   ),
                 ),
               )

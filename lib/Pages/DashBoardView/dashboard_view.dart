@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:grocery_nxt/Pages/CartView/cart_view.dart';
 import 'package:grocery_nxt/Pages/CategoriesView/categories_view.dart';
 import 'package:grocery_nxt/Pages/DashBoardView/BottomBar/bottom_bar.dart';
 import 'package:grocery_nxt/Pages/DashBoardView/Controller/dashboard_controller.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/home_screen.dart';
+import 'package:grocery_nxt/Pages/OrdersView/orders_view.dart';
+import 'package:grocery_nxt/Pages/ProfileView/profile_view.dart';
 
 class DashboardView extends StatelessWidget {
    DashboardView({super.key});
@@ -23,7 +26,13 @@ class DashboardView extends StatelessWidget {
 
           HomeScreen(),
 
-          CategoriesView()
+          CategoriesView(),
+
+          CartView(),
+
+          OrdersView(),
+
+          ProfileView()
 
         ],
       ),

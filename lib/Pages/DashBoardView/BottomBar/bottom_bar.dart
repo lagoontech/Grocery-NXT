@@ -66,37 +66,42 @@ class BottomBar extends StatelessWidget {
                         }),
 
                     Expanded(
-                      child: Transform.translate(
-                        offset: const Offset(0, -20),
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
+                      child: GestureDetector(
+                        onTap: (){
+                          vc.changePage(2);
+                        },
+                        child: Transform.translate(
+                          offset: const Offset(0, -20),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
 
-                            Badge(
-                              label: const Text("2"),
-                              child: Container(
-                                width: 44.w,
-                                height: 44.w,
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: AppColors.primaryColor),
-                                child: AddToCartIcon(
-                                  key: cc.cartIconKey,
-                                  badgeOptions: const BadgeOptions(
-                                    width: 0,
-                                    height: 0,
-                                    active: false
-                                  ),
-                                  icon: Image.asset(
-                                    "assets/icons/basket.png",
-                                    width: 20.w,
-                                    height: 20.w,
+                              Badge(
+                                label: const Text("2"),
+                                child: Container(
+                                  width: 44.w,
+                                  height: 44.w,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: AppColors.primaryColor),
+                                  child: AddToCartIcon(
+                                    key: cc.cartIconKey,
+                                    badgeOptions: const BadgeOptions(
+                                      width: 0,
+                                      height: 0,
+                                      active: false
+                                    ),
+                                    icon: Image.asset(
+                                      "assets/icons/basket.png",
+                                      width: 20.w,
+                                      height: 20.w,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                      
-                          ],
+
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -109,8 +114,7 @@ class BottomBar extends StatelessWidget {
                               : null,
                         ),
                         onTap: () {
-                          vc.bottomIndex = 3;
-                          vc.update(["bottomBar"]);
+                          vc.changePage(3);
                         }),
 
                     BottomBarItem(
@@ -121,8 +125,7 @@ class BottomBar extends StatelessWidget {
                               : null,
                         ),
                         onTap: () {
-                          vc.bottomIndex = 4;
-                          vc.update(["bottomBar"]);
+                          vc.changePage(4);
                         }),
 
                   ],

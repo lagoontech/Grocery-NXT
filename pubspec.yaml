@@ -52,6 +52,8 @@ dependencies:
   flutter_html:
   readmore: ^3.0.0
   skeletonizer:
+  pull_to_refresh:
+  zoom_widget:
 
 dev_dependencies:
   flutter_test:

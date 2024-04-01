@@ -368,6 +368,12 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "pull_to_refresh",
+      "rootUri": "file:///C:/Users/anlin/AppData/Local/Pub/Cache/hosted/pub.dev/pull_to_refresh-2.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "readmore",
       "rootUri": "file:///C:/Users/anlin/AppData/Local/Pub/Cache/hosted/pub.dev/readmore-3.0.0",
       "packageUri": "lib/",
@@ -560,13 +566,19 @@
       "languageVersion": "3.2"
     },
     {
+      "name": "zoom_widget",
+      "rootUri": "file:///C:/Users/anlin/AppData/Local/Pub/Cache/hosted/pub.dev/zoom_widget-2.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "grocery_nxt",
       "rootUri": "../",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     }
   ],
-  "generated": "2024-03-30T15:35:05.041872Z",
+  "generated": "2024-03-31T07:28:50.273784Z",
   "generator": "pub",
   "generatorVersion": "3.3.0"
 }

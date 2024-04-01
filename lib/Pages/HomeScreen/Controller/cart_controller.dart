@@ -9,6 +9,8 @@ class CartController extends GetxController{
   late Function(GlobalKey) runAddToCartAnimation;
 
   List<Product> products = [];
+  double totalCost = 0.0;
+  int totalProducts = 0;
 
   //
   addToCart({Product ?product,bool isSub = false,bool showToast = true}){
@@ -22,6 +24,8 @@ class CartController extends GetxController{
         }
       }
       update();
+      calculateTotal();
+      calculateTotalProducts();
       return;
     }
     if(products.contains(product)
@@ -31,7 +35,25 @@ class CartController extends GetxController{
     }else{
       products.add(product!..cartQuantity=1);
     }
+    calculateTotal();
+    calculateTotalProducts();
     update();
+  }
+
+  //
+  calculateTotal(){
+    totalCost = 0.0;
+    for (var element in products) {
+      totalCost = totalCost + (element.discountPrice!*element.cartQuantity);
+    }
+  }
+
+  //
+  calculateTotalProducts(){
+    totalProducts = 0;
+    products.forEach((element) {
+      totalProducts = totalProducts+element.cartQuantity;
+    });
   }
 
 

@@ -25,9 +25,13 @@ class CustomButton extends StatelessWidget {
         color: AppColors.primaryColor,
         borderRadius: BorderRadius.circular(30.r),
         child: InkWell(
-          onTap: onTap,
+          onTap: (){
+            Future.delayed(const Duration(milliseconds: 300),(){
+              onTap==null?(){}:onTap!();
+            });
+          },
           splashFactory: InkRipple.splashFactory,
-          splashColor: Colors.black,
+          splashColor: Colors.white.withOpacity(0.6),
           borderRadius: BorderRadius.circular(30.r),
           child: Container(
             width: width ?? MediaQuery.of(context).size.width * 0.5,

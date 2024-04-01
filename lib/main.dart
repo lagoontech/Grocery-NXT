@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Color(0xff23aa49)),
-            fontFamily: GoogleFonts.exo().fontFamily,
+            fontFamily: GoogleFonts.dmSans().fontFamily,
             useMaterial3: true,
           ),
           home: SplashScreen(),

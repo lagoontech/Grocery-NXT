@@ -51,7 +51,7 @@ class CategoriesView extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 24.w,vertical: 12.h),
                       shrinkWrap: true,
                       itemCount: vc.categories.length,
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           crossAxisSpacing: 16.w,
@@ -69,7 +69,7 @@ class CategoriesView extends StatelessWidget {
                             child: FadeInAnimation(
                               child: GestureDetector(
                                 onTap: (){
-                                  Get.to(()=>AllProductsView());
+                                  Get.to(()=>AllProductsView(category: category,));
                                 },
                                 child: Container(
                                   padding: EdgeInsets.only(top: 20.h,left: 2.w,right: 2.w),

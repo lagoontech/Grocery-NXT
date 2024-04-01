@@ -58,8 +58,8 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                         height: MediaQuery.of(context).size.height * 0.20,
                                         child: FittedBox(
                                           child: CachedNetworkImage(
-                                              imageUrl:
-                                                  vc.productDetails!.product!.image!),
+                                              imageUrl: vc.selectedImage,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -83,16 +83,22 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                               itemBuilder: (context, index) {
                                                 var image = vc.productDetails!.product!
                                                     .galleryImages![index];
-                                                return Container(
-                                                  padding: EdgeInsets.symmetric(horizontal: 4.w),
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Colors.black,
-                                                          width: 0.4)),
-                                                  child: CachedNetworkImage(
-                                                    imageUrl: image,
-                                                    width: 30.w,
-                                                    height: 24.h,
+                                                return GestureDetector(
+                                                  onTap: (){
+                                                    vc.selectedImage = image;
+                                                    vc.update();
+                                                  },
+                                                  child: Container(
+                                                    padding: EdgeInsets.symmetric(horizontal: 4.w),
+                                                    decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            color: Colors.black,
+                                                            width: 0.4)),
+                                                    child: CachedNetworkImage(
+                                                      imageUrl: image,
+                                                      width: 30.w,
+                                                      height: 24.h,
+                                                    ),
                                                   ),
                                                 );
                                               })
@@ -253,5 +259,11 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    Get.delete<ProductDetailsController>();
+    super.dispose();
   }
 }

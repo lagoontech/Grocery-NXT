@@ -12,6 +12,7 @@ class ProductDetailsController extends GetxController with GetTickerProviderStat
   ProductDetailsModel ?productDetails;
   bool isLoading = true;
   int ?productId;
+  String selectedImage = "";
 
   //
   getProductDetails() async {
@@ -24,6 +25,7 @@ class ProductDetailsController extends GetxController with GetTickerProviderStat
         }
         if(result.statusCode == 200){
           productDetails = productDetailsModelFromJson(result.body);
+          selectedImage = productDetails!.product!.image!;
           animationController.forward();
         }
       }

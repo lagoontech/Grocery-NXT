@@ -15,7 +15,7 @@ class AnimatedBottomCurvedContainer extends CustomPainter{
 
     var path = Path()
       ..moveTo(0, height - height * 0.1)
-      ..quadraticBezierTo(width/2,height+(height*0.3*curveFactor),width,height-height*0.1)
+      ..quadraticBezierTo(width/2,height+(height*0.2*curveFactor),width,height-height*0.1)
       ..lineTo(width,0)
       ..lineTo(0,0);
 

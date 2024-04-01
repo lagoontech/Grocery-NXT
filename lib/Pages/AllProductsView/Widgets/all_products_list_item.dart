@@ -1,18 +1,14 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:grocery_nxt/Pages/AllProductsView/Controller/all_products_controller.dart';
 import 'package:grocery_nxt/Pages/AllProductsView/Widgets/all_products_list_item_curved_container.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
 import '../../../Constants/app_colors.dart';
 import '../../HomeScreen/Widgets/HomeProductsView/curved_cart_add_container.dart';
-import '../../HomeScreen/Widgets/HomeProductsView/curved_product_container.dart';
-import '../../HomeScreen/Widgets/Top Content/top_content.dart';
 import '../../ProductDetailsView/product_details_view.dart';
 import '../Model/products_list_model.dart';
 
@@ -43,6 +39,7 @@ class AllProductsListItem extends StatelessWidget {
                 children: [
                   Container(
                     key: cartKey,
+                    color: Colors.transparent,
                     child: CachedNetworkImage(
                       width: MediaQuery.of(context).size.width * 0.38 * 0.6,
                       height: MediaQuery.of(context).size.height * 0.28*0.3,
@@ -65,7 +62,7 @@ class AllProductsListItem extends StatelessWidget {
                         "\u{20B9}${product!.price}",
                         style: TextStyle(
                             decoration: TextDecoration.lineThrough,
-                            fontSize: 11.sp),
+                            fontSize: 12.sp),
                       ),
                       SizedBox(width: 2.w),
                       Expanded(
@@ -73,7 +70,7 @@ class AllProductsListItem extends StatelessWidget {
                             alignment: Alignment.centerRight,
                             child: Text(
                               "\u{20B9}${product!.discountPrice}",
-                              style: TextStyle(color: Colors.red,fontSize: 10.sp),
+                              style: TextStyle(color: Colors.red,fontSize: 12.sp),
                             ),
                           ))
                     ],
@@ -95,7 +92,8 @@ class AllProductsListItem extends StatelessWidget {
                         height: 20.h,
                         child: CustomPaint(
                           painter: CurvedCartAddContainer(
-                              curvePercent: 1
+                              curvePercent: 1,
+                              hasProduct: hasProductInCart
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -164,14 +162,14 @@ class AllProductsListItem extends StatelessWidget {
             width: 24.w,
             height: 24.h,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(8)),
+              borderRadius: const BorderRadius.only(topLeft: Radius.circular(8)),
               color: AppColors.primaryColor.withOpacity(0.4)
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                    product!.discountPrice!.toString()+"%",
+                    "${product!.discountPrice!}%",
                     style: TextStyle(fontSize: 8.sp),
                 ),
                 Text("OFF",style: TextStyle(fontSize: 8.sp),),
