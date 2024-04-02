@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
@@ -13,20 +14,17 @@ class ProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(
-        title: "Profile",
-      ),
       body: Container(
         decoration: BoxDecoration(
           color: Colors.white,
           gradient: RadialGradient(
             colors: [
-              AppColors.primaryColor.withOpacity(0.1),
+              AppColors.primaryColor.withOpacity(0.05),
               AppColors.primaryColor.withOpacity(0.0),
             ],
-            radius: 1.2,
-            focalRadius: 0.2,
-            center: Alignment.center,
+            radius: 3,
+            focalRadius: 0.1,
+            center: Alignment.topCenter,
           ),
         ),
         child: Stack(
@@ -35,7 +33,26 @@ class ProfileView extends StatelessWidget {
             Column(
               children: [
 
-                SizedBox(height: 12.h),
+                SizedBox(height: MediaQuery.of(context).viewPadding.top),
+
+                Stack(
+                  alignment: Alignment.centerLeft,
+                  children: [
+                    SizedBox(
+                      height: kToolbarHeight,
+                      child: Center(
+                        child: Text(
+                            "Profile",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
 
                 Center(
                   child: Column(
@@ -63,7 +80,7 @@ class ProfileView extends StatelessWidget {
                       ),
 
                       SizedBox(height: 4.h),
-                      
+
                       Text("AKASH A",style: TextStyle(fontWeight: FontWeight.w600),)
                     ],
                   ),

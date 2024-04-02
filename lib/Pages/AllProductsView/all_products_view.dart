@@ -33,7 +33,7 @@ class AllProductsView extends StatelessWidget {
         vc.fetchProducts(isRefresh: true);
       }
       if (category == null) {
-        vc.selectedCategory = CategoryModel(name: "All");
+        vc.selectedCategory = CategoryModel(name: "All Products");
         vc.fetchProducts(isRefresh: true);
       }
     });
@@ -41,9 +41,9 @@ class AllProductsView extends StatelessWidget {
       cartKey: vc.cartIconKey,
       height: 30,
       width: 30,
-      opacity: 0.85,
+      opacity: 0.95,
       dragAnimation: const DragToCartAnimationOptions(
-        rotation: true,
+        rotation: false,
       ),
       jumpAnimation: const JumpAnimationOptions(),
       createAddToCartAnimation: (runAddToCartAnimation) {
@@ -69,25 +69,16 @@ class AllProductsView extends StatelessWidget {
                   })),
             )
           ],
-          title: Column(
-            children: [
-              const Text("Showing"),
-              GetBuilder<AllProductsController>(builder: (vc) {
-                return AnimationConfiguration.synchronized(
-                  child: SlideAnimation(
-                    verticalOffset: 10.h,
-                    child: Text(vc.selectedCategory == null
-                        ? "All"
-                        : vc.selectedCategory!.name!),
-                  ),
-                );
-              })
-            ],
-          ),
+          title: Text(
+            "Products",
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16.sp
+            )),
         ),
         body: GetBuilder<AllProductsController>(builder: (vc) {
           return Container(
-            color: AppColors.primaryColor.withOpacity(0.05),
+            color: Colors.grey.shade50,
             child: NestedScrollView(
               physics: const NeverScrollableScrollPhysics(),
               body: CustomScrollView(
@@ -110,8 +101,11 @@ class AllProductsView extends StatelessWidget {
                                     padding: EdgeInsets.zero,
                                     isScrollable: true,
                                     unselectedLabelStyle: const TextStyle(
-                                        fontWeight: FontWeight.w600,
                                         color: Colors.black),
+                                    labelStyle: TextStyle(
+                                        color: AppColors.primaryColor,
+                                        fontWeight: FontWeight.w600,
+                                    ),
                                     onTap: vc.onTabBarTapped,
                                     tabs: vc.categories
                                         .map((e) => Tab(
@@ -138,7 +132,7 @@ class AllProductsView extends StatelessWidget {
                                     shrinkWrap: true,
                                     gridDelegate:
                                         SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 3,
+                                            crossAxisCount: 2,
                                             mainAxisExtent:
                                                 MediaQuery.of(context)
                                                         .size
@@ -150,7 +144,7 @@ class AllProductsView extends StatelessWidget {
                                       var product = vc.products[index];
                                       return AnimationConfiguration
                                           .staggeredGrid(
-                                        columnCount: 3,
+                                        columnCount: 2,
                                         position: index,
                                         child: SlideAnimation(
                                           verticalOffset: 50.h,
@@ -189,7 +183,7 @@ class AllProductsView extends StatelessWidget {
                             shrinkWrap: true,
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 3,
+                                    crossAxisCount: 2,
                                     mainAxisExtent:
                                         MediaQuery.of(context).size.height * 0.28,
                                     mainAxisSpacing: 2.h,

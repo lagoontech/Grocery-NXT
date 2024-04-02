@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
+import 'package:get/state_manager.dart';
 import 'package:grocery_nxt/Pages/DashBoardView/Controller/dashboard_controller.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
 import '../../../../Constants/app_colors.dart';
@@ -76,28 +77,32 @@ class BottomBar extends StatelessWidget {
                             alignment: Alignment.center,
                             children: [
 
-                              Badge(
-                                label: const Text("2"),
-                                child: Container(
-                                  width: 44.w,
-                                  height: 44.w,
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: AppColors.primaryColor),
-                                  child: AddToCartIcon(
-                                    key: cc.cartIconKey,
-                                    badgeOptions: const BadgeOptions(
-                                      width: 0,
-                                      height: 0,
-                                      active: false
+                              GetBuilder<CartController>(
+                                builder: (vc) {
+                                  return Badge(
+                                    label: Text(vc.totalProducts.toString()),
+                                    child: Container(
+                                      width: 44.w,
+                                      height: 44.w,
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: AppColors.primaryColor),
+                                      child: AddToCartIcon(
+                                        key: cc.cartIconKey,
+                                        badgeOptions: const BadgeOptions(
+                                          width: 0,
+                                          height: 0,
+                                          active: false
+                                        ),
+                                        icon: Image.asset(
+                                          "assets/icons/basket.png",
+                                          width: 20.w,
+                                          height: 20.w,
+                                        ),
+                                      ),
                                     ),
-                                    icon: Image.asset(
-                                      "assets/icons/basket.png",
-                                      width: 20.w,
-                                      height: 20.w,
-                                    ),
-                                  ),
-                                ),
+                                  );
+                                }
                               ),
 
                             ],

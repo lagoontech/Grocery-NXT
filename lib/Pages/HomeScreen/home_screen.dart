@@ -1,10 +1,10 @@
 import 'package:add_to_cart_animation/add_to_cart_animation.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/home_controller.dart';
@@ -13,7 +13,7 @@ import 'package:grocery_nxt/Pages/HomeScreen/Widgets/HomeProductsView/home_produ
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/ScrollIndicator/scroll_indicator.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/Top%20Content/appbar_content.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/Top%20Content/top_content.dart';
-
+import 'package:lottie/lottie.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
@@ -35,18 +35,29 @@ class HomeScreen extends StatelessWidget {
       cartKey: cc.cartIconKey,
       height: 30,
       width: 30,
-      opacity: 0.85,
+      opacity: 1,
       dragAnimation: const DragToCartAnimationOptions(
         rotation: true,
       ),
-      jumpAnimation: const JumpAnimationOptions(),
+      jumpAnimation: const JumpAnimationOptions(
+          curve: Curves.easeOutSine,
+          duration: Duration(milliseconds: 250)
+      ),
       createAddToCartAnimation: (runAddToCartAnimation) {
-        // You can run the animation by addToCartAnimationMethod, just pass trough the the global key of  the image as parameter
         cc.runAddToCartAnimation = runAddToCartAnimation;
       },
       child: Scaffold(
           body: Stack(
             children: [
+
+              Image.asset(
+                "assets/images/grocery.png",
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                fit: BoxFit.fitWidth,
+                color: Colors.black.withOpacity(0.04),
+              ),
+
               NestedScrollView(
                 body: CustomScrollView(
                   slivers: <Widget>[
@@ -58,6 +69,7 @@ class HomeScreen extends StatelessWidget {
                           const ScrollIndicator(),
                           HomeProductsView(),
                           CarouselView(),
+                          CarouselView(),
                         ],
                       ),
                     ),
@@ -68,7 +80,48 @@ class HomeScreen extends StatelessWidget {
                 },
               ),
 
-              AppBarContent()
+              AppBarContent(),
+
+              GetBuilder<HomeController>(
+                builder: (vc) {
+                  return vc.categories.isEmpty&&vc.products.isEmpty?Container(
+                    color: AppColors.primaryColor,
+                    child: Stack(
+                      children: [
+                        Image.asset(
+                            "assets/images/grocery.png",
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height,
+                            fit: BoxFit.fitWidth,
+                          color: Colors.white.withOpacity(0.2),
+                        ),
+
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height,
+                          decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.2),
+                          ),
+                        ),
+
+                        Center(
+                          child: Container(
+                            width: MediaQuery.of(context).size.width*0.4,
+                            height: MediaQuery.of(context).size.height*0.3,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.6),
+                              shape: BoxShape.circle
+                            ),
+                            child: Lottie.asset("assets/animations/home_loader.json"),
+                          ),
+                        )
+
+                      ],
+                    ),
+                  ):SizedBox();
+                }
+              )
+
             ],
           ),
       ),

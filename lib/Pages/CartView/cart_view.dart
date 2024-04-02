@@ -19,15 +19,17 @@ class CartView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         centerTitle: true,
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: true,
         title: GetBuilder<CartController>(
           builder: (cc) {
             return cc.products.isNotEmpty?Text(
               "Cart",
               style: TextStyle(
-                  fontSize: 20.sp,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.w600
               )):const SizedBox();
           }
@@ -58,6 +60,7 @@ class CartView extends StatelessWidget {
                                 child: CartItem(
                                   product: product,
                                   isLast: index==cc.products.length-1,
+                                  index: index,
                                 ),
                               ));
                         }),

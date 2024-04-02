@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart' hide Category;
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/api_constants.dart';
 import 'package:grocery_nxt/Services/http_services.dart';
+import '../../AllProductsView/Model/products_list_model.dart';
 import '../Models/home_categories_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -13,7 +14,7 @@ class HomeController extends GetxController{
   double categoryScrollProgress = 0.0;
   double currentCategoryScrollProgress = 0.0;
 
-
+  List<Product> products = [];
   List<CategoryModel?> categories = [];
 
   //
@@ -41,6 +42,30 @@ class HomeController extends GetxController{
   }
 
   //
+  fetchProducts({bool isRefresh = false,bool isLoadingNext = false}) async {
+
+    update();
+    try{
+      var result = await HttpService.getRequest(
+          "${ApiConstants().allProducts}?page=1");
+      if(result is http.Response){
+        if(result.statusCode==200){
+          if(isRefresh) {
+            products = productsListFromJson(result.body).products!;
+          }else{
+            products.addAll(productsListFromJson(result.body).products!);
+          }
+        }
+      }
+    }catch(e){
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+    update();
+  }
+
+  //
   calculateCurrentScrollPosition(){
 
     final maxScrollExtent = sc.position.maxScrollExtent;
@@ -56,6 +81,7 @@ class HomeController extends GetxController{
   void onInit() {
     super.onInit();
     fetchCategories();
+    fetchProducts(isRefresh: true);
     sc.addListener(() {
       calculateCurrentScrollPosition();
       update();

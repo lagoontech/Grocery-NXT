@@ -16,7 +16,7 @@ class AllProductsController extends GetxController with GetTickerProviderStateMi
   bool isLoadingCategories = false;
   List<Product> products = [];
   int page = 1;
-  List<CategoryModel?> categories = [CategoryModel(id: 0,imageUrl: "",name: "All")];
+  List<CategoryModel?> categories = [CategoryModel(id: 0,imageUrl: "",name: "All Products")];
   CategoryModel ?selectedCategory = CategoryModel(name: "");
   GlobalKey<CartIconKey> cartIconKey = GlobalKey<CartIconKey>();
   late Function(GlobalKey) runAddToCartAnimation;
@@ -43,7 +43,7 @@ class AllProductsController extends GetxController with GetTickerProviderStateMi
     update();
     try{
       var result = await HttpService.getRequest(
-          "${ApiConstants().allProducts}?page=$page&category=${selectedCategory!.name=="All"?"":selectedCategory!.name}");
+          "${ApiConstants().allProducts}?page=$page&category=${selectedCategory!.name=="All Products"?"":selectedCategory!.name}");
       if(result is http.Response){
         if(result.statusCode==200){
           if(isRefresh) {

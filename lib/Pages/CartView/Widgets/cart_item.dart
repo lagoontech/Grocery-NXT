@@ -10,18 +10,19 @@ import '../../../Constants/app_colors.dart';
 import '../../AllProductsView/Model/products_list_model.dart';
 
 class CartItem extends StatelessWidget {
-  CartItem({super.key,this.isLast=false,this.product});
+  CartItem({super.key,this.isLast=false,this.product,this.index=0});
 
   Product? product;
   CartController cc = Get.find<CartController>();
   bool isLast;
+  int  index;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         border: Border(
-            top: BorderSide(color: Colors.grey.shade200),
+            top: BorderSide(color: index==0?Colors.transparent:Colors.grey.shade200),
             bottom: BorderSide(color: isLast?Colors.grey.shade200:Colors.transparent)
         )
       ),

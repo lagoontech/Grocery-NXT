@@ -18,8 +18,9 @@ class CategoriesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primaryColor.withOpacity(0.1),
+      backgroundColor: AppColors.primaryColor.withOpacity(0.05),
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text("Categories",style: TextStyle(
           fontSize: 20.sp,
           fontWeight: FontWeight.w600
