@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/CartView/Widgets/cart_item.dart';
+import 'package:grocery_nxt/Pages/ChooseAddressView/choose_address_view.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
 import 'package:lottie/lottie.dart';
 import '../../Widgets/custom_button.dart';
+import '../AddCheckoutAddressView/add_checkout_address_view.dart';
 
 class CartView extends StatelessWidget {
    CartView({super.key});
@@ -161,10 +161,14 @@ class CartView extends StatelessWidget {
           return cc.products.isNotEmpty?Padding(
             padding: EdgeInsets.only(left: 20.w,right: 20.w,bottom: 16.h),
             child: CustomButton(
-              child: const Text("Checkout",style: TextStyle(color: Colors.white),),
-              onTap: (){},
+              child: const Text(
+                "Checkout",
+                style: TextStyle(color: Colors.white),),
+              onTap: (){
+                Get.to(()=> ChooseAddressView());
+              },
             ),
-          ):SizedBox();
+          ):const SizedBox();
         }
       ),
     );

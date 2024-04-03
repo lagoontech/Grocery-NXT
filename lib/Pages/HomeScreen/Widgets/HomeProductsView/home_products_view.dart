@@ -43,7 +43,7 @@ class HomeProductsView extends StatelessWidget {
                   Expanded(
                     child: GestureDetector(
                       onTap: (){
-                        Get.to(()=>AllProductsView(category: CategoryModel(id: 0,name: "All",imageUrl: ""),));
+                        Get.to(()=>AllProductsView());
                       },
                       child: Align(
                         alignment: Alignment.centerRight,

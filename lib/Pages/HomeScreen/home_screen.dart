@@ -55,7 +55,7 @@ class HomeScreen extends StatelessWidget {
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
                 fit: BoxFit.fitWidth,
-                color: Colors.black.withOpacity(0.04),
+                color: Colors.black.withOpacity(0.03),
               ),
 
               NestedScrollView(

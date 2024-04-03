@@ -48,35 +48,51 @@ class AllProductsListItem extends StatelessWidget {
                   ),
                   SizedBox(height: 4.h),
                   SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.3,
-                      height: MediaQuery.of(context).size.height*0.28*0.3,
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      height: MediaQuery.of(context).size.height*0.28*0.2,
                       child: AutoSizeText(
                         product!.title!,
-                        maxLines: 3,
-                        style: TextStyle(fontSize: 12.sp,fontWeight: FontWeight.w600),
+                        maxLines: 2,
+                        style: TextStyle(
+                            fontSize: 10.sp,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: ""
+                        ),
                         textAlign: TextAlign.center,
                       )),
-                  Row(
-                    children: [
-                      Text(
-                        "\u{20B9}${product!.price}",
-                        style: TextStyle(
-                            decoration: TextDecoration.lineThrough,
-                            fontSize: 12.sp),
-                      ),
-                      SizedBox(width: 2.w),
-                      Expanded(
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              "\u{20B9}${product!.discountPrice}",
-                              style: TextStyle(color: Colors.red,fontSize: 12.sp),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.28*0.2,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.w),
+                      child: Row(
+                        children: [
+                          Text(
+                            "\u{20B9}${product!.price}",
+                            style: TextStyle(
+                                decoration: TextDecoration.lineThrough,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w600,
                             ),
-                          ))
-                    ],
+                          ),
+                          SizedBox(width: 2.w),
+                          Expanded(
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  "\u{20B9}${product!.discountPrice}",
+                                  style: TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ))
+                        ],
+                      ),
+                    ),
                   ),
 
-                  SizedBox(height: 12.h),
+                  SizedBox(height: 6.h),
 
                   GetBuilder<CartController>(
                     builder: (cc) {
@@ -163,7 +179,7 @@ class AllProductsListItem extends StatelessWidget {
             height: 24.h,
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.only(topLeft: Radius.circular(8)),
-              color: AppColors.primaryColor.withOpacity(0.4)
+              //color: AppColors.primaryColor.withOpacity(0.8)
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
