@@ -82,9 +82,12 @@ class CategoriesView extends StatelessWidget {
                                     children: [
 
                                       CachedNetworkImage(
-                                        imageUrl: category!.imageUrl!,
+                                        imageUrl: category!.imageUrl ?? "",
                                         fit: BoxFit.contain,
                                         height: MediaQuery.of(context).size.height*0.20*0.4,
+                                        errorWidget: (c,w,o){
+                                          return Image.asset("assets/images/gnxt_logo.png");
+                                        },
                                       ),
 
                                       SizedBox(height: 16.h),

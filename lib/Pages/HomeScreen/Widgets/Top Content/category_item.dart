@@ -45,14 +45,14 @@ class CategoryItem extends StatelessWidget {
                     widthFactor: 0.6,
                     heightFactor: 0.6,
                     child: CachedNetworkImage(
-                        imageUrl: category!.imageUrl!,
+                        imageUrl: category!.imageUrl??"",
                         width: 30,
                         height: 30,
                     ),
                   ),
                 ),
               ),
-              Text(category!.name!,
+              Text(category!.name??"",
                 style: TextStyle(
                     fontSize: 10.sp,
                     fontWeight: FontWeight.w600
@@ -83,11 +83,35 @@ class CategoryItem extends StatelessWidget {
       if(centerX-distanceToCenter<50){
         offsetY = (centerX - distanceToCenter) * 0.3;
       }
+      if(position.dx>=MediaQuery.of(context).size.width*0.64){
+        offsetY = (centerX - distanceToCenter) * 0.33;
+      }
+      if(position.dx>=MediaQuery.of(context).size.width*0.65){
+        offsetY = (centerX - distanceToCenter) * 0.34;
+      }
+      if(position.dx>=MediaQuery.of(context).size.width*0.66){
+        offsetY = (centerX - distanceToCenter) * 0.35;
+      }
+      if(position.dx>=MediaQuery.of(context).size.width*0.67){
+        offsetY = (centerX - distanceToCenter) * 0.36;
+      }
+      if(position.dx>=MediaQuery.of(context).size.width*0.68){
+        offsetY = (centerX - distanceToCenter) * 0.37;
+      }
+      if(position.dx>=MediaQuery.of(context).size.width*0.69){
+        offsetY = (centerX - distanceToCenter) * 0.38;
+      }
+      if(position.dx>=MediaQuery.of(context).size.width*0.70){
+        offsetY = (centerX - distanceToCenter) * 0.39;
+      }
+      if(position.dx>=MediaQuery.of(context).size.width*0.71){
+        offsetY = (centerX - distanceToCenter) * 0.40;
+      }
       if(position.dx>=MediaQuery.of(context).size.width*0.72){
-        offsetY = (centerX - distanceToCenter) * 0.44;
+        offsetY = (centerX - distanceToCenter) * 0.41;
       }
       if(position.dx>=MediaQuery.of(context).size.width*0.75){
-        offsetY = (centerX - distanceToCenter) * 0.45;
+        offsetY = (centerX - distanceToCenter) * 0.42;
       }
       return offsetY;
     }

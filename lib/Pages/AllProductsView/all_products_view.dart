@@ -14,6 +14,7 @@ import 'package:grocery_nxt/Pages/AllProductsView/Widgets/all_products_list_item
 import 'package:grocery_nxt/Pages/CartView/cart_view.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Models/home_categories_model.dart';
+import 'package:lottie/lottie.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../HomeScreen/Widgets/HomeProductsView/curved_cart_add_container.dart';
 import 'Widgets/all_products_list_item_curved_container.dart';
@@ -162,15 +163,13 @@ class AllProductsView extends StatelessWidget {
                               ),
                               GetBuilder<AllProductsController>(
                                 builder: (vc) {
-                                  return vc.showNextLoading
-                                      ? AnimatedContainer(
-                                    duration: const Duration(milliseconds: 500),
-                                          height: 50.h,
+                                  return AnimatedContainer(
+                                    duration: const Duration(milliseconds: 250),
+                                          height: vc.showNextLoading
+                                              ? 60.h:0.h,
                                           width: MediaQuery.of(context).size.width,
-                                          child: const Center(
-                                              child: CircularProgressIndicator()),
-                                        )
-                                      : const SizedBox();
+                                    child: Lottie.asset("assets/animations/next_page_loader.json"),
+                                        );
                                 }
                               )
                             ],

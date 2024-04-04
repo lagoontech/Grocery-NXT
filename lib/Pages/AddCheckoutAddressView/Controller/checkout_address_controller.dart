@@ -11,6 +11,7 @@ class AddCheckoutAddressController extends GetxController{
   bool loadingAddresses = false;
   bool loadingCountries = false;
   bool loadingStates    = false;
+  bool creatingAddress  = false;
   List<Country?> countries = [];
   List<CountryState?> states    = [];
   CountryState ?selectedState;
@@ -19,6 +20,12 @@ class AddCheckoutAddressController extends GetxController{
   TextEditingController searchTEC  = TextEditingController();
   TextEditingController stateSearchTEC  = TextEditingController();
   TextEditingController countryTEC = TextEditingController();
+  TextEditingController titleTEC = TextEditingController();
+  TextEditingController emailTEC = TextEditingController();
+  TextEditingController phoneTEC = TextEditingController();
+  TextEditingController addressTEC = TextEditingController();
+  TextEditingController zipcodeTEC = TextEditingController();
+  TextEditingController orderNoteTEC = TextEditingController();
   TextEditingController stateTEC   = TextEditingController();
 
   //
@@ -75,6 +82,33 @@ class AddCheckoutAddressController extends GetxController{
       }
       getCountries();
     });
+  }
+
+  //
+  createAddress()async{
+
+    creatingAddress = true;
+    update();
+    try{
+      var result = await HttpService.postRequest("user/store-shipping-address",{
+        "name": titleTEC.text,
+        "email": emailTEC.text,
+        "phone": phoneTEC.text,
+        "address": addressTEC.text,
+        "zip_code": zipcodeTEC.text,
+        "order_note": orderNoteTEC.text,
+        "state": selectedState!.id,
+      },insertHeader: true);
+      if(result is http.Response){
+        if(result.statusCode==200){
+          Get.back();
+        }
+      }
+    }catch(e){
+      print(e);
+    }
+    creatingAddress = false;
+    update();
   }
 
  @override

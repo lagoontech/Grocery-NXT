@@ -22,7 +22,7 @@ class HttpService {
             ? {
                 'content-type': 'application/json',
                 'accept': 'application/json',
-                //'authorization': SharedPrefUtils().getToken()
+                'authorization': 'Bearer 204|v83uh1WEGoBfWghkLiQ1RhaNYT6G1bgUTdQECuVc06019090'
               }
             : {'content-type': 'application/json'},
         body: json.encode(postData),
@@ -50,7 +50,7 @@ class HttpService {
                   ? {
                       'content-type': 'application/json',
                       'accept': 'application/json',
-                     // 'authorization': SharedPrefUtils().getToken()
+                      'authorization': 'Bearer 204|v83uh1WEGoBfWghkLiQ1RhaNYT6G1bgUTdQECuVc06019090'
                     }
                   : {'content-type': 'application/json'})
           .timeout(const Duration(seconds: 10), onTimeout: () {

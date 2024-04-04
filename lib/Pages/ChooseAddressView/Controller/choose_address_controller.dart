@@ -7,6 +7,8 @@ class ChooseAddressController extends GetxController{
 
   bool loadingAddresses = false;
   List<ShippingAddress> addresses = [];
+  dynamic selectedAddressId;
+  ShippingAddress ?selectedAddress;
 
   //
   getAddresses() async {
@@ -16,8 +18,10 @@ class ChooseAddressController extends GetxController{
     try{
       var result = await HttpService.getRequest("user/all-shipping-address");
       if(result is http.Response){
+        print(result.body);
         if(result.statusCode == 200){
           addresses = shippingAddressListModelFromJson(result.body).data;
+          print(addresses.length);
         }
       }
     }catch(e){

@@ -10,13 +10,15 @@ class CustomButton extends StatelessWidget {
       this.isLoading = false,
       this.text,
       this.onTap,
-      this.width});
+      this.width,
+      this.height});
 
   bool? isLoading;
   Widget? child;
   String? text;
   Function()? onTap;
   double? width;
+  double ?height;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +37,7 @@ class CustomButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(30.r),
           child: Container(
             width: width ?? MediaQuery.of(context).size.width * 0.5,
-            height: 40.h,
+            height: height ?? 40.h,
             alignment: Alignment.center,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30.r),

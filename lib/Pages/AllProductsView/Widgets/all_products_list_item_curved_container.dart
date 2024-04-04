@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_nxt/Constants/app_colors.dart';
 
 class AllProductsCurvedProductContainer extends CustomPainter {
 
@@ -33,7 +34,7 @@ class AllProductsCurvedProductContainer extends CustomPainter {
 
     // Define a Paint object for drawing the border
     var borderPaint = Paint()
-      ..color = Colors.grey.shade100 // Set the border color
+      ..color = AppColors.primaryColor// Set the border color
       ..style = PaintingStyle.stroke // Set the painting style to stroke
       ..strokeWidth = 0.0; // Set the border width
 

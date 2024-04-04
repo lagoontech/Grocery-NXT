@@ -16,11 +16,13 @@ class CartController extends GetxController{
   addToCart({Product ?product,bool isSub = false,bool showToast = true}){
     
     if(isSub){
-      if(products.contains(product)){
-        products[products.indexOf(product!)].cartQuantity
-        = products[products.indexOf(product)].cartQuantity-1;
-        if(products[products.indexOf(product)].cartQuantity==0){
-          products.remove(product);
+      if(products.contains(product)
+          || products.firstWhere((element) => element.prdId==product!.prdId,orElse: ()=> Product(prdId: null)).prdId!=null){
+        print("cart contains product");
+        products[products.indexWhere((element) => element.prdId==product!.prdId)].cartQuantity
+        = products[products.indexWhere((element) => element.prdId==product!.prdId)].cartQuantity-1;
+        if(products[products.indexWhere((element) => element.prdId==product!.prdId)].cartQuantity==0){
+          products.removeAt(products.indexWhere((element) => element.prdId==product!.prdId));
         }
       }
       update();
