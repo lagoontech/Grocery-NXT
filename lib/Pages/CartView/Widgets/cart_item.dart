@@ -49,9 +49,13 @@ class CartItem extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       fontSize: 12.sp,
                     )),
-                Text("\u{20B9} "+product!.discountPrice!.toString(),
+                Text("\u{20B9} ${product!.discountPrice!}",
                     style: const TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.red))
+                        fontWeight: FontWeight.bold, color: Colors.red)),
+                Text(
+                    product!.productColor!=null
+                        ?product!.productColor!.name
+                        :"")
               ],
             )),
             SizedBox(width: 12.w),

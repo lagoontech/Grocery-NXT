@@ -22,12 +22,14 @@ class ProductDetailsModel {
         required this.productSizes,
         required this.settingText,
         required this.userRatedAlready,
-        this.productDeliveryOption});
+        this.productDeliveryOption,
+      this.variantInfo});
 
   ProductDetailsModelProduct? product;
   dynamic productUrl;
   List<ProductElement?> relatedProducts;
   dynamic userHasItem;
+  AdditionalInfoStore ?variantInfo;
   List<dynamic>? ratings;
   dynamic avgRating;
   dynamic productInventorySet;
@@ -113,6 +115,13 @@ class AdditionalInfoStore {
             : json["stock_count"].toInt(),
         image: json["image"],
       );
+
+  Map<String, dynamic> toJson() => {
+    "pid_id": pidId,
+    "additional_price": additionalPrice.toString(),
+    "stock_count": stockCount.toString(),
+    "image": image,
+  };
 }
 
 class Tag {

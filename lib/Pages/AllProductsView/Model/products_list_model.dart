@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:grocery_nxt/Pages/ProductDetailsView/Model/product_details_model.dart';
+
 ProductsList productsListFromJson(String str) => ProductsList.fromJson(json.decode(str));
 
 String productsListToJson(ProductsList data) => json.encode(data.toJson());
@@ -54,6 +56,8 @@ class Product {
   String? randomKey;
   String? randomSecret;
   int cartQuantity;
+  AdditionalInfoStore ?variantInfo;
+  ProductColor ?productColor;
 
   Product({
     this.prdId,
@@ -76,7 +80,9 @@ class Product {
     this.url,
     this.randomKey,
     this.randomSecret,
-    this.cartQuantity=0
+    this.cartQuantity=0,
+    this.variantInfo,
+    this.productColor
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
@@ -100,13 +106,17 @@ class Product {
     url: json["url"],
     randomKey: json["random_key"],
     randomSecret: json["random_secret"],
+    cartQuantity: json["cart_qty"] ?? 0,
+    variantInfo: json["variant_info"] == null ? null : AdditionalInfoStore.fromJson(json["variant_info"]),
   );
 
   Map<String, dynamic> toJson() => {
     "prd_id": prdId,
     "title": title,
+    "cart_qty": cartQuantity,
     "img_url": imgUrl,
     "campaign_percentage": campaignPercentage,
+    "variant_info": variantInfo==null ? null :variantInfo!.toJson(),
     "price": price,
     "discount_price": discountPrice,
     "badge": badge?.toJson(),

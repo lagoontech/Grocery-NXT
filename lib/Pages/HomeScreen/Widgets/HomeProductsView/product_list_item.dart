@@ -36,7 +36,11 @@ class ProductListItem extends StatelessWidget {
 
               GestureDetector(
                 onTap: (){
-                  Get.to(()=> ProductDetailsView(productId: product!.prdId,));
+                  Product copyProduct = Product.fromJson(product!.toJson());
+                  Get.to(()=> ProductDetailsView(
+                    productId: product!.prdId,
+                    product: copyProduct,
+                  ));
                 },
                 child: Column(
                   children: [

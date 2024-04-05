@@ -14,7 +14,10 @@ import '../../ProductDetailsView/product_details_view.dart';
 import '../Model/products_list_model.dart';
 
 class AllProductsListItem extends StatelessWidget {
-   AllProductsListItem({super.key,this.index,this.product});
+   AllProductsListItem({
+     super.key,
+     this.index,
+     this.product});
 
    AllProductsController vc = Get.find<AllProductsController>();
    CartController        cc = Get.find<CartController>();
@@ -37,7 +40,10 @@ class AllProductsListItem extends StatelessWidget {
 
                 GestureDetector(
                   onTap: (){
-                    Get.to(()=> ProductDetailsView(productId: product!.prdId,));
+                    Get.to(()=> ProductDetailsView(
+                      productId: product!.prdId,
+                      product: product,
+                    ));
                   },
                   child: Column(
                     children: [
@@ -169,7 +175,7 @@ class AllProductsListItem extends StatelessWidget {
                                       begin: Offset(-1,0),
                                       duration: Duration(milliseconds: 300)
                                   ),
-                                  FadeEffect()
+                                  const FadeEffect()
                                 ]
                             )
                                 :const SizedBox(),

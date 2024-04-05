@@ -1,18 +1,24 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
+import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
 import 'package:grocery_nxt/Pages/ProductDetailsView/Controller/product_details_controller.dart';
 import 'package:grocery_nxt/Pages/ProductDetailsView/Widgets/animated_bottom_curved_container.dart';
 import 'package:grocery_nxt/Widgets/custom_button.dart';
 import 'package:readmore/readmore.dart';
 
+import '../AllProductsView/Model/products_list_model.dart' hide Badge;
+
 class ProductDetailsView extends StatefulWidget {
-   ProductDetailsView({super.key,this.productId});
+   ProductDetailsView({super.key,this.productId,this.product});
 
    int ?productId;
+   Product ?product;
 
   @override
   State<ProductDetailsView> createState() => _ProductDetailsViewState();
@@ -21,6 +27,13 @@ class ProductDetailsView extends StatefulWidget {
 class _ProductDetailsViewState extends State<ProductDetailsView> {
 
   ProductDetailsController vc = Get.put(ProductDetailsController());
+  CartController cc = Get.find<CartController>();
+  Product ?product;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +41,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if(vc.productId==null){
         vc.productId = widget.productId;
+        vc.product = widget.product;
         vc.getProductDetails();
       }
     });
@@ -90,6 +104,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                                   },
                                                   child: Container(
                                                     padding: EdgeInsets.symmetric(horizontal: 4.w),
+                                                    margin: EdgeInsets.symmetric(horizontal: 4.w),
                                                     decoration: BoxDecoration(
                                                         border: Border.all(
                                                             color: Colors.black,
@@ -102,12 +117,12 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                                   ),
                                                 );
                                               })
-                                          : SizedBox()),
+                                          : const SizedBox()),
                                 )
                               ],
                             ),
 
-                            SizedBox(height: MediaQuery.of(context).size.height*0.12,),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.06),
 
                             Container(
                               padding: EdgeInsets.symmetric(horizontal: 24.w),
@@ -130,49 +145,149 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
 
                                       SizedBox(width: 8.w),
 
-                                      Container(
-                                        width: 30.w,
-                                        padding: EdgeInsets.all(2.w),
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey.shade200,
-                                          shape: BoxShape.circle
-                                        ),
-                                        child: Icon(Icons.remove,color: Colors.grey,),
-                                      ),
-                                      Container(
-                                        width: 40.w,
-                                        child: Center(
-                                            child: Text(
-                                                "1",
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w600
+                                      GetBuilder<CartController>(
+                                        builder: (cc) {
+                                          return Row(
+                                            children: [
+                                              GestureDetector(
+                                                onTap: () {
+                                                  if(vc.quantity!-1!=0) {
+                                                    vc.quantity = vc.quantity!-1;
+                                                  }
+                                                  vc.update();
+                                                },
+                                                child: Container(
+                                                  width: 40.w,
+                                                  padding: EdgeInsets.all(2.w),
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.grey.shade200, shape: BoxShape.circle),
+                                                  child: const Icon(
+                                                    Icons.remove,
+                                                    color: Colors.grey,
+                                                  ),
                                                 ),
-                                            )),
-                                      ),
-                                      Container(
-                                        width: 40.w,
-                                        padding: EdgeInsets.all(2.w),
-                                        decoration: BoxDecoration(
-                                          color: AppColors.primaryColor.withOpacity(0.8),
-                                          shape: BoxShape.circle
-                                        ),
-                                        child: Icon(Icons.add,color: Colors.white,),
-                                      ),
+                                              ),
+                                              SizedBox(
+                                                width: 30.w,
+                                                child: Center(
+                                                    child: Text(
+                                                      vc.quantity.toString(),
+                                                      style: const TextStyle(fontWeight: FontWeight.w600),
+                                                    )),
+                                              ),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  vc.quantity = vc.quantity!+1;
+                                                },
+                                                child: Container(
+                                                  width: 40.w,
+                                                  padding: EdgeInsets.all(2.w),
+                                                  decoration: BoxDecoration(
+                                                      color: AppColors.primaryColor.withOpacity(0.8),
+                                                      shape: BoxShape.circle),
+                                                  child: Icon(
+                                                    Icons.add,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        }
+                                      )
 
                                     ],
                                   ),
 
                                   SizedBox(height: 4.h),
 
-                                  Text(
-                                      "\u{20B9} ${vc.productDetails!.product!.salePrice!.toString()}",
-                                    style: TextStyle(
-                                        color: Colors.red,
-                                        fontSize: 15.sp,
-                                        fontWeight: FontWeight.w600),
+                                  Row(
+                                    children: [
+                                      /*Text(
+                                          "\u{20B9} ${vc.productDetails!.product!.price!.toString()}",
+                                        style: TextStyle(
+                                            fontSize: 15.sp,
+                                          decoration: TextDecoration.lineThrough
+                                        ),
+                                      ),
+                                      SizedBox(width: 2.w),*/
+                                      Text(
+                                        "\u{20B9} ${vc.productDetails!.product!.salePrice!.toString()}",
+                                        style: TextStyle(
+                                            color: Colors.red,
+                                            fontSize: 15.sp,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    ],
                                   ),
 
                                   SizedBox(height: 4.h),
+
+                                  vc.productDetails!!=null
+                                      && vc.productDetails!.productSizes!.isNotEmpty?
+                                  SizedBox(
+                                    height: 35.h,
+                                    child: ListView.builder(
+                                        itemCount: vc.productDetails!.productSizes!.length,
+                                        shrinkWrap: true,
+                                        scrollDirection: Axis.horizontal,
+                                        itemBuilder: (context,index){
+                                          var unit = vc.productDetails!.productSizes![index];
+                                          bool isSelected = vc.selectedVariant==unit;
+                                          return GestureDetector(
+                                            onTap: (){
+                                              vc.selectedVariant = unit;
+                                              vc.changeVariant();
+                                            },
+                                            child: Container(
+                                              padding: EdgeInsets.symmetric(horizontal: 4.w),
+                                              margin: EdgeInsets.only(right: 4.w),
+                                              decoration: BoxDecoration(
+                                                color: isSelected
+                                                    ? AppColors.primaryColor
+                                                    : Colors.transparent,
+                                                border: Border.all(color: AppColors.primaryColor),
+                                                borderRadius: BorderRadius.circular(4.w),
+                                              ),
+                                              child: Center(
+                                                  child: Text(
+                                                      unit.name,
+                                                      style: TextStyle(
+                                                        color: isSelected
+                                                           ? Colors.white
+                                                            : Colors.black,
+                                                        fontSize: 12.sp,
+                                                      ),
+                                                  )
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                    ),
+                                  ): SizedBox(),
+
+                                  SizedBox(height: 4.h),
+
+                                  vc.productDetails!.allUnits!=null
+                                      && vc.productDetails!.allUnits!.isNotEmpty?
+                                  ListView.builder(
+                                      itemCount: vc.productDetails!.allUnits!.length,
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder: (context,index){
+                                        var unit = vc.productDetails!.allUnits![index];
+                                        return GestureDetector(
+                                          onTap: (){},
+                                          child: Container(
+                                            padding: EdgeInsets.all(2.w),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: AppColors.primaryColor),
+                                              borderRadius: BorderRadius.circular(4.w),
+                                            ),
+                                            child: Text(unit),
+                                          ),
+                                        );
+                                      }
+                                  ): SizedBox(),
 
                                   ReadMoreText(
                                     HtmlParser.parseHTML(

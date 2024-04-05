@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'package:add_to_cart_animation/add_to_cart_animation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:grocery_nxt/Utils/shared_pref_utils.dart';
 import '../../AllProductsView/Model/products_list_model.dart';
 
 class CartController extends GetxController{
@@ -13,33 +15,74 @@ class CartController extends GetxController{
   int totalProducts = 0;
 
   //
-  addToCart({Product ?product,bool isSub = false,bool showToast = true}){
-    
+  addToCartFromDetailsPage({Product ?product}){
+
+
+  }
+
+  //
+  addToCart({
+    Product ?product,
+    bool isSub = false,
+    bool showToast = true,
+    bool isVariant = false}){
+
+    bool hasProduct = products.firstWhere((element) => element.prdId==product!.prdId,orElse: ()=> Product(prdId: null)).prdId!=null;
+    if(isVariant){
+      int index = products.indexWhere((element) =>
+      element.prdId==product!.prdId && element.productColor!.id==product.productColor!.id);
+      if(isSub){
+        products[index].cartQuantity = products[index].cartQuantity-1;
+        if(products[index].cartQuantity==0){
+          products.removeAt(index);
+        }
+      }else{
+        if(index!=-1){
+          products[index].cartQuantity = products[index].cartQuantity+1;
+        }else{
+          products.add(product!..cartQuantity=1);
+        }
+      }
+      SharedPrefUtils.pref!.setStringList(
+          "products",products.map((e){return jsonEncode(e.toJson());}).toList());
+      calculateTotal();
+      calculateTotalProducts();
+      update();
+      return;
+    }
+
+    int index = products.indexWhere((element) => element.prdId==product!.prdId);
     if(isSub){
-      if(products.contains(product)
-          || products.firstWhere((element) => element.prdId==product!.prdId,orElse: ()=> Product(prdId: null)).prdId!=null){
-        print("cart contains product");
-        products[products.indexWhere((element) => element.prdId==product!.prdId)].cartQuantity
-        = products[products.indexWhere((element) => element.prdId==product!.prdId)].cartQuantity-1;
-        if(products[products.indexWhere((element) => element.prdId==product!.prdId)].cartQuantity==0){
-          products.removeAt(products.indexWhere((element) => element.prdId==product!.prdId));
+      if(products.contains(product) || hasProduct){
+        products[index].cartQuantity = products[index].cartQuantity-1;
+        if(products[index].cartQuantity==0){
+          products.removeAt(index);
         }
       }
       update();
+      SharedPrefUtils.pref!.setStringList(
+          "products",products.map((e){return jsonEncode(e.toJson());}).toList());
       calculateTotal();
       calculateTotalProducts();
       return;
     }
-    if(products.contains(product)
-        || products.firstWhere((element) => element.prdId==product!.prdId,orElse: ()=> Product(prdId: null)).prdId!=null){
-      products[products.indexWhere((element) => element.prdId==product!.prdId)].cartQuantity
-      = products[products.indexWhere((element) => element.prdId==product!.prdId)].cartQuantity+1;
+    if(products.contains(product) || hasProduct){
+      products[index].cartQuantity = products[index].cartQuantity+1;
     }else{
       products.add(product!..cartQuantity=1);
     }
+    SharedPrefUtils.pref!.setStringList(
+        "products",
+        products.map((e){return jsonEncode(e.toJson());}).toList());
     calculateTotal();
     calculateTotalProducts();
     update();
+  }
+
+  //
+  bool hasProduct(Product product){
+    return products.firstWhere((element) => element.prdId==product.prdId,
+        orElse: ()=> Product(prdId: null)).prdId!=null;
   }
 
   //
@@ -58,5 +101,24 @@ class CartController extends GetxController{
     });
   }
 
+  //
+  loadProducts(){
+
+    if(SharedPrefUtils.pref!.containsKey("products")) {
+      SharedPrefUtils.pref!.getStringList("products")!.forEach((element) {
+      products.add(Product.fromJson(jsonDecode(element)));
+    });
+    }
+    calculateTotalProducts();
+    calculateTotal();
+    update();
+  }
+
+  //
+  @override
+  void onInit() {
+    super.onInit();
+    loadProducts();
+  }
 
 }

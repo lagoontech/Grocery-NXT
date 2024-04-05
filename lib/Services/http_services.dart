@@ -50,7 +50,8 @@ class HttpService {
                   ? {
                       'content-type': 'application/json',
                       'accept': 'application/json',
-                      'authorization': 'Bearer 204|v83uh1WEGoBfWghkLiQ1RhaNYT6G1bgUTdQECuVc06019090'
+                      'authorization': 'Bearer 204|v83uh1WEGoBfWghkLiQ1RhaNYT6G1bgUTdQECuVc06019090',
+                      'x-api-key': "b8f4a0ba4537ad6c3ee41ec0a43549d1"
                     }
                   : {'content-type': 'application/json'})
           .timeout(const Duration(seconds: 10), onTimeout: () {
