@@ -17,7 +17,35 @@ class CartController extends GetxController{
   //
   addToCartFromDetailsPage({Product ?product}){
 
-
+    print(product.hashCode);
+    if(product!.variantInfo!=null){
+      print("variant product");
+      int index = products.indexWhere((element){
+        if(element.productColor!=null) {
+          return element.productColor!.id == product.productColor!.id;
+        }
+        return false;
+      });
+      if(index!=-1){
+        products[index].cartQuantity = product.cartQuantity;
+      }else{
+        products.add(Product.fromJson(product.toJson()));
+      }
+    }
+    else{
+      print("regular product");
+      int index = products.indexWhere((element) => (element.prdId==product.prdId&&element.variantInfo==null));
+      if(index!=-1){
+        products[index].cartQuantity = product.cartQuantity;
+      }else{
+        products.add(Product.fromJson(product.toJson()));
+      }
+    }
+    SharedPrefUtils.pref!.setStringList(
+        "products",products.map((e){return jsonEncode(e.toJson());}).toList());
+    calculateTotalProducts();
+    calculateTotal();
+    update();
   }
 
   //
@@ -27,10 +55,13 @@ class CartController extends GetxController{
     bool showToast = true,
     bool isVariant = false}){
 
-    bool hasProduct = products.firstWhere((element) => element.prdId==product!.prdId,orElse: ()=> Product(prdId: null)).prdId!=null;
-    if(isVariant){
-      int index = products.indexWhere((element) =>
-      element.prdId==product!.prdId && element.productColor!.id==product.productColor!.id);
+    if(product!.variantInfo!=null){
+      int index = products.indexWhere((element){
+        if(element.productColor!=null){
+          return element.prdId==product.prdId && element.productColor!.id==product.productColor!.id;
+        }
+        return false;
+      });
       if(isSub){
         products[index].cartQuantity = products[index].cartQuantity-1;
         if(products[index].cartQuantity==0){
@@ -40,7 +71,7 @@ class CartController extends GetxController{
         if(index!=-1){
           products[index].cartQuantity = products[index].cartQuantity+1;
         }else{
-          products.add(product!..cartQuantity=1);
+          products.add(product..cartQuantity=1);
         }
       }
       SharedPrefUtils.pref!.setStringList(
@@ -50,10 +81,11 @@ class CartController extends GetxController{
       update();
       return;
     }
-
-    int index = products.indexWhere((element) => element.prdId==product!.prdId);
+    bool hasProduct = products.firstWhere(
+            (element) => element.prdId==product.prdId&&element.variantInfo==null,orElse: ()=> Product(prdId: null)).prdId!=null;
+    int index = products.indexWhere((element) => element.prdId==product.prdId && element.variantInfo==null);
     if(isSub){
-      if(products.contains(product) || hasProduct){
+      if(hasProduct){
         products[index].cartQuantity = products[index].cartQuantity-1;
         if(products[index].cartQuantity==0){
           products.removeAt(index);
@@ -66,10 +98,10 @@ class CartController extends GetxController{
       calculateTotalProducts();
       return;
     }
-    if(products.contains(product) || hasProduct){
+    if(hasProduct){
       products[index].cartQuantity = products[index].cartQuantity+1;
     }else{
-      products.add(product!..cartQuantity=1);
+      products.add(product..cartQuantity=1);
     }
     SharedPrefUtils.pref!.setStringList(
         "products",
@@ -96,18 +128,18 @@ class CartController extends GetxController{
   //
   calculateTotalProducts(){
     totalProducts = 0;
-    products.forEach((element) {
+    for (var element in products) {
       totalProducts = totalProducts+element.cartQuantity;
-    });
+    }
   }
 
   //
   loadProducts(){
-
+    products.clear();
     if(SharedPrefUtils.pref!.containsKey("products")) {
-      SharedPrefUtils.pref!.getStringList("products")!.forEach((element) {
+      for (var element in SharedPrefUtils.pref!.getStringList("products")!) {
       products.add(Product.fromJson(jsonDecode(element)));
-    });
+    }
     }
     calculateTotalProducts();
     calculateTotal();

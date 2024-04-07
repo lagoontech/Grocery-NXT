@@ -1,17 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
 import 'package:grocery_nxt/Pages/ProductDetailsView/Controller/product_details_controller.dart';
 import 'package:grocery_nxt/Pages/ProductDetailsView/Widgets/animated_bottom_curved_container.dart';
 import 'package:grocery_nxt/Widgets/custom_button.dart';
 import 'package:readmore/readmore.dart';
-
 import '../AllProductsView/Model/products_list_model.dart' hide Badge;
 
 class ProductDetailsView extends StatefulWidget {
@@ -28,7 +25,6 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
 
   ProductDetailsController vc = Get.put(ProductDetailsController());
   CartController cc = Get.find<CartController>();
-  Product ?product;
 
   @override
   void initState() {
@@ -178,6 +174,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                               GestureDetector(
                                                 onTap: () {
                                                   vc.quantity = vc.quantity!+1;
+                                                  vc.update();
                                                 },
                                                 child: Container(
                                                   width: 40.w,
@@ -185,7 +182,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                                   decoration: BoxDecoration(
                                                       color: AppColors.primaryColor.withOpacity(0.8),
                                                       shape: BoxShape.circle),
-                                                  child: Icon(
+                                                  child: const Icon(
                                                     Icons.add,
                                                     color: Colors.white,
                                                   ),
@@ -367,10 +364,18 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
             : const Center(child: CircularProgressIndicator());
       }),
       bottomNavigationBar: Padding(
-        padding: EdgeInsets.only(left: 20.w,right: 20.w,bottom: 16.h),
+        padding: EdgeInsets.only(
+            left: 20.w,
+            right: 20.w,
+            bottom: 16.h),
         child: CustomButton(
-          child: const Text("Add to cart",style: TextStyle(color: Colors.white),),
-          onTap: (){},
+          child: const Text(
+            "Add to cart",
+            style: TextStyle(color: Colors.white)),
+          onTap: (){
+            vc.product!.cartQuantity = vc.quantity!;
+            cc.addToCartFromDetailsPage(product: vc.product);
+          },
         ),
       ),
     );

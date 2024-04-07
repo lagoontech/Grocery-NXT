@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/home_controller.dart';
@@ -21,7 +22,7 @@ class TopContent extends StatelessWidget {
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       hc.sc.animateTo(
-          -20,
+          -1,
           duration: const Duration(milliseconds: 1000),
           curve: Curves.easeIn);
     });
@@ -52,26 +53,33 @@ class TopContent extends StatelessWidget {
                   child: GetBuilder<HomeController>(
                     id: "categories",
                     builder: (vc) {
-                      return ListView.builder(
-                          controller: hc.sc,
-                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.2,left: 24.w),
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: vc.categories.length,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            if(vc.categories.isEmpty){
-                              return const SizedBox();
-                            }
-                            var category = vc.categories[index];
-                            return CategoryItem(
-                                index:index,
-                                category: category
-                            ).animate(
-                              effects: [
-                                const FadeEffect()
-                              ]
-                            );
-                          }) ;
+                      return AnimationLimiter(
+                        child: ListView.builder(
+                            controller: hc.sc,
+                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.2,left: 24.w),
+                            physics: const BouncingScrollPhysics(),
+                            itemCount: vc.categories.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) {
+                              if(vc.categories.isEmpty){
+                                return const SizedBox();
+                              }
+                              var category = vc.categories[index];
+                              return AnimationConfiguration.staggeredList(
+                                position: index,
+                                child: SlideAnimation(
+                                  horizontalOffset: 200.w,
+                                  duration: const Duration(milliseconds: 750),
+                                  child: FadeInAnimation(
+                                    child: CategoryItem(
+                                        index:index,
+                                        category: category
+                                    ),
+                                  )
+                                ),
+                              );
+                            }),
+                      ) ;
                     }
                   ),
                 ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/AllProductsView/all_products_view.dart';
@@ -65,13 +66,26 @@ class HomeProductsView extends StatelessWidget {
 
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.3,
-              child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: hc.products.length,
-                  padding: EdgeInsets.only(left: 8.w),
-                  itemBuilder: (context, index) {
-                    return ProductListItem(index: index,product: hc.products[index]);
-                  }),
+              child: AnimationLimiter(
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: hc.products.length,
+                    padding: EdgeInsets.only(left: 8.w),
+                    itemBuilder: (context, index) {
+                      return AnimationConfiguration.staggeredList(
+                          position: index,
+                          delay: const Duration(milliseconds: 150),
+                          child: SlideAnimation(
+                            verticalOffset: 24.h,
+                            duration: const Duration(milliseconds: 350),
+                            child: FadeInAnimation(
+                              child: ProductListItem(
+                                  index: index,
+                                  product: hc.products[index]),
+                            ),
+                          ));
+                    }),
+              ),
             ),
           ],
         ):SizedBox();

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:grocery_nxt/Widgets/custom_button.dart';
 import 'package:lottie/lottie.dart';
 
@@ -41,8 +42,10 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
           SizedBox(height: 40.h),
           
           CustomButton(
-              onTap: (){},
-              child: Text(
+              onTap: (){
+                Get.back();
+              },
+              child: const Text(
                 "Back to home",
                 style: TextStyle(color: Colors.white),
               ))

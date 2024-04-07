@@ -84,7 +84,7 @@ class HomeScreen extends StatelessWidget {
 
               GetBuilder<HomeController>(
                 builder: (vc) {
-                  return vc.categories.isEmpty&&vc.products.isEmpty?Container(
+                  return vc.categories.isEmpty||vc.products.isEmpty?Container(
                     color: AppColors.primaryColor,
                     child: Stack(
                       children: [

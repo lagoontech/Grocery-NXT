@@ -66,12 +66,12 @@ class OrderListItem extends StatelessWidget {
                       ),
                   ),
               
-                  Text(
+                  order!.paymentMeta!=null? Text(
                       "\u{20B9} "+order!.paymentMeta!.totalAmount!.toString(),
                     style: TextStyle(
                         fontWeight: FontWeight.w600
                     ),
-                  )
+                  ):SizedBox()
               
                 ],
               ),

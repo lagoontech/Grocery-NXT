@@ -36,7 +36,7 @@ class PaymentScreen extends StatelessWidget {
             Text(
               "Shipping To",
               style: TextStyle(
-                  color: Color(0xff2B3241),
+                  color: const Color(0xff2B3241),
                   fontWeight: FontWeight.w600,
                   fontSize: 18.sp),
             ),
@@ -155,12 +155,17 @@ class PaymentScreen extends StatelessWidget {
             left: 20.w,
             right: 20.w,
             bottom: 16.h),
-        child: CustomButton(
-          child:
-              const Text("Place Order", style: TextStyle(color: Colors.white)),
-          onTap: () {
-            Get.to(() => const OrderSuccessScreen());
-          },
+        child: GetBuilder<PaymentController>(
+          builder: (vc) {
+            return CustomButton(
+              child:
+                  !vc.isPlacingOrder?const Text("Place Order", style: TextStyle(color: Colors.white)):CustomCircularLoader(),
+              onTap: () {
+                vc.placeOrder();
+                //Get.to(() => const OrderSuccessScreen());
+              },
+            );
+          }
         ),
       ),
     );

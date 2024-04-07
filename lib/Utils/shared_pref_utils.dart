@@ -24,4 +24,9 @@ class SharedPrefUtils{
     return pref!.getString("token");
   }
 
+  //
+  Future<bool> clearCart()async{
+    return await pref!.setStringList("products",[]);
+  }
+
 }

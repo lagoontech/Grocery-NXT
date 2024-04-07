@@ -33,31 +33,40 @@ class CartItem extends StatelessWidget {
             SizedBox(
               width: 48.w,
               height: 42.h,
-              child: CachedNetworkImage(
-                  imageUrl: product!.imgUrl!,
+              child: Hero(
+                tag: product!.prdId!,
+                child: CachedNetworkImage(
+                    imageUrl: product!.imgUrl!,
+                ),
               ),
             ),
             SizedBox(width: 4.w),
             Expanded(
-               flex: 4,
+                flex: 4,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(product!.title!,
-                    maxLines: 2,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12.sp,
-                    )),
-                Text("\u{20B9} ${product!.discountPrice!}",
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.red)),
-                Text(
-                    product!.productColor!=null
-                        ?product!.productColor!.name
-                        :"")
-              ],
-            )),
+                  children: [
+                    Text(product!.title!,
+                        maxLines: 2,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12.sp,
+                        )),
+                    SizedBox(height: 2.h),
+                    Row(
+                      children: [
+                        Text(product!.productColor != null
+                            ? product!.productColor!.name
+                            : ""),
+                        SizedBox(width: 4.w,),
+                        Text("\u{20B9}${product!.discountPrice!}",
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, color: Colors.red)),
+                      ],
+                    ),
+
+                  ],
+                )),
             SizedBox(width: 12.w),
             Expanded(
                 flex: 3,
@@ -106,67 +115,6 @@ class CartItem extends StatelessWidget {
             ))
           ],
         ),
-      ),
-    );
-
-    ListTile(
-      leading: CachedNetworkImage(imageUrl: product!.imgUrl!),
-      title: Column(
-        children: [
-          Text(product!.title!,
-              maxLines: 2,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12.sp,
-              )),
-          Text(product!.discountPrice!.toString(),
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold, color: Colors.red))
-        ],
-      ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          GestureDetector(
-            onTap: () {
-              cc.addToCart(product: product, isSub: true);
-            },
-            child: Container(
-              width: 30.w,
-              padding: EdgeInsets.all(2.w),
-              decoration: BoxDecoration(
-                  color: Colors.grey.shade200, shape: BoxShape.circle),
-              child: const Icon(
-                Icons.remove,
-                color: Colors.grey,
-              ),
-            ),
-          ),
-          SizedBox(
-            width: 40.w,
-            child: Center(
-                child: Text(
-              product!.cartQuantity.toString(),
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            )),
-          ),
-          GestureDetector(
-            onTap: () {
-              cc.addToCart(product: product);
-            },
-            child: Container(
-              width: 40.w,
-              padding: EdgeInsets.all(2.w),
-              decoration: BoxDecoration(
-                  color: AppColors.primaryColor.withOpacity(0.8),
-                  shape: BoxShape.circle),
-              child: Icon(
-                Icons.add,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

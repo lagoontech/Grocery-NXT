@@ -74,10 +74,10 @@ class CategoryItem extends StatelessWidget {
       double centerY  = MediaQuery.of(context).size.height / 2;
       double distanceToCenter = sqrt(pow(position.dx - centerX, 2) + pow(position.dy - centerY, 2));
 
-      if (kDebugMode) {
+      /*if (kDebugMode) {
         print("positionx-->$index-->${position.dx}");
         print("dtc-->$index-->$distanceToCenter");
-      }
+      }*/
       double offsetY = (centerX - distanceToCenter) * 0.1;
 
       if(centerX-distanceToCenter<50){

@@ -47,10 +47,13 @@ class ProductListItem extends StatelessWidget {
 
                     Container(
                       key: widgetKey,
-                      child: CachedNetworkImage(
-                        imageUrl: product!.imgUrl!,
-                        width: MediaQuery.of(context).size.width * 0.38 * 0.6,
-                        height: MediaQuery.of(context).size.height * 0.3*0.3,
+                      child: Hero(
+                        tag: product!.prdId!,
+                        child: CachedNetworkImage(
+                          imageUrl: product!.imgUrl!,
+                          width: MediaQuery.of(context).size.width * 0.38 * 0.6,
+                          height: MediaQuery.of(context).size.height * 0.3*0.3,
+                        ),
                       ),
                     ),
                     SizedBox(height: 8.h),
@@ -96,7 +99,7 @@ class ProductListItem extends StatelessWidget {
               GetBuilder<CartController>(
                   builder: (cc) {
                     bool hasProductInCart
-                    = cc.products.firstWhere((element) => element.prdId==product!.prdId,
+                    = cc.products.firstWhere((element) => element.prdId==product!.prdId && element.variantInfo==null,
                         orElse: ()=>Product()).prdId!=null;
                     int ?quantity;
                     if(hasProductInCart){
@@ -128,7 +131,7 @@ class ProductListItem extends StatelessWidget {
                                         begin: Offset(1,0),
                                         duration: Duration(milliseconds: 300)
                                     ),
-                                    FadeEffect()
+                                    const FadeEffect()
                                   ]
                               )
                                   :const SizedBox(),

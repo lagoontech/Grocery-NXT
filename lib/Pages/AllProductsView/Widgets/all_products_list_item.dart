@@ -33,16 +33,16 @@ class AllProductsListItem extends StatelessWidget {
         CustomPaint(
           painter: AllProductsCurvedProductContainer(),
           child: Padding(
-            padding:
-            EdgeInsets.only(top: 8.h, left: 4.w, right: 4.w),
+            padding: EdgeInsets.only(top: 8.h, left: 4.w, right: 4.w),
             child: Column(
               children: [
 
                 GestureDetector(
                   onTap: (){
+                    Product copyProduct = Product.fromJson(product!.toJson());
                     Get.to(()=> ProductDetailsView(
                       productId: product!.prdId,
-                      product: product,
+                      product: copyProduct,
                     ));
                   },
                   child: Column(
@@ -112,7 +112,7 @@ class AllProductsListItem extends StatelessWidget {
                 GetBuilder<CartController>(
                   builder: (cc) {
                     bool hasProductInCart
-                    = cc.products.firstWhere((element) => element.prdId==product!.prdId,
+                    = cc.products.firstWhere((element) => element.prdId==product!.prdId&&element.variantInfo==null,
                         orElse: ()=>Product()).prdId!=null;
                     int ?quantity;
                     if(hasProductInCart){
@@ -132,7 +132,6 @@ class AllProductsListItem extends StatelessWidget {
 
                             hasProductInCart? GestureDetector(
                                   onTap: () async {
-                                    print("remove from cart");
                                     cc.addToCart(product: product,isSub: true);
                                   },
                                   child: const Center(
@@ -143,7 +142,7 @@ class AllProductsListItem extends StatelessWidget {
                                       begin: Offset(1,0),
                                       duration: Duration(milliseconds: 300)
                                   ),
-                                  FadeEffect()
+                                  const FadeEffect()
                                 ]
                             )
                               :const SizedBox(),

@@ -21,25 +21,28 @@ class OrdersView extends StatelessWidget {
         builder: (vc) {
           return !vc.loadingOrders?Container(
             color: Colors.white,
-            child: Column(
-              children: [
-
-                vc.orders.isNotEmpty?ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: vc.orders.length,
-                    itemBuilder: (context,index){
-                  return OrderListItem(
-                    order: vc.orders[index],
-                  );
-                }): Column(
-                  children: [
-                    Lottie.asset("assets/animations/empty_orders.json"),
-
-                    Text("You have not ordered yet")
-                  ],
-                )
-
-              ],
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+              
+                  vc.orders.isNotEmpty?ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: vc.orders.length,
+                      itemBuilder: (context,index){
+                    return OrderListItem(
+                      order: vc.orders[index],
+                    );
+                  }): Column(
+                    children: [
+                      Lottie.asset("assets/animations/empty_orders.json"),
+              
+                      Text("You have not ordered yet")
+                    ],
+                  )
+              
+                ],
+              ),
             ),
           ):Center(
               child: CustomCircularLoader(

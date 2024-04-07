@@ -108,16 +108,18 @@ class Product {
     randomSecret: json["random_secret"],
     cartQuantity: json["cart_qty"] ?? 0,
     variantInfo: json["variant_info"] == null ? null : AdditionalInfoStore.fromJson(json["variant_info"]),
+    productColor: json["product_size"] == null ? null : ProductColor.fromJson(json["product_size"])
   );
 
   Map<String, dynamic> toJson() => {
     "prd_id": prdId,
     "title": title,
     "cart_qty": cartQuantity,
+    "qty": cartQuantity,
     "img_url": imgUrl,
     "campaign_percentage": campaignPercentage,
-    "variant_info": variantInfo==null ? null :variantInfo!.toJson(),
-    "price": price,
+    "variant_info": variantInfo?.toJson(),
+    "product_size": productColor?.toJson(),
     "discount_price": discountPrice,
     "badge": badge?.toJson(),
     "campaign_product": campaignProduct,
@@ -133,6 +135,25 @@ class Product {
     "url": url,
     "random_key": randomKey,
     "random_secret": randomSecret,
+    'hash': '',
+    'id': prdId,
+    "price": discountPrice,
+    "original_price": price,
+    "options": {
+      "pid_id": variantInfo==null?"":variantInfo!.pidId,
+      "tax_options_sum_rate": /*randomKey.toString().length > 23
+          ? randomKey.toString().substring(8, 10)
+          : "0",*/"0",
+      "price": /*randomSecret.toString().length > 23
+          ? randomSecret.toString().substring(15, 17)
+          : "0"*/"0",
+      "variant_id": productColor==null?"":productColor!.id!,
+      "attributes": {},
+      "used_categories": categoryId,
+      "vendor_id": vendorId ?? 'admin',
+    },
+    "stock": stockCount,
+    "subtotal": cartQuantity * discountPrice!
   };
 }
 

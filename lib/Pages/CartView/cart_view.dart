@@ -57,11 +57,12 @@ class CartView extends StatelessWidget {
                               duration: const Duration(milliseconds: 750),
                               child: SlideAnimation(
                                 verticalOffset: 50.h,
+                                curve: Curves.bounceOut,
                                 child: CartItem(
                                   product: product,
                                   isLast: index==cc.products.length-1,
                                   index: index,
-                                ),
+                                )
                               ));
                         }),
                       );
@@ -84,51 +85,43 @@ class CartView extends StatelessWidget {
                     height: 32.h,
                   ),
 
+                  Container(
+                    height: 16.h,
+                    color: Colors.grey.shade100,
+                  ),
+
                   GetBuilder<CartController>(
                     builder: (cc) {
-                      return Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: 158.h,
-                        margin: EdgeInsets.symmetric(horizontal: 30.w),
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryColor.withOpacity(0.05),
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                        child: Column(
-                          children: [
+                      return Column(
+                        children: [
 
-                            ListTile(
-                              title: Text(
-                                "Total Products",
-                                style: TextStyle(
-                                    color: const Color(0xff06161c),
-                                    fontSize: 16.sp
-                                ),),
-                              trailing: Text(cc.totalProducts.toString()),
+                          SummaryItem(
+                            title: "Items Total",
+                            value: "\u{20B9} ${cc.totalCost}"
+                          ),
+                          SummaryItem(
+                            title: "Coupon Discount",
+                            value: "0"
+                          ),
+                          SummaryItem(
+                            title: "Tax",
+                            value: "0"
+                          ),
+
+                          const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Divider(
+                              thickness: 0.4,
+                              height: 0.1,
                             ),
+                          ),
 
-                            ListTile(
-                              title: Text(
-                                "Shipping",
-                                style: TextStyle(
-                                    color: const Color(0xff06161c),
-                                    fontSize: 16.sp
-                                ),),
-                              trailing: Text(cc.products.length.toString()),
-                            ),
+                          SummaryItem(
+                            title: "Total",
+                            value: "\u{20B9} ${cc.totalCost}"
+                          ),
 
-                            ListTile(
-                              title: Text(
-                                "Total Cost",
-                                style: TextStyle(
-                                    color: const Color(0xff06161c),
-                                    fontSize: 16.sp
-                                ),),
-                              trailing: Text("\u{20B9}${cc.totalCost}"),
-                            ),
-
-                          ],
-                        ),
+                        ],
                       );
                     }
                   )
@@ -170,6 +163,23 @@ class CartView extends StatelessWidget {
             ),
           ):const SizedBox();
         }
+      ),
+    );
+  }
+
+  //
+  Widget SummaryItem({String title="", String value=""}){
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+
+          Text(title),
+
+          Text(value)
+
+        ],
       ),
     );
   }

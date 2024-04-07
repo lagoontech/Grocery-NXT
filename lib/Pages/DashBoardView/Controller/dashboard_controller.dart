@@ -9,7 +9,8 @@ class DashboardController extends GetxController{
   //
   changePage(int index){
 
-    pageController.jumpToPage(index);
+    pageController.jumpToPage(
+        index);
     bottomIndex = index;
     update(["bottomBar"]);
   }
