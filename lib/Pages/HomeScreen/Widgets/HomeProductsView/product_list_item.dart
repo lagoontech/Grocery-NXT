@@ -1,10 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
+import 'package:grocery_nxt/Pages/HomeScreen/Widgets/HomeProductsView/discount_wavy_bottom_container.dart';
 import 'package:grocery_nxt/Pages/ProductDetailsView/product_details_view.dart';
 import 'package:grocery_nxt/Pages/ProfileView/Views/WishlistView/Controller/wishlist_controller.dart';
 import 'package:grocery_nxt/Services/network_util.dart';
@@ -35,7 +38,7 @@ class ProductListItem extends StatelessWidget {
           child: CustomPaint(
             painter: CurvedProductContainer(),
             child: Padding(
-              padding: EdgeInsets.only(top: 16.h, left: 8.w, right: 8.w),
+              padding: EdgeInsets.only(top: 16.h, left: 4.w, right: 4.w),
               child: Column(
                 children: [
                   GestureDetector(
@@ -86,16 +89,16 @@ class ProductListItem extends StatelessWidget {
                                   fontSize: 12.sp),
                             ),
                             SizedBox(width: 2.w),
-                            Text(
-                              "${(((product!.price-product!.discountPrice)/product!.price)*100).toStringAsFixed(0)}%Off",
-                              style: TextStyle(fontSize: 10.sp),
-                            ),
                             Expanded(
                                 child: Align(
                               alignment: Alignment.centerRight,
                               child: Text(
                                 "\u{20B9}${product!.discountPrice.toString()}",
-                                style: const TextStyle(color: Colors.orange,fontWeight: FontWeight.w600),
+                                style: TextStyle(
+                                    color: AppColors.secondaryColor,
+                                    fontWeight: FontWeight.w600,
+
+                                ),
                               ),
                             ))
                           ],
@@ -151,7 +154,7 @@ class ProductListItem extends StatelessWidget {
                                     ])
                                   : const SizedBox(),
                               Padding(
-                                padding: EdgeInsets.only(top: 2.h),
+                                padding: EdgeInsets.only(top: 4.h),
                                 child: !hasProductInCart
                                     ? GestureDetector(
                                         onTap: () async {
@@ -199,6 +202,31 @@ class ProductListItem extends StatelessWidget {
             ),
           ),
         ),
+
+        Padding(
+          padding: EdgeInsets.only(left: 8.w),
+          child: CustomPaint(
+            painter: WavyPainter(),
+            child: Container(
+              width: 24.w,
+              height: 24.h,
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(8)),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "${(((product!.price-product!.discountPrice)/product!.price)*100).toStringAsFixed(0)}%",
+                    style: TextStyle(fontSize: 8.sp,fontWeight: FontWeight.w600),
+                  ),
+                  Text("Off",style: TextStyle(fontSize: 8.sp,fontWeight: FontWeight.w600),),
+                ],
+              ),
+            ),
+          ),
+        ),
+
         Positioned(
           right: 16.w,
           top: 8.h,

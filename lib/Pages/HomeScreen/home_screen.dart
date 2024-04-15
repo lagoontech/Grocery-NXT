@@ -81,8 +81,6 @@ class HomeScreen extends StatelessWidget {
 
                           CarouselView(),
 
-                          CarouselView(),
-
                           SizedBox(height: 24.h,)
                         ],
                       ),

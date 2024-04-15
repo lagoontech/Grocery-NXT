@@ -15,7 +15,7 @@ class CurvedCartAddContainer extends CustomPainter {
 
     var path = Path()
       ..moveTo(0, height - height * 0.1)
-      ..quadraticBezierTo(width/2,height*1.7,width,height-height*0.1)
+      ..quadraticBezierTo(width/2,height*1.8,width,height-height*0.1)
       ..lineTo(width,0)
       ..quadraticBezierTo(width/2,height*0.1,0,0)
       ..close();

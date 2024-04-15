@@ -36,7 +36,7 @@ class CurvedProductContainer extends CustomPainter {
     var borderPaint = Paint()
       ..color = Colors.grey.shade300 // Set the border color
       ..style = PaintingStyle.stroke // Set the painting style to stroke
-      ..strokeWidth = 1.0; // Set the border width
+      ..strokeWidth = 0.6; // Set the border width
 
     // Draw the border of the path
     canvas.drawPath(path, borderPaint);

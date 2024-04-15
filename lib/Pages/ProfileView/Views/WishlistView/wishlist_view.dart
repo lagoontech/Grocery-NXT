@@ -1,16 +1,20 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:grocery_nxt/Pages/CartView/cart_view.dart';
 import 'package:grocery_nxt/Pages/ProfileView/Views/WishlistView/Controller/wishlist_controller.dart';
 import 'package:grocery_nxt/Widgets/custom_appbar.dart';
 import 'package:lottie/lottie.dart';
 import '../../../../Constants/app_colors.dart';
 import '../../../../Services/network_util.dart';
 import '../../../../Utils/toast_util.dart';
-import '../../../AllProductsView/Model/products_list_model.dart';
+import '../../../AllProductsView/Model/products_list_model.dart' hide Badge;
 import '../../../AllProductsView/Widgets/all_products_list_item_curved_container.dart';
+import '../../../HomeScreen/Controller/cart_controller.dart';
+import '../../../HomeScreen/Widgets/HomeProductsView/curved_cart_add_container.dart';
 import '../../../ProductDetailsView/product_details_view.dart';
 
 class WishListView extends StatelessWidget {
@@ -23,6 +27,20 @@ class WishListView extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(
         title: "My Wishlist",
+        action: GestureDetector(
+          onTap: (){
+            Get.to(()=>CartView());
+          },
+          child: Padding(
+            padding: EdgeInsets.only(right: 16.w),
+            child: GetBuilder<CartController>(builder: (cc) {
+              return Badge(
+                  backgroundColor: AppColors.secondaryColor,
+                  label: Text(cc.totalProducts.toString()),
+                  child: const Icon(Icons.shopping_bag_outlined));
+            }),
+          ),
+        ),
       ),
       body: GetBuilder<WishlistController>(builder: (wc) {
         return Container(
@@ -33,6 +51,7 @@ class WishListView extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: GridView.builder(
                       shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
                       padding:
                           EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -134,7 +153,7 @@ class WishListView extends StatelessWidget {
                                                     child: Text(
                                                       "\u{20B9}${product.discountPrice}",
                                                       style: TextStyle(
-                                                        color: Colors.red,
+                                                        color: AppColors.secondaryColor,
                                                         fontSize: 14.sp,
                                                         fontWeight:
                                                             FontWeight.w600,
@@ -149,6 +168,85 @@ class WishListView extends StatelessWidget {
                                       ),
                                     ),
                                     SizedBox(height: 6.h),
+
+                                    GetBuilder<CartController>(
+                                        builder: (cc) {
+                                          bool hasProductInCart
+                                          = cc.products.firstWhere((element) => element.prdId==product!.prdId&&element.variantInfo==null,
+                                              orElse: ()=>Product()).prdId!=null;
+                                          int ?quantity;
+                                          if(hasProductInCart){
+                                            quantity = cc.products.where((element) => element.prdId==product!.prdId).toList()[0].cartQuantity;
+                                          }
+                                          return SizedBox(
+                                            width: double.infinity,
+                                            height: 20.h,
+                                            child: CustomPaint(
+                                              painter: CurvedCartAddContainer(
+                                                  curvePercent: 1,
+                                                  hasProduct: hasProductInCart
+                                              ),
+                                              child: Padding(
+                                                padding: EdgeInsets.symmetric(horizontal: 6.w),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+
+                                                    hasProductInCart? GestureDetector(
+                                                        onTap: () async {
+                                                          cc.addToCart(product: product,isSub: true);
+                                                        },
+                                                        child: const Center(
+                                                            child: Icon(Icons.remove,
+                                                              color: Colors.grey,size: 20,))).animate(
+                                                        effects: [
+                                                          const SlideEffect(
+                                                              begin: Offset(1,0),
+                                                              duration: Duration(milliseconds: 300)
+                                                          ),
+                                                          const FadeEffect()
+                                                        ]
+                                                    )
+                                                        :const SizedBox(),
+
+                                                    Padding(
+                                                      padding: EdgeInsets.only(top: 2.h),
+                                                      child: !hasProductInCart?GestureDetector(
+                                                          onTap: () async {
+                                                            //await vc.runAddToCartAnimation(cartKey);
+                                                            cc.addToCart(product: product);
+                                                          },
+                                                          child: const Center(
+                                                              child: Icon(
+                                                                  Icons.add,
+                                                                  color: Colors.green)
+                                                          )):Text(quantity.toString()),
+                                                    ),
+
+                                                    hasProductInCart? GestureDetector(
+                                                        onTap: () async {
+                                                          //await vc.runAddToCartAnimation(cartKey);
+                                                          cc.addToCart(product: product);
+                                                        },
+                                                        child: const Center(
+                                                            child: Icon(Icons.add,
+                                                              color: Colors.green,size: 20,))).animate(
+                                                        effects: [
+                                                          const SlideEffect(
+                                                              begin: Offset(-1,0),
+                                                              duration: Duration(milliseconds: 300)
+                                                          ),
+                                                          const FadeEffect()
+                                                        ]
+                                                    )
+                                                        :const SizedBox(),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                    )
                                   ],
                                 ),
                               ),
@@ -218,12 +316,11 @@ class WishListView extends StatelessWidget {
 
                         Lottie.asset(
                             "assets/animations/fav_animation.json",
-
                         ),
 
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 20.w),
-                          child: Text(
+                          child: const Text(
                               "You have no favourites yet",
                           ),
                         )

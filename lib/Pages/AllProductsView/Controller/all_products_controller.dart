@@ -30,6 +30,7 @@ class AllProductsController extends GetxController with GetTickerProviderStateMi
   bool isLoadingNextPage = false;
   TextEditingController searchTEC = TextEditingController();
   Timer ?searchTimer;
+  int totalProducts = 0;
 
   //
   debounceSearch(){
@@ -73,6 +74,7 @@ class AllProductsController extends GetxController with GetTickerProviderStateMi
           }else{
             products.addAll(productsListFromJson(result.body).products!);
           }
+          totalProducts = productsListFromJson(result.body).meta!.total!;
         }
       }
     }catch(e){

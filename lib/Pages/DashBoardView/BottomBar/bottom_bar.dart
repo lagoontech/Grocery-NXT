@@ -80,6 +80,7 @@ class BottomBar extends StatelessWidget {
                               GetBuilder<CartController>(
                                 builder: (vc) {
                                   return Badge(
+                                    backgroundColor: AppColors.secondaryColor,
                                     label: Text(vc.totalProducts.toString()),
                                     child: Container(
                                       width: 44.w,

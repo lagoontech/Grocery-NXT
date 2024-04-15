@@ -36,17 +36,17 @@ class CartView extends StatelessWidget {
                       fontWeight: FontWeight.w600
                   )),
                 AnimatedSwitcher(
-                  duration: Duration(milliseconds: 200),
+                  duration: const Duration(milliseconds: 200),
                   transitionBuilder:
                       (Widget child, Animation<double> animation) {
                     return FadeTransition(
                       opacity: animation,
                       child: SlideTransition(
-                        child: child,
                         position: Tween<Offset>(
-                            begin: Offset(0.0, 1),
-                            end: Offset(0.0, 0.0))
+                            begin: const Offset(0.0, 1),
+                            end: const Offset(0.0, 0.0))
                             .animate(animation),
+                        child: child,
                       ),
                     );
                   },
@@ -106,73 +106,10 @@ class CartView extends StatelessWidget {
                     height: 32.h,
                   ),
 
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 32.w),
-                    child: TextFormField(
-                      decoration: decoration(),
-                      onChanged: (v){},
-                    ),
-                  ),
-
-                  SizedBox(
-                    height: 32.h,
-                  ),
-
                   Container(
                     height: 16.h,
                     color: Colors.grey.shade100,
                   ),
-
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 8.h),
-                    child: Text(
-                        "Order Summary",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16.sp
-                        ),
-                    ),
-                  ),
-
-                  GetBuilder<CartController>(
-                    builder: (cc) {
-                      return Column(
-                        children: [
-
-                          SummaryItem(
-                            title: "Items Total",
-                            value: "\u{20B9} ${cc.totalCost}"
-                          ),
-                          SummaryItem(
-                            title: "Coupon Discount",
-                            value: "0"
-                          ),
-                          SummaryItem(
-                            title: "Tax",
-                            value: "0"
-                          ),
-
-                          const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Divider(
-                              thickness: 0.4,
-                              height: 0.1,
-                            ),
-                          ),
-
-                          SummaryItem(
-                            title: "Total",
-                            value: "\u{20B9} ${cc.totalCost}"
-                          ),
-
-                          SizedBox(
-                            height: 12.h
-                          )
-
-                        ],
-                      );
-                    }
-                  )
 
                 ],
               ),
@@ -197,20 +134,94 @@ class CartView extends StatelessWidget {
               ));
         }
       ),
-      bottomNavigationBar: GetBuilder<CartController>(
-        builder: (cc) {
-          return cc.products.isNotEmpty?Padding(
-            padding: EdgeInsets.only(left: 20.w,right: 20.w,bottom: 16.h),
-            child: CustomButton(
-              child: const Text(
-                "Checkout",
-                style: TextStyle(color: Colors.white),),
-              onTap: (){
-                Get.to(()=> ChooseAddressView());
-              },
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+
+          SizedBox(
+            height: 32.h,
+          ),
+
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 32.w),
+            child: TextFormField(
+              decoration: decoration(),
+              onChanged: (v){},
             ),
-          ):const SizedBox();
-        }
+          ),
+
+          SizedBox(
+            height: 24.h,
+          ),
+
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 8.h),
+            child: Text(
+              "Order Summary",
+              style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16.sp
+              ),
+            ),
+          ),
+
+          GetBuilder<CartController>(
+              builder: (cc) {
+                return Column(
+                  children: [
+
+                    SummaryItem(
+                        title: "Items Total",
+                        value: "\u{20B9} ${cc.totalCost}"
+                    ),
+                    SummaryItem(
+                        title: "Coupon Discount",
+                        value: "0"
+                    ),
+                    SummaryItem(
+                        title: "Tax",
+                        value: "0"
+                    ),
+
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Divider(
+                        thickness: 0.4,
+                        height: 0.1,
+                      ),
+                    ),
+
+                    SummaryItem(
+                        title: "Total",
+                        value: "\u{20B9} ${cc.totalCost}"
+                    ),
+
+                    SizedBox(
+                        height: 12.h
+                    )
+
+                  ],
+                );
+              }
+          ),
+
+          GetBuilder<CartController>(
+            builder: (cc) {
+              return cc.products.isNotEmpty?Padding(
+                padding: EdgeInsets.only(left: 20.w,right: 20.w,bottom: 16.h),
+                child: CustomButton(
+                  child: const Text(
+                    "Checkout",
+                    style: TextStyle(color: Colors.white),),
+                  onTap: (){
+                    Get.to(()=> ChooseAddressView());
+                  },
+                ),
+              ):const SizedBox();
+            }
+          ),
+
+        ],
       ),
     );
   }

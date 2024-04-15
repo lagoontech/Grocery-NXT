@@ -45,9 +45,9 @@ class AllProductsView extends StatelessWidget {
       width: 30,
       opacity: 0.95,
       dragAnimation: const DragToCartAnimationOptions(
-        rotation: false,
+        rotation: true,
       ),
-      jumpAnimation: const JumpAnimationOptions(),
+      jumpAnimation: const JumpAnimationOptions(duration: Duration(milliseconds: 200)),
       createAddToCartAnimation: (runAddToCartAnimation) {
         vc.runAddToCartAnimation = runAddToCartAnimation;
       },
@@ -122,6 +122,7 @@ class AllProductsView extends StatelessWidget {
                                     controller: vc.tabController,
                                     padding: EdgeInsets.zero,
                                     isScrollable: true,
+                                    tabAlignment: TabAlignment.start,
                                     indicatorColor: AppColors.primaryColor,
                                     unselectedLabelStyle: const TextStyle(
                                         color: Colors.black),
@@ -138,7 +139,10 @@ class AllProductsView extends StatelessWidget {
                               ),
                             ],
                           )
-                        : const LinearProgressIndicator(),
+                        : SizedBox(
+                          height: 2.h,
+                          child: const LinearProgressIndicator(),
+                        ),
                   ),
                   SliverList(
                       delegate: SliverChildListDelegate([
@@ -152,9 +156,7 @@ class AllProductsView extends StatelessWidget {
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2,
-                                    mainAxisExtent:
-                                        MediaQuery.of(context).size.height *
-                                            0.28,
+                                    mainAxisExtent: MediaQuery.of(context).size.height * 0.28,
                                     mainAxisSpacing: 2.h,
                                     crossAxisSpacing: 8.w),
                             itemBuilder: (context, index) {
@@ -179,6 +181,32 @@ class AllProductsView extends StatelessWidget {
                     )
                         : Column(
                             children: [
+
+                              Padding(
+                                padding: EdgeInsets.only(left: 16.w,top: 12.h,bottom: 4.h),
+                                child: Row(
+                                  children: [
+
+                                    Text(
+                                        vc.totalProducts.toString()+" items ",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 13.sp
+                                        ),
+                                    ),
+
+                                    Text(
+                                      "in ${vc.selectedCategory!.name}",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12.sp,
+                                      ),
+                                    ),
+
+                                  ],
+                                ),
+                              ),
+
                               AnimationLimiter(
                                 child: GridView.builder(
                                     physics:

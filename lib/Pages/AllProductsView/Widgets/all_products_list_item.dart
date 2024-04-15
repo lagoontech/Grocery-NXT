@@ -2,12 +2,14 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Pages/AllProductsView/Controller/all_products_controller.dart';
 import 'package:grocery_nxt/Pages/AllProductsView/Widgets/all_products_list_item_curved_container.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
+import 'package:grocery_nxt/Pages/HomeScreen/Widgets/HomeProductsView/discount_wavy_bottom_container.dart';
 import '../../../Constants/app_colors.dart';
 import '../../../Services/network_util.dart';
 import '../../../Utils/toast_util.dart';
@@ -103,8 +105,8 @@ class AllProductsListItem extends StatelessWidget {
                                     child: Text(
                                       "\u{20B9}${product!.discountPrice}",
                                       style: TextStyle(
-                                        color: Colors.orange,
-                                        fontSize: 16.sp,
+                                        color: AppColors.secondaryColor,
+                                        fontSize: 14.sp,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
@@ -137,59 +139,62 @@ class AllProductsListItem extends StatelessWidget {
                             curvePercent: 1,
                             hasProduct: hasProductInCart
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 6.w),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
 
-                            hasProductInCart? GestureDetector(
-                                  onTap: () async {
-                                    cc.addToCart(product: product,isSub: true);
-                                  },
-                                  child: const Center(
-                                      child: Icon(Icons.remove,
-                                          color: Colors.grey,size: 20,))).animate(
-                                effects: [
-                                  const SlideEffect(
-                                      begin: Offset(1,0),
-                                      duration: Duration(milliseconds: 300)
-                                  ),
-                                  const FadeEffect()
-                                ]
-                            )
-                              :const SizedBox(),
+                              hasProductInCart? GestureDetector(
+                                    onTap: () async {
+                                      cc.addToCart(product: product,isSub: true);
+                                    },
+                                    child: const Center(
+                                        child: Icon(Icons.remove,
+                                            color: Colors.grey,size: 20,))).animate(
+                                  effects: [
+                                    const SlideEffect(
+                                        begin: Offset(1,0),
+                                        duration: Duration(milliseconds: 300)
+                                    ),
+                                    const FadeEffect()
+                                  ]
+                              )
+                                :const SizedBox(),
 
-                            Padding(
-                              padding: EdgeInsets.only(top: 2.h),
-                              child: !hasProductInCart?GestureDetector(
+                              Padding(
+                                padding: EdgeInsets.only(top: 2.h),
+                                child: !hasProductInCart?GestureDetector(
+                                    onTap: () async {
+                                      await vc.runAddToCartAnimation(cartKey);
+                                      cc.addToCart(product: product);
+                                    },
+                                    child: const Center(
+                                        child: Icon(
+                                          Icons.add,
+                                          color: Colors.green)
+                                    )):Text(quantity.toString()),
+                              ),
+
+                              hasProductInCart? GestureDetector(
                                   onTap: () async {
                                     await vc.runAddToCartAnimation(cartKey);
                                     cc.addToCart(product: product);
                                   },
                                   child: const Center(
-                                      child: Icon(
-                                        Icons.add,
-                                        color: Colors.green)
-                                  )):Text(quantity.toString()),
-                            ),
-
-                            hasProductInCart? GestureDetector(
-                                onTap: () async {
-                                  await vc.runAddToCartAnimation(cartKey);
-                                  cc.addToCart(product: product);
-                                },
-                                child: const Center(
-                                    child: Icon(Icons.add,
-                                        color: Colors.green,size: 20,))).animate(
-                                effects: [
-                                  const SlideEffect(
-                                      begin: Offset(-1,0),
-                                      duration: Duration(milliseconds: 300)
-                                  ),
-                                  const FadeEffect()
-                                ]
-                            )
-                                :const SizedBox(),
-                          ],
+                                      child: Icon(Icons.add,
+                                          color: Colors.green,size: 20,))).animate(
+                                  effects: [
+                                    const SlideEffect(
+                                        begin: Offset(-1,0),
+                                        duration: Duration(milliseconds: 300)
+                                    ),
+                                    const FadeEffect()
+                                  ]
+                              )
+                                  :const SizedBox(),
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -232,22 +237,27 @@ class AllProductsListItem extends StatelessWidget {
           }),
         ),
 
-        Container(
-          width: 24.w,
-          height: 24.h,
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(8)),
-            //color: AppColors.primaryColor.withOpacity(0.8)
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                  "${ (((product!.price-product!.discountPrice)/product!.price)*100).toStringAsFixed(0) }%",
-                  style: TextStyle(fontSize: 8.sp),
-              ),
-              Text("OFF",style: TextStyle(fontSize: 8.sp),),
-            ],
+        CustomPaint(
+          painter: WavyPainter(),
+          child: Container(
+            width: 24.w,
+            height: 24.h,
+            padding: EdgeInsets.only(left: 4.w),
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(8)),
+              //color: AppColors.primaryColor.withOpacity(0.8)
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                    "${ (((product!.price-product!.discountPrice)/product!.price)*100).toStringAsFixed(0) }%",
+                    style: TextStyle(fontSize: 8.sp,fontWeight: FontWeight.w600),
+                ),
+                Text("OFF",style: TextStyle(fontSize: 8.sp,fontWeight: FontWeight.w600),),
+              ],
+            ),
           ),
         )
       ],
