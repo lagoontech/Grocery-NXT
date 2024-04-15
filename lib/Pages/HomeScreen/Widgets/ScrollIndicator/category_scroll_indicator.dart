@@ -12,7 +12,7 @@ class CategoryScrollIndicator extends CustomPainter {
     var cornerRadius = 8.0;
 
     // Calculate fill width based on progress
-    var fillWidth = width * progress;
+    var fillWidth = width * (progress.isNaN||progress.isNegative?0.01:progress);
 
     var path = Path()
       ..moveTo(0, height - height * 0.1)

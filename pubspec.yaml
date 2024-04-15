@@ -55,6 +55,12 @@ dependencies:
   pull_to_refresh:
   zoom_widget:
   dotted_border: ^2.1.0
+  double_back_to_close:
+  connectivity_plus:
+  fluttertoast: ^8.2.4
+  webview_flutter:
+  animated_search_bar:
+  mobile_number: ^2.1.1
 
 dev_dependencies:
   flutter_test:

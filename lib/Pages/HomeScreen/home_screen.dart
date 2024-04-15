@@ -31,6 +31,13 @@ class HomeScreen extends StatelessWidget {
       systemNavigationBarIconBrightness: Brightness.light,
     ));
 
+    if(hc.sc.hasClients){
+      hc.sc.animateTo(
+          -20,
+          duration: const Duration(milliseconds: 1000),
+          curve: Curves.easeIn);
+    }
+
     return AddToCartAnimation(
       cartKey: cc.cartIconKey,
       height: 30,
@@ -65,11 +72,18 @@ class HomeScreen extends StatelessWidget {
                       delegate: SliverChildListDelegate(
                         [
                           TopContent(),
+
                           SizedBox(height: 52.h),
+
                           const ScrollIndicator(),
+
                           HomeProductsView(),
+
                           CarouselView(),
+
                           CarouselView(),
+
+                          SizedBox(height: 24.h,)
                         ],
                       ),
                     ),

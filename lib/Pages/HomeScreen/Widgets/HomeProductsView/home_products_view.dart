@@ -68,6 +68,7 @@ class HomeProductsView extends StatelessWidget {
               height: MediaQuery.of(context).size.height * 0.3,
               child: AnimationLimiter(
                 child: ListView.builder(
+                    controller: hc.productsSc,
                     scrollDirection: Axis.horizontal,
                     itemCount: hc.products.length,
                     padding: EdgeInsets.only(left: 8.w),

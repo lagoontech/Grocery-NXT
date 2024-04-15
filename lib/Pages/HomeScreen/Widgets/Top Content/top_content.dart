@@ -56,7 +56,7 @@ class TopContent extends StatelessWidget {
                       return AnimationLimiter(
                         child: ListView.builder(
                             controller: hc.sc,
-                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.2,left: 24.w),
+                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.2),
                             physics: const BouncingScrollPhysics(),
                             itemCount: vc.categories.length,
                             scrollDirection: Axis.horizontal,
@@ -79,7 +79,7 @@ class TopContent extends StatelessWidget {
                                 ),
                               );
                             }),
-                      ) ;
+                      );
                     }
                   ),
                 ),

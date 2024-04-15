@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/api_constants.dart';
+import 'package:grocery_nxt/Services/network_util.dart';
+import 'package:grocery_nxt/Utils/toast_util.dart';
 import 'package:http/http.dart' as http;
 
 class HttpService {
@@ -13,6 +16,10 @@ class HttpService {
   static Future<dynamic> postRequest(
       String apiEndPoint, Map<String, dynamic> postData,
       {bool insertHeader = false}) async {
+    if(NetworkUtil.connectivityResult == ConnectivityResult.none){
+      ToastUtil().showToast(color: Colors.red,message: "No Internet Connection");
+      throw NoServiceFoundException('No Service Found');
+    }
     Uri uri = Uri.parse(BASE_URL + apiEndPoint);
     var client = http.Client();
     try {
@@ -22,7 +29,7 @@ class HttpService {
             ? {
                 'content-type': 'application/json',
                 'accept': 'application/json',
-                'authorization': 'Bearer 204|v83uh1WEGoBfWghkLiQ1RhaNYT6G1bgUTdQECuVc06019090'
+                'authorization': 'Bearer 204|fP4iyoV8HNi1VmoiYfKomjne9DZnbMJXZuIzdxZr3e541c27'
               }
             : {'content-type': 'application/json'},
         body: json.encode(postData),
@@ -39,6 +46,10 @@ class HttpService {
   //
   static Future<dynamic> getRequest(String apiEndPoint,
       {bool insertHeader = true}) async {
+    if(NetworkUtil.connectivityResult == ConnectivityResult.none){
+      ToastUtil().showToast(color: Colors.red,message: "No Internet Connection");
+      throw NoServiceFoundException('No Service Found');
+    }
     var response;
     Uri uri = Uri.parse(BASE_URL + apiEndPoint);
     print(uri.query);
@@ -50,7 +61,7 @@ class HttpService {
                   ? {
                       'content-type': 'application/json',
                       'accept': 'application/json',
-                      'authorization': 'Bearer 204|v83uh1WEGoBfWghkLiQ1RhaNYT6G1bgUTdQECuVc06019090',
+                      'authorization': 'Bearer 204|fP4iyoV8HNi1VmoiYfKomjne9DZnbMJXZuIzdxZr3e541c27',
                       'x-api-key': "b8f4a0ba4537ad6c3ee41ec0a43549d1"
                     }
                   : {'content-type': 'application/json'})

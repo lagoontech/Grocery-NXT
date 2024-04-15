@@ -23,15 +23,47 @@ class CartView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         centerTitle: true,
-        automaticallyImplyLeading: true,
+        automaticallyImplyLeading: false,
         title: GetBuilder<CartController>(
           builder: (cc) {
-            return cc.products.isNotEmpty?Text(
-              "Cart",
-              style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w600
-              )):const SizedBox();
+            return cc.products.isNotEmpty?Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Total Products (",
+                  style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600
+                  )),
+                AnimatedSwitcher(
+                  duration: Duration(milliseconds: 200),
+                  transitionBuilder:
+                      (Widget child, Animation<double> animation) {
+                    return FadeTransition(
+                      opacity: animation,
+                      child: SlideTransition(
+                        child: child,
+                        position: Tween<Offset>(
+                            begin: Offset(0.0, 1),
+                            end: Offset(0.0, 0.0))
+                            .animate(animation),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    cc.totalProducts.toString(),
+                    key: ValueKey<String>(cc.totalProducts.toString()),
+                    style: TextStyle(fontSize: 16.sp, color: Colors.black),
+                  ),
+                ),
+                Text(
+                  ")",
+                  style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600
+                  )),
+              ],
+            ):const SizedBox();
           }
         ),
       ),
@@ -41,6 +73,7 @@ class CartView extends StatelessWidget {
             color: Colors.white,
             child: SingleChildScrollView(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
 
                   GetBuilder<CartController>(
@@ -90,6 +123,17 @@ class CartView extends StatelessWidget {
                     color: Colors.grey.shade100,
                   ),
 
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 8.h),
+                    child: Text(
+                        "Order Summary",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16.sp
+                        ),
+                    ),
+                  ),
+
                   GetBuilder<CartController>(
                     builder: (cc) {
                       return Column(
@@ -120,6 +164,10 @@ class CartView extends StatelessWidget {
                             title: "Total",
                             value: "\u{20B9} ${cc.totalCost}"
                           ),
+
+                          SizedBox(
+                            height: 12.h
+                          )
 
                         ],
                       );
@@ -170,7 +218,7 @@ class CartView extends StatelessWidget {
   //
   Widget SummaryItem({String title="", String value=""}){
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 4.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

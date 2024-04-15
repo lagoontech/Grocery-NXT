@@ -14,7 +14,7 @@ class ProfileItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: (){
-        Future.delayed(const Duration(milliseconds: 300),(){
+        Future.delayed(const Duration(milliseconds: 100),(){
           onTap!();
         });
       },

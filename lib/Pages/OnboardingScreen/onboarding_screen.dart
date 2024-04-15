@@ -24,6 +24,7 @@ class OnboardingScreen extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: Image.asset(
                 "assets/images/onboarding_image_1.png",
+                height: MediaQuery.of(context).size.height*0.4,
             ),
           ),
           

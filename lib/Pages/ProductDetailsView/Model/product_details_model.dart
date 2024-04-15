@@ -960,6 +960,29 @@ class ProductElement {
     childCategoryIds:
     List<int>.from(json["child_category_ids"].map((x) => x)),
   );
+
+  Map<String, dynamic> toJson() => {
+    "prd_id": prdId,
+    "title": title,
+    "img_url": imgUrl,
+    "campaign_percentage": campaignPercentage,
+    "price": price,
+    "discount_price": discountPrice,
+    "badge": {"badge_name": badge},
+    "campaign_product": campaignProduct,
+    "stock_count": stockCount,
+    "campaign_stock": campaignStock,
+    "avg_ratting": avgRatting,
+    "is_cart_able": isCartAble,
+    "vendor_id": vendorId,
+    "vendor_name": vendorName,
+    "category_id": categoryId,
+    "sub_category_id": subCategoryId,
+    "random_key": randomKey,
+    "random_secret": randomSecret,
+    "end_date": endDate?.toIso8601String(),
+    "child_category_ids": List<dynamic>.from(childCategoryIds!.map((x) => x)),
+  };
 }
 
 class Status {

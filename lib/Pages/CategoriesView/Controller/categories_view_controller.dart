@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import '../../../Constants/api_constants.dart';
@@ -9,6 +10,8 @@ class CategoriesViewController extends GetxController{
 
   bool loading = false;
   List<CategoryModel?> categories = [];
+  List<CategoryModel?> searchedCategories = [];
+  TextEditingController searchTEC = TextEditingController();
 
   //
   fetchCategories()async{
@@ -28,6 +31,18 @@ class CategoriesViewController extends GetxController{
       }
     }
     loading = false;
+    update();
+  }
+
+  //
+  searchCategories(){
+
+    searchedCategories.clear();
+    for (var element in categories) {
+      if(element!.name!.toLowerCase().contains(searchTEC.text)){
+        searchedCategories.add(element);
+      }
+    }
     update();
   }
 

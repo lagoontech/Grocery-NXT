@@ -63,8 +63,9 @@ class ProductDetailsController extends GetxController
       product!.discountPrice =
           int.parse(additionalInfos[index].additionalPrice.ceil().toString());
       product!.cartQuantity = quantity!;
-      product!.productColor = null;
+      product!.productColor = productDetails!.productSizes![index];
       product!.variantInfo = null;
+      product!.stockCount = additionalInfos[index].stockCount;
       update();
       return;
     }
@@ -74,6 +75,7 @@ class ProductDetailsController extends GetxController
     product!.productColor = productDetails!.productSizes![index];
     product!.variantInfo = additionalInfos[index];
     product!.cartQuantity = quantity!;
+    product!.stockCount = additionalInfos[index].stockCount;
     update();
   }
 
@@ -118,6 +120,11 @@ class ProductDetailsController extends GetxController
           .cartQuantity;
       changeVariant();
       update();
+      return;
+    }
+    if(productDetails!.productSizes!.isNotEmpty){
+      selectedVariant = productDetails!.productSizes![0];
+      changeVariant();
     }
   }
 

@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
+import 'package:grocery_nxt/Pages/OrderDetailsView/order_details_view.dart';
 import 'package:grocery_nxt/Widgets/custom_button.dart';
 import '../Model/order_list_model.dart';
 
@@ -85,9 +86,9 @@ class OrderListItem extends StatelessWidget {
                   width: 80.w,
                   height: 28.h,
                   onTap: (){
-
+                    Get.to(()=>OrderDetailsView(orderId: order!.id,));
                   },
-                  child: Text("Details",style: TextStyle(color: Colors.white),),
+                  child: const Text("Details",style: TextStyle(color: Colors.white),),
                 ),
               ),
             )

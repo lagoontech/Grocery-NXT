@@ -1,4 +1,5 @@
 import 'package:add_to_cart_animation/add_to_cart_animation.dart';
+import 'package:animated_search_bar/animated_search_bar.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -33,7 +34,7 @@ class AllProductsView extends StatelessWidget {
         vc.selectedCategory = category;
         vc.fetchProducts(isRefresh: true);
       }
-      if (category == null) {
+      if (category == null && vc.initialLoading) {
         vc.selectedCategory = CategoryModel(name: "All Products");
         vc.fetchProducts(isRefresh: true);
       }
@@ -55,27 +56,47 @@ class AllProductsView extends StatelessWidget {
           titleTextStyle: TextStyle(fontSize: 14.sp, color: Colors.black),
           backgroundColor: Colors.white,
           centerTitle: true,
-          actions: [
-            GestureDetector(
-              onTap: (){
-                Get.to(()=>CartView());
+          title: AnimatedSearchBar(
+              label: 'Products',
+              controller: vc.searchTEC,
+              labelAlignment: Alignment.center,
+              animationDuration: const Duration(milliseconds: 3000),
+              duration: const Duration(milliseconds: 3000),
+              labelStyle: TextStyle(fontSize: 16.sp),
+              searchStyle: TextStyle(color: Colors.black.withOpacity(0.7)),
+              cursorColor: Colors.black,
+              textInputAction: TextInputAction.done,
+              searchIcon: Container(
+                width: 40.w,
+                height: 40.h,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white,
+                    border: Border.all(color: Colors.grey.shade200)),
+                child: const Icon(Icons.search),
+              ),
+              searchDecoration: InputDecoration(
+                hintText: 'Search Products',
+                isDense: true,
+                alignLabelWithHint: true,
+                fillColor: Colors.white,
+                focusColor: Colors.white,
+                hintStyle: TextStyle(color: Colors.black.withOpacity(0.4)),
+                enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.4)),
+                    borderRadius: BorderRadius.circular(12.r)
+                ),
+                focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.4)),
+                    borderRadius: BorderRadius.circular(12.r)
+                ),
+              ),
+              onChanged: (value) {
+                //vc.debounceSearch();
               },
-              child: AddToCartIcon(
-                  key: vc.cartIconKey,
-                  badgeOptions: const BadgeOptions(active: false),
-                  icon: GetBuilder<CartController>(builder: (vc) {
-                    return Badge(
-                        label: Text(cc.products.length.toString()),
-                        child: const Icon(Icons.shopping_bag_outlined));
-                  })),
-            )
-          ],
-          title: Text(
-            "Products",
-            style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 16.sp
-            )),
+              onFieldSubmitted: (value) {
+                debugPrint('value on Field Submitted');
+              }),
         ),
         body: GetBuilder<AllProductsController>(builder: (vc) {
           return Container(
@@ -101,6 +122,7 @@ class AllProductsView extends StatelessWidget {
                                     controller: vc.tabController,
                                     padding: EdgeInsets.zero,
                                     isScrollable: true,
+                                    indicatorColor: AppColors.primaryColor,
                                     unselectedLabelStyle: const TextStyle(
                                         color: Colors.black),
                                     labelStyle: TextStyle(
@@ -120,8 +142,42 @@ class AllProductsView extends StatelessWidget {
                   ),
                   SliverList(
                       delegate: SliverChildListDelegate([
-                    !vc.isLoading
-                        ? Column(
+                    vc.isLoading
+                        ? GridView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16.w, vertical: 8.h),
+                            itemCount: 9,
+                            shrinkWrap: true,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    mainAxisExtent:
+                                        MediaQuery.of(context).size.height *
+                                            0.28,
+                                    mainAxisSpacing: 2.h,
+                                    crossAxisSpacing: 8.w),
+                            itemBuilder: (context, index) {
+                              return loader(context);
+                            })
+                        :vc.products.isEmpty?Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+
+                        Lottie.asset("assets/animations/not_found.json"),
+                        SizedBox(height: 20.h),
+                          Text(
+                            "No Products Found",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Colors.black.withOpacity(0.5),
+                                fontSize: 16.sp),
+                          ),
+
+
+                      ],
+                    )
+                        : Column(
                             children: [
                               AnimationLimiter(
                                 child: GridView.builder(
@@ -161,35 +217,19 @@ class AllProductsView extends StatelessWidget {
                                       );
                                     }),
                               ),
-                              GetBuilder<AllProductsController>(
-                                builder: (vc) {
-                                  return AnimatedContainer(
-                                    duration: const Duration(milliseconds: 250),
-                                          height: vc.showNextLoading
-                                              ? 60.h:0.h,
-                                          width: MediaQuery.of(context).size.width,
-                                    child: Lottie.asset("assets/animations/next_page_loader.json"),
-                                        );
-                                }
-                              )
+                              GetBuilder<AllProductsController>(builder: (vc) {
+                                return vc.showNextLoading
+                                    ? SizedBox(
+                                        height: 60.h,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        child: Lottie.asset(
+                                            "assets/animations/next_page_loader.json"),
+                                      )
+                                    : const SizedBox();
+                              })
                             ],
                           )
-                        : GridView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 16.w, vertical: 8.h),
-                            itemCount: 9,
-                            shrinkWrap: true,
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    mainAxisExtent:
-                                        MediaQuery.of(context).size.height * 0.28,
-                                    mainAxisSpacing: 2.h,
-                                    crossAxisSpacing: 8.w),
-                            itemBuilder: (context, index) {
-                              return loader(context);
-                            })
                   ]))
                 ],
               ),
@@ -200,6 +240,22 @@ class AllProductsView extends StatelessWidget {
             ),
           );
         }),
+        floatingActionButton: Padding(
+          padding: EdgeInsets.only(bottom: 60.h),
+          child: FloatingActionButton(
+            onPressed: (){
+              Get.to(()=>CartView());
+            },
+            child: AddToCartIcon(
+                key: vc.cartIconKey,
+                badgeOptions: const BadgeOptions(active: false),
+                icon: GetBuilder<CartController>(builder: (vc) {
+                  return Badge(
+                      label: Text(cc.totalProducts.toString()),
+                      child: const Icon(Icons.shopping_bag_outlined));
+                })),
+          ),
+        ),
       ),
     );
   }

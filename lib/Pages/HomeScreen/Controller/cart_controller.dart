@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'package:add_to_cart_animation/add_to_cart_animation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Utils/shared_pref_utils.dart';
+import 'package:grocery_nxt/Utils/toast_util.dart';
 import '../../AllProductsView/Model/products_list_model.dart';
 
 class CartController extends GetxController{
@@ -17,9 +19,7 @@ class CartController extends GetxController{
   //
   addToCartFromDetailsPage({Product ?product}){
 
-    print(product.hashCode);
     if(product!.variantInfo!=null){
-      print("variant product");
       int index = products.indexWhere((element){
         if(element.productColor!=null) {
           return element.productColor!.id == product.productColor!.id;
@@ -33,7 +33,6 @@ class CartController extends GetxController{
       }
     }
     else{
-      print("regular product");
       int index = products.indexWhere((element) => (element.prdId==product.prdId&&element.variantInfo==null));
       if(index!=-1){
         products[index].cartQuantity = product.cartQuantity;
@@ -46,6 +45,7 @@ class CartController extends GetxController{
     calculateTotalProducts();
     calculateTotal();
     update();
+    ToastUtil().showToast(message: "Added to cart",color: AppColors.primaryColor);
   }
 
   //

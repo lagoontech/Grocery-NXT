@@ -38,9 +38,9 @@ class Product {
   int? prdId;
   String? title;
   String? imgUrl;
-  int? campaignPercentage;
-  int? price;
-  int? discountPrice;
+  dynamic campaignPercentage;
+  dynamic price;
+  dynamic discountPrice;
   Badge? badge;
   bool? campaignProduct;
   int? campaignStock;

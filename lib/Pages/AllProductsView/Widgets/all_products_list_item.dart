@@ -9,8 +9,11 @@ import 'package:grocery_nxt/Pages/AllProductsView/Controller/all_products_contro
 import 'package:grocery_nxt/Pages/AllProductsView/Widgets/all_products_list_item_curved_container.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
 import '../../../Constants/app_colors.dart';
+import '../../../Services/network_util.dart';
+import '../../../Utils/toast_util.dart';
 import '../../HomeScreen/Widgets/HomeProductsView/curved_cart_add_container.dart';
 import '../../ProductDetailsView/product_details_view.dart';
+import '../../ProfileView/Views/WishlistView/Controller/wishlist_controller.dart';
 import '../Model/products_list_model.dart';
 
 class AllProductsListItem extends StatelessWidget {
@@ -39,6 +42,10 @@ class AllProductsListItem extends StatelessWidget {
 
                 GestureDetector(
                   onTap: (){
+                    if(!NetworkUtil().isConnected()){
+                      ToastUtil().showToast(noInternet: true);
+                      return;
+                    }
                     Product copyProduct = Product.fromJson(product!.toJson());
                     Get.to(()=> ProductDetailsView(
                       productId: product!.prdId,
@@ -51,10 +58,13 @@ class AllProductsListItem extends StatelessWidget {
                       Container(
                         key: cartKey,
                         color: Colors.transparent,
-                        child: CachedNetworkImage(
-                          width: MediaQuery.of(context).size.width * 0.38 * 0.6,
-                          height: MediaQuery.of(context).size.height * 0.28*0.3,
-                          imageUrl: product!.imgUrl!,
+                        child: Hero(
+                          tag: product!.prdId!,
+                          child: CachedNetworkImage(
+                            width: MediaQuery.of(context).size.width * 0.38 * 0.6,
+                            height: MediaQuery.of(context).size.height * 0.28*0.3,
+                            imageUrl: product!.imgUrl!,
+                          ),
                         ),
                       ),
                       SizedBox(height: 4.h),
@@ -67,6 +77,7 @@ class AllProductsListItem extends StatelessWidget {
                             style: TextStyle(
                                 fontSize: 10.sp,
                                 fontWeight: FontWeight.w500,
+                                color: const Color(0xff222222),
                                 fontFamily: ""
                             ),
                             textAlign: TextAlign.center,
@@ -81,7 +92,7 @@ class AllProductsListItem extends StatelessWidget {
                                 "\u{20B9}${product!.price}",
                                 style: TextStyle(
                                   decoration: TextDecoration.lineThrough,
-                                  fontSize: 12.sp,
+                                  fontSize: 14.sp,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -92,8 +103,8 @@ class AllProductsListItem extends StatelessWidget {
                                     child: Text(
                                       "\u{20B9}${product!.discountPrice}",
                                       style: TextStyle(
-                                        color: Colors.red,
-                                        fontSize: 14.sp,
+                                        color: Colors.orange,
+                                        fontSize: 16.sp,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
@@ -109,7 +120,7 @@ class AllProductsListItem extends StatelessWidget {
 
                 SizedBox(height: 6.h),
 
-                GetBuilder<CartController>(
+                product!.stockCount!=0?GetBuilder<CartController>(
                   builder: (cc) {
                     bool hasProductInCart
                     = cc.products.firstWhere((element) => element.prdId==product!.prdId&&element.variantInfo==null,
@@ -183,25 +194,56 @@ class AllProductsListItem extends StatelessWidget {
                       ),
                     );
                   }
-                )
+                ): const Text("Out of stock",style: TextStyle(color: Colors.red),)
 
               ],
             ),
           ),
         ),
 
+        Positioned(
+          right: 8.w,
+          top: 8.h,
+          child:
+          GetBuilder<WishlistController>(builder: (wc) {
+            var isFavourite = wc.products
+                .firstWhere(
+                    (element) =>
+                element.prdId == product!.prdId,
+                orElse: () => Product())
+                .prdId !=
+                null;
+            return GestureDetector(
+              onTap: () {
+                wc.addOrRemoveProduct(
+                    product: product,
+                    isFavourite: isFavourite);
+              },
+              child: isFavourite
+                  ? Icon(
+                Icons.favorite,
+                color: AppColors.primaryColor.withOpacity(0.6),
+              )
+                  : Icon(
+                Icons.favorite_border,
+                color: Colors.grey.shade400,
+              ),
+            );
+          }),
+        ),
+
         Container(
           width: 24.w,
           height: 24.h,
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(topLeft: Radius.circular(8)),
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(8)),
             //color: AppColors.primaryColor.withOpacity(0.8)
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                  "${product!.discountPrice!}%",
+                  "${ (((product!.price-product!.discountPrice)/product!.price)*100).toStringAsFixed(0) }%",
                   style: TextStyle(fontSize: 8.sp),
               ),
               Text("OFF",style: TextStyle(fontSize: 8.sp),),

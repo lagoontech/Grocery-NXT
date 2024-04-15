@@ -10,19 +10,22 @@ class ScrollIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<HomeController>(
-      id: "scrollIndicator",
-      builder: (vc) {
-        return Center(
-          child: Container(
-            width: 60.w,
-            height: 10.h,
-            child: CustomPaint(
-              painter: CategoryScrollIndicator(progress: vc.currentCategoryScrollProgress),
+    return Transform.translate(
+      offset: Offset(0,-12.h),
+      child: GetBuilder<HomeController>(
+        id: "scrollIndicator",
+        builder: (vc) {
+          return Center(
+            child: Container(
+              width: 60.w,
+              height: 10.h,
+              child: CustomPaint(
+                painter: CategoryScrollIndicator(progress: vc.currentCategoryScrollProgress),
+              ),
             ),
-          ),
-        );
-      }
+          );
+        }
+      ),
     );
   }
 }

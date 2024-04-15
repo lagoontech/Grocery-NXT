@@ -24,6 +24,13 @@ class SharedPrefUtils{
     return pref!.getString("token");
   }
 
+  Future<bool> isLoggedIn() async {
+    if(pref!.containsKey("token") && pref!.getString("token")!.isNotEmpty){
+      return true;
+    }
+    return false;
+  }
+
   //
   Future<bool> clearCart()async{
     return await pref!.setStringList("products",[]);

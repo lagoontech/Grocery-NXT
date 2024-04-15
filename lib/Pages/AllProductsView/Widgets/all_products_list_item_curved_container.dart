@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_nxt/Constants/app_colors.dart';
+import '../../../Constants/app_colors.dart';
 
 class AllProductsCurvedProductContainer extends CustomPainter {
-
   AllProductsCurvedProductContainer({this.curvePercent});
-  double ?curvePercent;
+  double? curvePercent;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -14,7 +13,7 @@ class AllProductsCurvedProductContainer extends CustomPainter {
 
     var path = Path()
       ..moveTo(0, height - height * 0.1)
-      ..quadraticBezierTo(width / 2, curvePercent==null?height:height*1.4, width, height - height * 0.1)
+      ..quadraticBezierTo(width / 2, curvePercent == null ? height : height * 1.4, width, height - height * 0.1)
       ..lineTo(width, cornerRadius) // Top-right corner
       ..quadraticBezierTo(width, 0, width - cornerRadius, 0) // Top-right to top-left curve
       ..lineTo(cornerRadius, 0) // Top-left corner
@@ -24,9 +23,7 @@ class AllProductsCurvedProductContainer extends CustomPainter {
 
     // Define a Paint object for filling the path
     var fillPaint = Paint()
-      ..color = curvePercent!=null
-          ? const Color(0xfff5f5f5)
-          : Colors.white // Set the fill color
+      ..color = curvePercent != null ? const Color(0xfff5f5f5) : Colors.white // Set the fill color
       ..style = PaintingStyle.fill; // Set the painting style to fill
 
     // Draw the filled area of the path
@@ -34,7 +31,7 @@ class AllProductsCurvedProductContainer extends CustomPainter {
 
     // Define a Paint object for drawing the border
     var borderPaint = Paint()
-      ..color = AppColors.primaryColor// Set the border color
+      ..color = AppColors.primaryColor // Set the border color
       ..style = PaintingStyle.stroke // Set the painting style to stroke
       ..strokeWidth = 0.0; // Set the border width
 

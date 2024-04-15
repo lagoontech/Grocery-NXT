@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:grocery_nxt/Pages/AllProductsView/all_products_view.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/home_controller.dart';
 import '../../Models/home_categories_model.dart';
 
@@ -26,38 +27,46 @@ class CategoryItem extends StatelessWidget {
     return GetBuilder<HomeController>(
       builder: (vc) {
         double offsetY = calculateOffsetY(context);
-        return Transform.translate(
-          offset: Offset(0, offsetY),
-          child: Column(
-            children: [
-              Expanded(
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 2000),
-                  key: positionKey,
-                  width: MediaQuery.of(context).size.width * 0.16,
-                  margin: EdgeInsets.symmetric(horizontal: 12.w),
-                  height: 30,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color(0xffE9F5FA)
-                    ),
-                  child: FractionallySizedBox(
-                    widthFactor: 0.6,
-                    heightFactor: 0.6,
-                    child: CachedNetworkImage(
-                        imageUrl: category!.imageUrl??"",
-                        width: 30,
-                        height: 30,
+        return GestureDetector(
+          onTap: (){
+            Get.to(()=>AllProductsView(category: category));
+          },
+          child: Transform.translate(
+            offset: Offset(0, offsetY),
+            child: Column(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width*0.25,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 2000),
+                      key: positionKey,
+                      width: MediaQuery.of(context).size.width * 0.16,
+                      margin: EdgeInsets.symmetric(horizontal: 12.w),
+                      height: 30.h,
+                      decoration: const BoxDecoration(
+                       shape: BoxShape.circle,
+                        color: Color(0xffE9F5FA)
+                        ),
+                      child: FractionallySizedBox(
+                        widthFactor: 0.6,
+                        heightFactor: 0.6,
+                        child: CachedNetworkImage(
+                            imageUrl: category!.imageUrl??"",
+                            width: 30,
+                            height: 30,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Text(category!.name??"",
-                style: TextStyle(
-                    fontSize: 10.sp,
-                    fontWeight: FontWeight.w600
-                ),)
-            ],
+                Text(category!.name??"",
+                  style: TextStyle(
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.w600
+                  ),)
+              ],
+            ),
           ),
         );
       },
@@ -70,8 +79,8 @@ class CategoryItem extends StatelessWidget {
       RenderBox renderBox =
       positionKey.currentContext!.findRenderObject() as RenderBox;
       Offset position = renderBox.localToGlobal(Offset.zero);
-      double centerX  = MediaQuery.of(context).size.width / 2;
-      double centerY  = MediaQuery.of(context).size.height / 2;
+      double centerX  = MediaQuery.of(context).size.width / 2.5;
+      double centerY  = MediaQuery.of(context).size.height / 2.1;
       double distanceToCenter = sqrt(pow(position.dx - centerX, 2) + pow(position.dy - centerY, 2));
 
       /*if (kDebugMode) {
@@ -83,7 +92,7 @@ class CategoryItem extends StatelessWidget {
       if(centerX-distanceToCenter<50){
         offsetY = (centerX - distanceToCenter) * 0.3;
       }
-      if(position.dx>=MediaQuery.of(context).size.width*0.64){
+      /*if(position.dx>=MediaQuery.of(context).size.width*0.64){
         offsetY = (centerX - distanceToCenter) * 0.33;
       }
       if(position.dx>=MediaQuery.of(context).size.width*0.65){
@@ -112,7 +121,7 @@ class CategoryItem extends StatelessWidget {
       }
       if(position.dx>=MediaQuery.of(context).size.width*0.75){
         offsetY = (centerX - distanceToCenter) * 0.42;
-      }
+      }*/
       return offsetY;
     }
     return 0.0;

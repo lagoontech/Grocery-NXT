@@ -34,12 +34,6 @@ class AppBarContent extends StatelessWidget {
                       decoration: decoration(),
                     ),
                   ),
-                  SizedBox(width: 4.w),
-                  CircleAvatar(
-                    radius: 22.w,
-                    backgroundColor: Colors.white,
-                    child: Icon(Icons.person, size: 20.sp),
-                  )
                 ],
               ),
             ),
@@ -56,7 +50,7 @@ class AppBarContent extends StatelessWidget {
         fillColor: Colors.white,
         isDense: true,
         contentPadding: EdgeInsets.symmetric(vertical: 4.h),
-        hintText: "Search Category",
+        hintText: "Search Products",
         hintStyle: TextStyle(color: Colors.grey.shade500, fontSize: 12.sp),
         prefixIcon: Icon(Icons.search, color: Colors.green),
         enabledBorder: OutlineInputBorder(

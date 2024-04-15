@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:add_to_cart_animation/add_to_cart_icon.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +16,7 @@ class AllProductsController extends GetxController with GetTickerProviderStateMi
 
   bool isLoading = false;
   bool isLoadingCategories = false;
+  bool initialLoading = true;
   List<Product> products = [];
   int page = 1;
   List<CategoryModel?> categories = [CategoryModel(id: 0,imageUrl: "",name: "All Products")];
@@ -22,9 +25,28 @@ class AllProductsController extends GetxController with GetTickerProviderStateMi
   late Function(GlobalKey) runAddToCartAnimation;
   TabController ?tabController;
   RefreshController refreshController = RefreshController();
-  ScrollController sc = ScrollController();
-  bool showNextLoading = false;
+  ScrollController sc    = ScrollController();
+  bool showNextLoading   = false;
   bool isLoadingNextPage = false;
+  TextEditingController searchTEC = TextEditingController();
+  Timer ?searchTimer;
+
+  //
+  debounceSearch(){
+
+    searchTEC.addListener(() {
+      print(searchTEC.text);
+      if(searchTimer!=null && searchTimer!.isActive){
+        searchTimer!.cancel();
+      }
+        searchTimer = Timer(const Duration(milliseconds: 750), () {
+          fetchProducts(
+            isRefresh: true, // Use isRefresh: true for search with non-empty text
+          );
+        });
+
+    });
+  }
 
   //
   fetchProducts({bool isRefresh = false,bool isLoadingNext = false}) async {
@@ -43,7 +65,7 @@ class AllProductsController extends GetxController with GetTickerProviderStateMi
     update();
     try{
       var result = await HttpService.getRequest(
-          "${ApiConstants().allProducts}?page=$page&category=${selectedCategory!.name=="All Products"?"":selectedCategory!.name}");
+          "${ApiConstants().allProducts}?name=${searchTEC.text}&page=$page&category=${selectedCategory!.name=="All Products"?"":selectedCategory!.name}");
       if(result is http.Response){
         if(result.statusCode==200){
           if(isRefresh) {
@@ -60,6 +82,7 @@ class AllProductsController extends GetxController with GetTickerProviderStateMi
     }
     isLoading = false;
     isLoadingNextPage = false;
+    initialLoading  = false;
     showNextLoading = false;
     update();
   }
@@ -75,7 +98,9 @@ class AllProductsController extends GetxController with GetTickerProviderStateMi
         if(result.statusCode == 200 || result.statusCode==201){
           categories.addAll(homeCategoriesModelFromJson(result.body)!.categories!);
           tabController = TabController(length: categories.length, vsync: this);
-          tabController!.animateTo(categories.indexWhere((element) => element!.id==selectedCategory!.id));
+          if(selectedCategory!.name!="All Products") {
+            tabController!.animateTo(categories.indexWhere((element) => element!.id==selectedCategory!.id));
+          }
         }
       }
     }catch(e){
@@ -117,12 +142,14 @@ class AllProductsController extends GetxController with GetTickerProviderStateMi
     //fetchProducts(isRefresh: true);
     fetchCategories();
     loadNextPageCheck();
+    debounceSearch();
   }
 
   @override
   void dispose() {
     tabController!.dispose();
     sc.dispose();
+    searchTEC.dispose();
     super.dispose();
   }
 

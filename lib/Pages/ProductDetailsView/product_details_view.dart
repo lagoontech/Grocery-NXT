@@ -1,13 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
+import 'package:grocery_nxt/Pages/CartView/cart_view.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
+import 'package:grocery_nxt/Pages/HomeScreen/Widgets/HomeProductsView/product_list_item.dart';
 import 'package:grocery_nxt/Pages/ProductDetailsView/Controller/product_details_controller.dart';
 import 'package:grocery_nxt/Pages/ProductDetailsView/Widgets/animated_bottom_curved_container.dart';
 import 'package:grocery_nxt/Widgets/custom_button.dart';
+import 'package:grocery_nxt/Widgets/internet_checker.dart';
 import 'package:readmore/readmore.dart';
 import '../AllProductsView/Model/products_list_model.dart' hide Badge;
 
@@ -36,6 +40,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if(vc.productId==null){
+        print(vc.productId);
         vc.productId = widget.productId;
         vc.product = widget.product;
         vc.getProductDetails();
@@ -67,8 +72,11 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                         width: MediaQuery.of(context).size.width / 2,
                                         height: MediaQuery.of(context).size.height * 0.20,
                                         child: FittedBox(
-                                          child: CachedNetworkImage(
-                                              imageUrl: vc.selectedImage,
+                                          child: Hero(
+                                            tag: vc.productDetails!.product!.id!,
+                                            child: CachedNetworkImage(
+                                                imageUrl: vc.selectedImage,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -218,10 +226,9 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                     ],
                                   ),
 
-                                  SizedBox(height: 4.h),
+                                  SizedBox(height: 8.h),
 
-                                  vc.productDetails!!=null
-                                      && vc.productDetails!.productSizes!.isNotEmpty?
+                                  vc.productDetails!.productSizes!.isNotEmpty?
                                   SizedBox(
                                     height: 35.h,
                                     child: ListView.builder(
@@ -261,9 +268,26 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                           );
                                         }
                                     ),
-                                  ): SizedBox(),
+                                  ): const SizedBox(),
 
-                                  SizedBox(height: 4.h),
+                                  SizedBox(height: 8.h),
+
+                                  Row(
+                                    children: [
+
+                                      Text(
+                                          "In Stock",
+                                          style: TextStyle(
+                                            color: AppColors.primaryColor,
+                                            fontWeight: FontWeight.w600
+                                          ),
+                                      ),
+
+                                      //Text(vc.product!.stockCount.toString()),
+                                    ],
+                                  ),
+
+                                  SizedBox(height: 8.h),
 
                                   vc.productDetails!.allUnits!=null
                                       && vc.productDetails!.allUnits!.isNotEmpty?
@@ -299,10 +323,49 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                         fontSize: 14, fontWeight: FontWeight.bold),
                                   ),
 
+                                  SizedBox(height: 12.h),
 
                                 ],
                               ),
-                            )
+                            ),
+
+                            vc.productDetails!.relatedProducts.isNotEmpty?Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 24.w),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        "Related Products",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 20.sp
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 12.h),
+
+                                SizedBox(
+                                  height: MediaQuery.of(context).size.height*0.3,
+                                  child: ListView.builder(
+                                      itemCount: vc.productDetails!.relatedProducts.length,
+                                      padding: EdgeInsets.symmetric(horizontal: 24.w),
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder: (context,index){
+                                        var product = Product.fromJson(vc.productDetails!.relatedProducts[index]!.toJson());
+                                        return ProductListItem(
+                                          product: product,
+                                          fromDetailsPage: true,
+                                        );
+                                      }
+                                  ),
+                                )
+                              ],
+                            ):const SizedBox(),
+
 
                           ],
                         ),
@@ -320,24 +383,10 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
 
-                        Container(
-                          width: 50.w,
-                          decoration: const BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle
-                          ),
-                          padding: EdgeInsets.all(4.w),
-                          child: Center(
-                              child: Icon(
-                                Icons.arrow_back_ios,
-                                color: Colors.black,
-                                size: 18.sp,
-                              )),
-                        ),
-
-                        Badge(
-                          label: const Text("1"),
-                          offset: Offset(0.w,1),
+                        GestureDetector(
+                          onTap: (){
+                            Get.back();
+                          },
                           child: Container(
                             width: 50.w,
                             decoration: const BoxDecoration(
@@ -347,11 +396,39 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                             padding: EdgeInsets.all(4.w),
                             child: Center(
                                 child: Icon(
-                                  Icons.add_shopping_cart,
+                                  Icons.arrow_back_ios,
                                   color: Colors.black,
                                   size: 18.sp,
                                 )),
                           ),
+                        ),
+
+                        GetBuilder<CartController>(
+                          builder: (vc) {
+                            return GestureDetector(
+                              onTap: (){
+                                Get.to(()=>CartView());
+                              },
+                              child: Badge(
+                                label: Text(vc.totalProducts.toString()),
+                                offset: Offset(0.w,1),
+                                child: Container(
+                                  width: 50.w,
+                                  decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle
+                                  ),
+                                  padding: EdgeInsets.all(4.w),
+                                  child: Center(
+                                      child: Icon(
+                                        Icons.add_shopping_cart,
+                                        color: Colors.black,
+                                        size: 18.sp,
+                                      )),
+                                ),
+                              ),
+                            );
+                          }
                         ),
 
                       ],
