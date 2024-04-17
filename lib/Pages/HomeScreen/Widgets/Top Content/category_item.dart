@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Pages/AllProductsView/all_products_view.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/home_controller.dart';
+import 'package:grocery_nxt/Pages/SwiggyView/swiggy_view.dart';
 import '../../Models/home_categories_model.dart';
 
 class CategoryItem extends StatelessWidget {
@@ -29,7 +30,11 @@ class CategoryItem extends StatelessWidget {
         double offsetY = calculateOffsetY(context);
         return GestureDetector(
           onTap: (){
-            Get.to(()=>AllProductsView(category: category));
+            Get.to(()=>SwiggyView(
+              categoryId: category!.id,
+              categoryName: category!.name,
+              imageUrl: category!.imageUrl,
+            ));
           },
           child: Transform.translate(
             offset: Offset(0, offsetY),
