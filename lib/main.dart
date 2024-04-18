@@ -35,6 +35,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xff23aa49)),
             fontFamily: GoogleFonts.ibmPlexSans().fontFamily,
+            applyElevationOverlayColor: false,
             useMaterial3: true,
           ),
           initialBinding: RootBinding(),

@@ -101,16 +101,6 @@ class CartView extends StatelessWidget {
                       );
                     }
                   ),
-
-                  SizedBox(
-                    height: 32.h,
-                  ),
-
-                  Container(
-                    height: 16.h,
-                    color: Colors.grey.shade100,
-                  ),
-
                 ],
               ),
             ),
@@ -210,6 +200,7 @@ class CartView extends StatelessWidget {
               return cc.products.isNotEmpty?Padding(
                 padding: EdgeInsets.only(left: 20.w,right: 20.w,bottom: 16.h),
                 child: CustomButton(
+                  width: MediaQuery.of(context).size.width*0.8,
                   child: const Text(
                     "Checkout",
                     style: TextStyle(color: Colors.white),),

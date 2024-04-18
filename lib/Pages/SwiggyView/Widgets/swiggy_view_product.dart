@@ -27,13 +27,13 @@ class SwiggyViewProduct extends StatelessWidget {
         border: index==0
             ? Border(
             right: BorderSide(
-                color: Colors.grey.shade200,
+                color: Colors.grey.shade300,
             ),
-            bottom: BorderSide(color: Colors.grey.shade200)
+            bottom: BorderSide(color: Colors.grey.shade300)
         )
             : Border(
-            right: BorderSide(color: Colors.grey.shade200),
-            bottom: BorderSide(color: Colors.grey.shade200)
+            right: BorderSide(color: Colors.grey.shade300),
+            bottom: BorderSide(color: Colors.grey.shade300)
         )
       ),
       child: Column(
@@ -111,13 +111,27 @@ class SwiggyViewProduct extends StatelessWidget {
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    "\u{20B9}${product!.discountPrice}",
-                                    style: TextStyle(
-                                      color: AppColors.secondaryColor,
-                                      fontSize: 13.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "\u{20B9}${product!.price}",
+                                        style: TextStyle(
+                                          decoration: TextDecoration.lineThrough,
+                                          color: Colors.grey.shade700,
+                                          fontSize: 9.sp,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                      Text(
+                                        "\u{20B9}${product!.discountPrice}",
+                                        style: TextStyle(
+                                          color: AppColors.secondaryColor,
+                                          fontSize: 11.sp,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
                                   ),
 
                                   Expanded(
@@ -135,7 +149,7 @@ class SwiggyViewProduct extends StatelessWidget {
                                           ),
                                           boxShadow: [
                                             BoxShadow(
-                                              color: Colors.grey.shade200,
+                                              color: Colors.grey.shade300,
                                               blurRadius: 4,
                                               offset: Offset(-0.5, 0.5),
                                             )
@@ -158,9 +172,12 @@ class SwiggyViewProduct extends StatelessWidget {
                                                     onTap: () async {
                                                       cc.addToCart(product: product,isSub: true);
                                                     },
-                                                    child: Center(
-                                                        child: Icon(Icons.remove,
-                                                          color: AppColors.primaryColor ,size: 16,))).animate(
+                                                    child: SizedBox(
+                                                      width: 20.w,
+                                                      child: Center(
+                                                          child: Icon(Icons.remove,
+                                                            color: AppColors.primaryColor ,size: 16,)),
+                                                    )).animate(
                                                     effects: [
                                                       const SlideEffect(
                                                           begin: Offset(1,0),
@@ -171,34 +188,59 @@ class SwiggyViewProduct extends StatelessWidget {
                                                 )
                                                     :const SizedBox(),
 
-                                                !hasProductInCart?GestureDetector(
-                                                    onTap: () async {
-                                                      cc.addToCart(product: product);
-                                                    },
-                                                    child: Text(
-                                                        "ADD",
-                                                      style: TextStyle(
-                                                        color: AppColors.primaryColor,
-                                                        fontWeight: FontWeight.w700,
-                                                        fontSize: 12.sp,
-                                                      ),
-                                                    ))
-                                                    :Text(quantity.toString()),
-
-                                                hasProductInCart? GestureDetector(
-                                                    onTap: () async {
-                                                      cc.addToCart(product: product);
-                                                    },
-                                                    child: const Center(
-                                                        child: Icon(Icons.add,
-                                                          color: Colors.green,size: 16,))).animate(
-                                                    effects: [
-                                                      const SlideEffect(
-                                                          begin: Offset(-1,0),
-                                                          duration: Duration(milliseconds: 300)
-                                                      ),
-                                                      const FadeEffect()
-                                                    ]
+                                                SizedBox(
+                                                  height: 28.h,
+                                                  child: Center(
+                                                    child: !hasProductInCart
+                                                        ? GestureDetector(
+                                                            onTap: () async {
+                                                              cc.addToCart(
+                                                                  product: product);
+                                                            },
+                                                            child: Text(
+                                                              "ADD",
+                                                              style: TextStyle(
+                                                                color: AppColors
+                                                                    .primaryColor,
+                                                                fontWeight:
+                                                                    FontWeight.w700,
+                                                                fontSize: 12.sp,
+                                                              ),
+                                                            ))
+                                                        : GestureDetector(
+                                                            onTap: () async {},
+                                                            child: SizedBox(
+                                                              width: 20.w,
+                                                              child: Center(
+                                                                child: Text(
+                                                                  quantity
+                                                                      .toString(),
+                                                                  style: TextStyle(
+                                                                      color: AppColors
+                                                                          .primaryColor),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                  ),
+                                                ),
+                                                hasProductInCart? SizedBox(
+                                                  width: 20.w,
+                                                  child: GestureDetector(
+                                                      onTap: () async {
+                                                        cc.addToCart(product: product);
+                                                      },
+                                                      child: const Center(
+                                                          child: Icon(Icons.add,
+                                                            color: Colors.green,size: 16,))).animate(
+                                                      effects: [
+                                                        const SlideEffect(
+                                                            begin: Offset(-1,0),
+                                                            duration: Duration(milliseconds: 300)
+                                                        ),
+                                                        const FadeEffect()
+                                                      ]
+                                                  ),
                                                 )
                                                     :const SizedBox(),
                                               ],
