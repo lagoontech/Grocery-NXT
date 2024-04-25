@@ -4,14 +4,17 @@ import 'package:flutter/foundation.dart' hide Category;
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/api_constants.dart';
 import 'package:grocery_nxt/Services/http_services.dart';
+import 'package:palette_generator/palette_generator.dart';
 import '../../AllProductsView/Model/products_list_model.dart';
 import '../Models/carousel_model.dart';
 import '../Models/home_categories_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:image/image.dart' as img;
 
 class HomeController extends GetxController{
 
   ScrollController sc = ScrollController();
+  ScrollController homeSc = ScrollController();
   ScrollController productsSc = ScrollController();
   int bottomIndex = 0;
   double categoryScrollProgress = 0.0;
@@ -19,6 +22,7 @@ class HomeController extends GetxController{
   Timer ?autoScrollTimer;
   bool reverseScroll = false;
   List<Product> products = [];
+  List<Product> featuredProducts = [];
   List<CategoryModel?> categories = [];
   List<Carousel> carousels = [];
   bool loadingCarousel = false;
@@ -70,6 +74,45 @@ class HomeController extends GetxController{
       }
     }
     update();
+  }
+
+  //
+  fetchFeaturedProducts({bool isRefresh = false,bool isLoadingNext = false}) async {
+
+    update();
+    try{
+      var result = await HttpService.getRequest(
+          "featured/${ApiConstants().allProducts}");
+      if(result is http.Response){
+        if(result.statusCode==200){
+          if(isRefresh) {
+            featuredProducts = productsListFromJson(result.body).products!;
+          }else{
+            featuredProducts.addAll(productsListFromJson(result.body).products!);
+          }
+          for(int i=0;i<featuredProducts.length;i++){
+            featuredProducts[i].color = await getImagePalette(featuredProducts[i].imgUrl!);
+          }
+        }
+        //autoScrollProducts();
+      }
+    }catch(e){
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+    update();
+  }
+
+  //
+  Future<Color> getImagePalette(String imageUrl) async {
+
+    final response      = await http.get(Uri.parse(imageUrl));
+    final image         = img.decodeImage(response.bodyBytes);
+    final imageProvider = MemoryImage(Uint8List.fromList(img.encodePng(image!)));
+    final PaletteGenerator paletteGenerator =
+    await PaletteGenerator.fromImageProvider(imageProvider);
+    return paletteGenerator.dominantColor!.color;
   }
 
   //
@@ -128,11 +171,13 @@ class HomeController extends GetxController{
     update(["scrollIndicator"]);
   }
 
+  //
   @override
   void onInit() {
     super.onInit();
     fetchCategories();
     fetchProducts(isRefresh: true);
+    fetchFeaturedProducts();
     fetchCarousel1();
     sc.addListener(() {
       calculateCurrentScrollPosition();

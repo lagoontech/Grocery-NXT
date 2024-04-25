@@ -3,6 +3,7 @@
 //     final subcategoriesModel = subcategoriesModelFromJson(jsonString);
 
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 
 SubcategoriesModel subcategoriesModelFromJson(String str) => SubcategoriesModel.fromJson(json.decode(str));
 
@@ -30,6 +31,8 @@ class Subcategory {
   int? imageId;
   int? categoryId;
   String? imageUrl;
+  GlobalKey ?positionKey;
+  ScrollController ?scrollController;
 
   Subcategory({
     this.id,
@@ -37,6 +40,8 @@ class Subcategory {
     this.imageId,
     this.categoryId,
     this.imageUrl,
+    this.positionKey,
+    this.scrollController
   });
 
   factory Subcategory.fromJson(Map<String, dynamic> json) => Subcategory(

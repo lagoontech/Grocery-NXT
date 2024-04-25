@@ -11,7 +11,7 @@ class ScrollIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Transform.translate(
-      offset: Offset(0,-12.h),
+      offset: Offset(0,-24.h),
       child: GetBuilder<HomeController>(
         id: "scrollIndicator",
         builder: (vc) {

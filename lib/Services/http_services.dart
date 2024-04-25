@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/api_constants.dart';
 import 'package:grocery_nxt/Services/network_util.dart';
+import 'package:grocery_nxt/Utils/shared_pref_utils.dart';
 import 'package:grocery_nxt/Utils/toast_util.dart';
 import 'package:http/http.dart' as http;
 
@@ -29,12 +30,11 @@ class HttpService {
             ? {
                 'content-type': 'application/json',
                 'accept': 'application/json',
-                'authorization': 'Bearer 204|fP4iyoV8HNi1VmoiYfKomjne9DZnbMJXZuIzdxZr3e541c27'
+                'authorization': 'Bearer '+await SharedPrefUtils().getToken()
               }
             : {'content-type': 'application/json'},
         body: json.encode(postData),
       );
-      //handleExceptions(response);
       return response;
     } on SocketException catch (e) {
       return e;
@@ -50,6 +50,7 @@ class HttpService {
       ToastUtil().showToast(color: Colors.red,message: "No Internet Connection");
       throw NoServiceFoundException('No Service Found');
     }
+    print(await SharedPrefUtils().getToken());
     var response;
     Uri uri = Uri.parse(BASE_URL + apiEndPoint);
     print(uri.query);
@@ -61,7 +62,7 @@ class HttpService {
                   ? {
                       'content-type': 'application/json',
                       'accept': 'application/json',
-                      'authorization': 'Bearer 204|fP4iyoV8HNi1VmoiYfKomjne9DZnbMJXZuIzdxZr3e541c27',
+                      'authorization': "Bearer "+await SharedPrefUtils().getToken(),
                       'x-api-key': "b8f4a0ba4537ad6c3ee41ec0a43549d1"
                     }
                   : {'content-type': 'application/json'})

@@ -8,7 +8,9 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/home_controller.dart';
+import 'package:grocery_nxt/Pages/HomeScreen/Widgets/AutoSlideProductsView/auto_slide_products_view.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/CarouselView/carousel_view.dart';
+import 'package:grocery_nxt/Pages/HomeScreen/Widgets/FeaturedProductsView/featured_products_view.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/HomeProductsView/home_products_view.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/ScrollIndicator/scroll_indicator.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/Top%20Content/appbar_content.dart';
@@ -62,11 +64,12 @@ class HomeScreen extends StatelessWidget {
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
                 fit: BoxFit.fitWidth,
-                color: Colors.black.withOpacity(0.03),
+                color: Colors.black.withOpacity(0.02),
               ),
 
               NestedScrollView(
                 body: CustomScrollView(
+                  controller: hc.homeSc,
                   slivers: <Widget>[
                     SliverList(
                       delegate: SliverChildListDelegate(
@@ -81,7 +84,12 @@ class HomeScreen extends StatelessWidget {
 
                           CarouselView(),
 
-                          SizedBox(height: 24.h,)
+                          FeaturedProductsView(),
+
+                          //SizedBox(height: 24.h),
+
+                          AutoSlideProductsView()
+
                         ],
                       ),
                     ),

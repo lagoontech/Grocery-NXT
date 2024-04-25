@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:add_to_cart_animation/add_to_cart_icon.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Pages/AllProductsView/Model/products_list_model.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/home_controller.dart';
@@ -14,9 +14,10 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../Constants/api_constants.dart';
 import '../../HomeScreen/Models/home_categories_model.dart';
 
-class SwiggyViewController extends GetxController{
+class SwiggyViewController extends GetxController with GetTickerProviderStateMixin{
 
   int ?categoryId;
+  int subIndex = 0;
   String ?categoryName;
   List<Subcategory> subCategories = [];
   Subcategory ?selectedSubCategory;
@@ -26,21 +27,25 @@ class SwiggyViewController extends GetxController{
   bool isLoadingSubCategories = false;
   bool initialLoading = true;
   int page = 1;
+  bool isLastPage = false;
+  bool isAnimatingToNext = false;
   List<CategoryModel?> categories = [];
   CategoryModel ?selectedCategory = CategoryModel(name: "");
   GlobalKey<CartIconKey> cartIconKey = GlobalKey<CartIconKey>();
   late Function(GlobalKey) runAddToCartAnimation;
   TabController ?tabController;
   RefreshController refreshController = RefreshController();
-  ScrollController sc    = ScrollController();
   bool showNextLoading   = false;
   bool isLoadingNextPage = false;
   TextEditingController searchTEC = TextEditingController();
   ScrollController scrollController = ScrollController();
+  PageController pageController     = PageController();
   Timer ?searchTimer;
   int totalProducts = 0;
   int totalCategoryProducts = 0;
   double scrollOffset = 0;
+  GlobalKey selectedKey = GlobalKey();
+  Timer ?pageScrollTimer;
 
   //
   fetchSubCategories() async {
@@ -52,10 +57,15 @@ class SwiggyViewController extends GetxController{
       if(result is http.Response){
         if(result.statusCode==200){
           log(result.body);
+          subCategories = subcategoriesModelFromJson(result.body).subcategories!;
+          for(int i=0;i<subCategories.length;i++){
+            subCategories[i].positionKey = GlobalKey();
+            subCategories[i].scrollController = ScrollController();
+          }
+          selectedSubCategory = subCategories[0];
+          fetchProducts(isRefresh: true);
+          attachScrollListeners();
         }
-        subCategories = subcategoriesModelFromJson(result.body).subcategories!;
-        selectedSubCategory = subCategories[0];
-        fetchProducts(isRefresh: true);
       }
     }catch(e){
       if (kDebugMode) {
@@ -75,6 +85,7 @@ class SwiggyViewController extends GetxController{
     if(isRefresh){
       isLoading = true;
       page = 1;
+      isLastPage = false;
     }
     if(isLoadingNext){
       isLoadingNextPage = true;
@@ -92,6 +103,14 @@ class SwiggyViewController extends GetxController{
             products.addAll(productsListFromJson(result.body).products!);
           }
           totalProducts = productsListFromJson(result.body).meta!.total!;
+          if(productsListFromJson(result.body).meta!.lastPage==page){
+            isLastPage = true;
+          }
+          if(isLoadingNext){
+            selectedSubCategory!.scrollController!.animateTo(
+            selectedSubCategory!.scrollController!.position.maxScrollExtent+450.h,
+            duration: const Duration(milliseconds: 750), curve: Curves.linear);
+          }
         }
       }
     }catch(e){
@@ -104,6 +123,13 @@ class SwiggyViewController extends GetxController{
     initialLoading  = false;
     showNextLoading = false;
     update();
+    listenToSubListScroll();
+  }
+
+  //
+  scrollUp(){
+
+
   }
 
   //
@@ -125,10 +151,74 @@ class SwiggyViewController extends GetxController{
     update();
   }
 
+  //
+  attachScrollListeners(){
+
+    for (int i=0;i<subCategories.length;i++) {
+      subCategories[i].scrollController!.addListener(() {
+        double pos = subCategories[i].scrollController!.position.pixels;
+        double max = subCategories[i].scrollController!.position.maxScrollExtent;
+        if(pos-max>40.h&& !isLastPage && !isLoadingNextPage && !isAnimatingToNext){
+          fetchProducts(isLoadingNext: true);
+        }
+        if(pageScrollTimer!=null&&pageScrollTimer!.isActive){
+          pageScrollTimer!.cancel();
+        }
+        pageScrollTimer = Timer(const Duration(milliseconds: 10),(){
+          if(isLastPage && (pos-max)>70.h && !isAnimatingToNext){
+            isAnimatingToNext = true;
+            selectedSubCategory = subCategories[subIndex+1];
+            findCategoryIndicatorOffset();
+            pageController.animateToPage(
+                subIndex+1,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeOutSine).then((value){
+                  isAnimatingToNext = false;
+            });
+            fetchProducts(isRefresh: true);
+          }
+        });
+      });
+    }
+  }
+
+  //
+  findCategoryIndicatorOffset() {
+
+    selectedKey = selectedSubCategory!.positionKey!;
+    subIndex = subCategories.indexOf(selectedSubCategory!);
+    RenderBox? renderBox = selectedKey.currentContext?.findRenderObject() as RenderBox?;
+    if (renderBox != null) {
+      Offset localOffset = renderBox.localToGlobal(Offset.zero);
+      scrollOffset = localOffset.dy-100.h;
+      update();
+    }
+  }
+
+  //
+  listenToSubListScroll(){
+
+    scrollController.addListener(() {
+      RenderBox? renderBox = selectedKey.currentContext?.findRenderObject() as RenderBox?;
+      if (renderBox != null) {
+        Offset localOffset = renderBox.localToGlobal(Offset.zero);
+        scrollOffset = localOffset.dy-100.h;
+        update();
+      }
+    });
+  }
+
+  //
   @override
   void onInit() {
     super.onInit();
     categories = hc.categories;
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 
 }

@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -12,6 +13,7 @@ import 'package:grocery_nxt/Pages/CartView/cart_view.dart';
 import 'package:grocery_nxt/Pages/SwiggyView/Controller/swiggy_view_controller.dart';
 import 'package:grocery_nxt/Pages/SwiggyView/Widgets/sub_category_item.dart';
 import 'package:grocery_nxt/Pages/SwiggyView/Widgets/swiggy_view_product.dart';
+import 'package:lottie/lottie.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../Constants/app_colors.dart';
 import '../HomeScreen/Controller/cart_controller.dart';
@@ -76,26 +78,28 @@ class SwiggyView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
 
-                      Padding(
-                        padding: EdgeInsets.only(top: 2.h),
-                        child: Row(
-                          children: [
-
-                            Text(
+                      Row(
+                        children: [
+                          ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth: MediaQuery.of(context).size.width*0.4
+                            ),
+                            child: Text(
                               vc.categoryName??"",
+                              maxLines: 1,
                               style: TextStyle(
-                                  fontSize: 15.sp,
+                                  fontSize: 12.sp,
+                                  overflow: TextOverflow.ellipsis,
                                   fontWeight: FontWeight.w600,
                                   color: Colors.black.withOpacity(0.9)
                               ),
                             ),
+                          ),
 
-                            Icon(
-                                Icons.keyboard_arrow_down,
-                                size: 16.sp)
-
-                          ],
-                        ),
+                          Icon(
+                              Icons.keyboard_arrow_down,
+                              size: 16.sp),
+                        ],
                       ),
 
                       GetBuilder<SwiggyViewController>(
@@ -105,7 +109,7 @@ class SwiggyView extends StatelessWidget {
                               children: [
 
                                 Text(
-                                    svc.totalCategoryProducts.toString()+" items",
+                                    "${svc.totalCategoryProducts} items",
                                     style: TextStyle(
                                         fontSize: 12.sp,
                                         fontWeight: FontWeight.w400,
@@ -150,6 +154,8 @@ class SwiggyView extends StatelessWidget {
 
                           ListView.builder(
                               shrinkWrap: true,
+                              physics: const BouncingScrollPhysics(),
+                              controller: svc.scrollController,
                               itemCount: vc.subCategories.length,
                               itemBuilder: (context,index){
                                 var sub = vc.subCategories[index];
@@ -159,13 +165,13 @@ class SwiggyView extends StatelessWidget {
 
                           AnimatedPositioned(
                             left: 0,
-                            top: 24.h,
-                            duration: Duration(milliseconds: 300),
+                            top: svc.scrollOffset,
+                            duration: const Duration(milliseconds: 300),
                             child: Container(
-                              height: 70.h,
-                              width: 4.w,
+                              height: 88.h,
+                              width: 3.w,
                               decoration: BoxDecoration(
-                                color: AppColors.primaryColor,
+                                color: AppColors.secondaryColor,
                                 borderRadius: BorderRadius.only(
                                     topRight: Radius.circular(12.r),
                                     bottomRight: Radius.circular(12.r)
@@ -191,101 +197,282 @@ class SwiggyView extends StatelessWidget {
 
             Expanded(
                 flex: 12,
-                child: Container(
-                  height: MediaQuery.of(context).size.height-(kToolbarHeight+MediaQuery.of(context).viewPadding.top),
-                  padding: EdgeInsets.only(top: 8.h),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: Colors.grey.shade400,width: 0.4),
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(12.r),
-                  )),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                    
-                        SizedBox(
-                          height: kToolbarHeight*0.9,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                child: GetBuilder<SwiggyViewController>(
+                  builder: (vc) {
+                    return !vc.isLoadingSubCategories?PageView(
+                      scrollDirection: Axis.vertical,
+                      controller: svc.pageController,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: svc.subCategories.map((e){
+                        String previousSub = "";
+                        String nextSub     = "";
+                        try{
+                          if(vc.subIndex!=vc.subCategories.length-1){
+                            nextSub = vc.subCategories[vc.subCategories.indexOf(
+                                vc.selectedSubCategory!)+1].name!;
+                          }
+                          if(vc.subIndex!=0) {
+                            previousSub = vc.subCategories[vc.subCategories.indexOf(
+                                vc.selectedSubCategory!)-1].name!;
+                          }
+                        }catch(e){
+                          if (kDebugMode) {
+                            print(e);
+                          }
+                        }
+                        return Container(
+                          height: MediaQuery.of(context).size.height-(kToolbarHeight+MediaQuery.of(context).viewPadding.top),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(color: Colors.grey.shade400,width: 0.4),
+                              borderRadius: BorderRadius.circular(12.r)),
+                          child: Stack(
+                            alignment: Alignment.topCenter,
                             children: [
-                    
-                              Padding(
-                                padding: const EdgeInsets.all(12),
-                                child: GetBuilder<SwiggyViewController>(
-                                  builder: (vc) {
-                                    return !vc.isLoading?Row(
+
+                                vc.products.isNotEmpty && vc.products.length>10?Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(top: 8.h),
+                                    child: Column(
                                       children: [
-                    
-                                        Text(
-                                          svc.totalProducts.toString()+" items",
-                                        style: TextStyle(fontWeight: FontWeight.w600)),
-                    
-                                        Text(" in ${svc.selectedSubCategory!=null
-                                            ? svc.selectedSubCategory!.name!
-                                            : ""}")
-                    
+                                        Icon(
+                                          Icons.keyboard_arrow_down_rounded,
+                                          color: AppColors.secondaryColor,
+                                        ).animate(
+                                            onPlay: (v){
+                                              v.repeat(reverse: true);
+                                            },
+                                            effects: [
+                                              const SlideEffect()
+                                            ]
+                                        ),Transform.translate(
+                                          offset: Offset(0,-4.h),
+                                          child: Icon(
+                                            Icons.keyboard_arrow_down_rounded,
+                                            color: AppColors.secondaryColor,
+                                          ).animate(
+                                              onPlay: (v){
+                                                v.repeat(reverse: true);
+                                              },
+                                              effects: [
+                                                const SlideEffect()
+                                              ]
+                                          ),
+                                        ),
+                                        Text(previousSub),
                                       ],
-                                    ): Container(
-                                      width: MediaQuery.of(context).size.width * 0.20,
-                                      height: MediaQuery.of(context).size.height*0.32*0.08,
+                                    ),
+                                  )):SizedBox(),
+
+                              vc.products.length>10 && vc.isLastPage?Padding(
+                                padding: EdgeInsets.only(bottom: 12.h),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text(nextSub),
+                                    Icon(
+                                        Icons.keyboard_arrow_up_rounded,
+                                        color: AppColors.secondaryColor,
+                                    ).animate(
+                                      onPlay: (v){
+                                        v.repeat(reverse: true);
+                                      },
+                                      effects: [
+                                        SlideEffect()
+                                      ]
+                                    )
+                                  ],
+                                ),
+                              ):SizedBox(),
+
+                              SingleChildScrollView(
+                                physics: const BouncingScrollPhysics(),
+                                controller: e.scrollController,
+                                child: Column(
+                                  children: [
+
+                                    Container(
+                                      height: kToolbarHeight*0.9,
                                       decoration: BoxDecoration(
-                                        color: Colors.grey.shade100,
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(12.r),
+                                            bottomLeft: Radius.circular(12.r)
+                                        )
                                       ),
-                                    );
-                                  }
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+
+                                          Padding(
+                                            padding: const EdgeInsets.all(12),
+                                            child: GetBuilder<SwiggyViewController>(
+                                                builder: (vc) {
+                                                  return !vc.isLoading?Row(
+                                                    children: [
+
+                                                      Text(
+                                                          "${svc.totalProducts} items",
+                                                          style: const TextStyle(fontWeight: FontWeight.w600)),
+
+                                                      Text(" in ${svc.selectedSubCategory!=null
+                                                          ? svc.selectedSubCategory!.name!
+                                                          : ""}")
+
+                                                    ],
+                                                  ): Container(
+                                                    width: MediaQuery.of(context).size.width * 0.20,
+                                                    height: MediaQuery.of(context).size.height*0.32*0.08,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.grey.shade100,
+                                                    ),
+                                                  );
+                                                }
+                                            ),
+                                          ),
+
+                                          Expanded(
+                                              child: Align(
+                                                  alignment: Alignment.bottomCenter,
+                                                  child: Divider(color: Colors.grey.shade300,thickness: 0.6,height: 0)))
+
+                                        ],
+                                      ),
+                                    ),
+
+                                    GetBuilder<SwiggyViewController>(
+                                        builder: (vc) {
+                                          return !vc.isLoading?GridView.builder(
+                                              padding: EdgeInsets.zero,
+                                              shrinkWrap: true,
+                                              itemCount: svc.products.length,
+                                              physics: const NeverScrollableScrollPhysics(),
+                                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisCount: 2,
+                                                mainAxisExtent: MediaQuery.of(context).size.height*0.34,
+                                              ),
+                                              itemBuilder: (context,index){
+                                                var product = svc.products[index];
+                                                return SwiggyViewProduct(
+                                                  product: product,
+                                                  index: index,
+                                                );
+                                              }
+                                          ):GridView.builder(
+                                              padding: EdgeInsets.zero,
+                                              shrinkWrap: true,
+                                              itemCount: 6,
+                                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisCount: 2,
+                                                mainAxisExtent: MediaQuery.of(context).size.height*0.34,
+                                              ),
+                                              itemBuilder: (context,index){
+                                                return loader(context,index);
+                                              }
+                                          );
+                                        }
+                                    ),
+
+                                    GetBuilder<SwiggyViewController>(
+                                        builder: (vc){
+                                      return AnimatedContainer(
+                                        duration: const Duration(milliseconds: 300),
+                                        width: MediaQuery.of(context).size.width,
+                                        margin: EdgeInsets.only(bottom: 8.h),
+                                        decoration: BoxDecoration(
+                                          color: AppColors.secondaryColor
+                                        ),
+                                        height: vc.isLoadingNextPage?36.h:0,
+                                        child: Center(
+                                          child: SizedBox(
+                                            width: 24.w,
+                                            height: 24.w,
+                                            child: Lottie.asset("assets/animations/preloader_white.json")
+                                          ),
+                                        )
+                                    );})
+
+                                  ],
                                 ),
                               ),
-                    
-                              Expanded(
-                                  child: Align(
-                                      alignment: Alignment.bottomCenter,
-                                      child: Divider(color: Colors.grey.shade300,thickness: 0.6,height: 0)))
-                    
                             ],
                           ),
-                        ),
-                    
-                        GetBuilder<SwiggyViewController>(
-                          builder: (vc) {
-                            return !vc.isLoading?GridView.builder(
-                              padding: EdgeInsets.zero,
-                              shrinkWrap: true,
-                                itemCount: svc.products.length,
-                                physics: NeverScrollableScrollPhysics(),
-                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    mainAxisExtent: MediaQuery.of(context).size.height*0.34,
-                                ),
-                                itemBuilder: (context,index){
-                                  var product = svc.products[index];
-                                  return SwiggyViewProduct(
-                                      product: product,
-                                      index: index,
-                                  );
-                                }
-                            ):GridView.builder(
-                                padding: EdgeInsets.zero,
-                                shrinkWrap: true,
-                                itemCount: 6,
-                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  mainAxisExtent: MediaQuery.of(context).size.height*0.34,
-                                ),
-                                itemBuilder: (context,index){
-                                  return loader(context,index);
-                                }
-                            );
-                          }
-                        ),
-                      ],
-                    ),
-                  ),
+                        );
+                      }).toList(),
+                    ) : initialLoader(context);
+                  }
                 )
             ),
 
           ],
         ),
+      ),
+    );
+  }
+
+  //
+  initialLoader(BuildContext context){
+
+    return Container(
+      height: MediaQuery.of(context).size.height-(kToolbarHeight+MediaQuery.of(context).viewPadding.top),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: Colors.grey.shade400,width: 0.4),
+          borderRadius: BorderRadius.circular(12.r)),
+      child: Column(
+        children: [
+          Container(
+            height: kToolbarHeight*0.9,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(12.r),
+                    bottomLeft: Radius.circular(12.r)
+                )
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: GetBuilder<SwiggyViewController>(
+                      builder: (vc) {
+                        return Container(
+                          width: MediaQuery.of(context).size.width * 0.20,
+                          height: MediaQuery.of(context).size.height*0.32*0.08,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade100,
+                          ),
+                        );
+                      }
+                  ),
+                ),
+
+                Expanded(
+                    child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Divider(color: Colors.grey.shade300,thickness: 0.6,height: 0)))
+
+              ],
+            ),
+          ),
+          Expanded(
+            child: GridView.builder(
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                itemCount: 6,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisExtent: MediaQuery.of(context).size.height*0.34,
+                ),
+                itemBuilder: (context,index){
+                  return loader(context,index);
+                }
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -298,6 +485,7 @@ class SwiggyView extends StatelessWidget {
         context: context,
         builder: (context){
           return AlertDialog(
+            insetPadding: EdgeInsets.zero,
             contentPadding: EdgeInsets.all(1.w),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20.r)),
@@ -333,63 +521,92 @@ class SwiggyView extends StatelessWidget {
                                 ),
                               ),
 
-                              Text(vc.categories.length.toString()+" Categories")
+                              Text("${vc.categories.length} Categories")
 
                             ],
                           ),
                         ),
 
-                        Divider(),
+                        const Divider(height: 0.4,thickness: 0.4),
 
-                        GridView.builder(
-                          itemCount: svc.categories.length,
-                          shrinkWrap: true,
-                          padding: EdgeInsets.symmetric(horizontal: 16.w),
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                              mainAxisExtent: 90.h,
-                              crossAxisSpacing: 1.w,
-                              mainAxisSpacing: 10.w
-                          ), itemBuilder: (BuildContext context, int index) {
-                          var category = svc.categories[index];
-                          return GestureDetector(
-                            onTap: (){
-                              vc.categoryId = category.id;
-                              vc.categoryName = category.name;
-                              imageUrl = category.imageUrl;
-                              vc.fetchSubCategories();
-                              vc.fetchCategoryProducts();
-                              Get.back();
-                            },
-                            child: Column(
-                              children: [
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxHeight: MediaQuery.of(context).size.height*0.5,
+                          ),
+                          child: SingleChildScrollView(
+                            child: GridView.builder(
+                              itemCount: svc.categories.length,
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 12.h),
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  mainAxisExtent: 90.h,
+                                  crossAxisSpacing: 1.w,
+                                  mainAxisSpacing: 10.w
+                              ), itemBuilder: (BuildContext context, int index) {
+                              var category = svc.categories[index];
+                              return GestureDetector(
+                                onTap: (){
+                                  vc.categoryId = category.id;
+                                  vc.categoryName = category.name;
+                                  imageUrl = category.imageUrl;
+                                  vc.fetchSubCategories();
+                                  vc.fetchCategoryProducts();
+                                  Get.back();
+                                },
+                                child: Stack(
+                                  alignment: Alignment.bottomCenter,
+                                  children: [
 
-                                Expanded(
-                                  flex: 8,
-                                  child: CachedNetworkImage(
-                                      imageUrl: category!.imageUrl!,
-                                      width: 60.w,
-                                      height: 60.h,
-                                  ),
-                                ),
-
-                                SizedBox(height: 4.h),
-
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                    category.name!,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 12.sp
+                                    Container(
+                                      height: 90.h,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.black.withOpacity(0.4),width: 0.4),
+                                        borderRadius: BorderRadius.all(Radius.circular(12.r))
+                                      ),
+                                      child: CachedNetworkImage(
+                                          imageUrl: category!.imageUrl!,
+                                          width: double.infinity,
+                                          fit: BoxFit.fill,
+                                      ),
                                     ),
-                                  ),
-                                )
 
-                              ],
+                                    Container(
+                                      height: 90.h,
+                                      decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                              begin: Alignment.bottomCenter,
+                                              end: Alignment.topCenter,
+                                              colors: [
+                                                Colors.black.withOpacity(0.6),
+                                                Colors.black.withOpacity(0.1)
+                                              ]),
+                                      ),
+                                      alignment: Alignment.bottomCenter,
+                                      child: SizedBox(
+                                        width: double.infinity,
+                                        child: Material(
+                                          color: Colors.transparent,
+                                          child: Text(
+                                            category.name!,
+                                            textAlign: TextAlign.center,
+                                            maxLines: 2,
+                                            style: TextStyle(
+                                                fontSize: 10.sp,
+                                                color: Colors.white
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+
+                                  ],
+                                ),
+                              );
+                            },
                             ),
-                          );
-                        },
+                          ),
                         ),
                       ],
                     ),
@@ -398,7 +615,7 @@ class SwiggyView extends StatelessWidget {
                   Positioned(
                     bottom: 0,
                     child: Container(
-                      width: MediaQuery.of(context).size.width*0.8,
+                      width: MediaQuery.of(context).size.width,
                       height: 60.h,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20.r),
@@ -407,7 +624,7 @@ class SwiggyView extends StatelessWidget {
                             end: Alignment.topCenter,
                             colors: [
                           Colors.white,
-                              Colors.white.withOpacity(0.8),
+                              Colors.white.withOpacity(0.6),
                           Colors.white.withOpacity(0.2)
                         ])
                       ),
@@ -427,6 +644,7 @@ class SwiggyView extends StatelessWidget {
     return Skeletonizer(
       child: Container(
         decoration: BoxDecoration(
+            color: Colors.white,
             border: index==0
                 ? Border(
                 right: BorderSide(

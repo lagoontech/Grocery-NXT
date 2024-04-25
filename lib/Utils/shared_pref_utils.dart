@@ -20,7 +20,7 @@ class SharedPrefUtils{
   }
 
   //
-  getToken(String key) async {
+  getToken() async {
     return pref!.getString("token");
   }
 

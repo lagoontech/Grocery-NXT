@@ -61,6 +61,10 @@ dependencies:
   webview_flutter:
   animated_search_bar:
   mobile_number: ^2.1.1
+  carousel_slider: ^4.2.1
+  palette_generator:
+  image:
+
 
 dev_dependencies:
   flutter_test:

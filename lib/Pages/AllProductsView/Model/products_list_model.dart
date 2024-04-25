@@ -3,6 +3,7 @@
 //     final productsList = productsListFromJson(jsonString);
 
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:grocery_nxt/Pages/ProductDetailsView/Model/product_details_model.dart';
 
@@ -58,6 +59,7 @@ class Product {
   int cartQuantity;
   AdditionalInfoStore ?variantInfo;
   ProductColor ?productColor;
+  Color ?color;
 
   Product({
     this.prdId,
@@ -82,7 +84,8 @@ class Product {
     this.randomSecret,
     this.cartQuantity=0,
     this.variantInfo,
-    this.productColor
+    this.productColor,
+    this.color
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(

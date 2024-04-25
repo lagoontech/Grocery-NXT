@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:grocery_nxt/Constants/app_colors.dart';
 
 class CurvedProductContainer extends CustomPainter {
 
@@ -34,7 +35,7 @@ class CurvedProductContainer extends CustomPainter {
 
     // Define a Paint object for drawing the border
     var borderPaint = Paint()
-      ..color = Colors.grey.shade300 // Set the border color
+      ..color = AppColors.secondaryColor.withOpacity(0.2) // Set the border color
       ..style = PaintingStyle.stroke // Set the painting style to stroke
       ..strokeWidth = 0.6; // Set the border width
 

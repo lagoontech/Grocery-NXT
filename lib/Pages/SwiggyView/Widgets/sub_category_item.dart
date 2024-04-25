@@ -30,11 +30,13 @@ class _SubCategoryItemState extends State<SubCategoryItem> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
+      key: widget.subcategory!.positionKey,
       height: 100.h,
       child: GestureDetector(
         onTap: (){
           svc.selectedSubCategory = widget.subcategory;
           svc.fetchProducts(isRefresh: true);
+          svc.findCategoryIndicatorOffset();
         },
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -49,10 +51,6 @@ class _SubCategoryItemState extends State<SubCategoryItem> {
                   height: 56.h,
                   padding: EdgeInsets.only(top: 12.h),
                   decoration: BoxDecoration(
-                    border: Border.all(
-                        color: vc.selectedSubCategory==widget.subcategory
-                            ? Colors.grey.shade400
-                            : Colors.white,width: 0.2),
                     color:  Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(6.r)),
                   ),
@@ -63,7 +61,14 @@ class _SubCategoryItemState extends State<SubCategoryItem> {
                       widthFactor: 0.8,
                       heightFactor: 0.8,
                       child: CachedNetworkImage(
-                          imageUrl: widget.subcategory!.imageUrl!,
+                          imageUrl: widget.subcategory!.imageUrl ?? "",
+                          errorWidget: (c,e,o){
+                            return Image.asset(
+                              'assets/images/gnxt_logo.png',
+                              width: MediaQuery.of(context).size.width*0.24,
+                              color: AppColors.primaryColor,
+                            );
+                          },
                       ),
                     ),
                   ),
@@ -74,16 +79,14 @@ class _SubCategoryItemState extends State<SubCategoryItem> {
             SizedBox(height: 4.h),
 
             Expanded(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 4.w),
-                child: Text(
-                    widget.subcategory!.name!,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Colors.black.withOpacity(0.6),
-                        fontSize: 12.sp,
-                    ),
-                ),
+              child: Text(
+                  widget.subcategory!.name!,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Colors.black.withOpacity(0.8),
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.w600
+                  ),
               ),
             )
 

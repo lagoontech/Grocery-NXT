@@ -72,11 +72,8 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                         width: MediaQuery.of(context).size.width / 2,
                                         height: MediaQuery.of(context).size.height * 0.20,
                                         child: FittedBox(
-                                          child: Hero(
-                                            tag: vc.productDetails!.product!.id!,
-                                            child: CachedNetworkImage(
-                                                imageUrl: vc.selectedImage,
-                                            ),
+                                          child: CachedNetworkImage(
+                                              imageUrl: vc.selectedImage,
                                           ),
                                         ),
                                       ),

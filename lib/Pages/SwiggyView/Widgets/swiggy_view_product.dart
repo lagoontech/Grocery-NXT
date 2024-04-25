@@ -24,6 +24,7 @@ class SwiggyViewProduct extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
+        color: Colors.white,
         border: index==0
             ? Border(
             right: BorderSide(
@@ -63,13 +64,10 @@ class SwiggyViewProduct extends StatelessWidget {
 
                           Center(
                             child: Container(
-                              child: Hero(
-                                tag: product!.prdId!,
-                                child: CachedNetworkImage(
-                                  width: MediaQuery.of(context).size.width * 0.38 * 0.7,
-                                  height: MediaQuery.of(context).size.height * 0.34*0.40,
-                                  imageUrl: product!.imgUrl!,
-                                ),
+                              child: CachedNetworkImage(
+                                width: MediaQuery.of(context).size.width * 0.38 * 0.7,
+                                height: MediaQuery.of(context).size.height * 0.34*0.40,
+                                imageUrl: product!.imgUrl!,
                               ),
                             ),
                           ),

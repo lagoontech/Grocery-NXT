@@ -33,7 +33,7 @@ class ProductListItem extends StatelessWidget {
     return Stack(
       children: [
         Container(
-          width: MediaQuery.of(context).size.width * 0.42,
+          width: MediaQuery.of(context).size.width * 0.44,
           margin: EdgeInsets.symmetric(horizontal: 8.w),
           child: CustomPaint(
             painter: CurvedProductContainer(),
@@ -57,17 +57,14 @@ class ProductListItem extends StatelessWidget {
                       children: [
                         Container(
                           key: widgetKey,
-                          child: Hero(
-                            tag: product!.prdId!,
-                            child: CachedNetworkImage(
-                              imageUrl: product!.imgUrl!,
-                              width: MediaQuery.of(context).size.width *
-                                  0.38 *
-                                  0.6,
-                              height: MediaQuery.of(context).size.height *
-                                  0.3 *
-                                  0.3,
-                            ),
+                          child: CachedNetworkImage(
+                            imageUrl: product!.imgUrl!,
+                            width: MediaQuery.of(context).size.width *
+                                0.38 *
+                                0.6,
+                            height: MediaQuery.of(context).size.height *
+                                0.3 *
+                                0.3,
                           ),
                         ),
                         SizedBox(height: 8.h),
@@ -208,20 +205,26 @@ class ProductListItem extends StatelessWidget {
           child: CustomPaint(
             painter: WavyPainter(),
             child: Container(
-              width: 24.w,
-              height: 24.h,
+              width: 32.w,
+              height: 28.h,
+              padding: EdgeInsets.only(left: 4.w),
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(8)),
+                //color: AppColors.primaryColor.withOpacity(0.8)
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "${(((product!.price-product!.discountPrice)/product!.price)*100).toStringAsFixed(0)}%",
-                    style: TextStyle(fontSize: 8.sp,fontWeight: FontWeight.w600),
-                  ),
-                  Text("Off",style: TextStyle(fontSize: 8.sp,fontWeight: FontWeight.w600),),
-                ],
+              child: DefaultTextStyle(
+                style: TextStyle(color: Colors.white),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "${ (((product!.price-product!.discountPrice)/product!.price)*100).toStringAsFixed(0) }%",
+                      style: TextStyle(fontSize: 8.sp,fontWeight: FontWeight.w600),
+                    ),
+                    Text("OFF",style: TextStyle(fontSize: 8.sp,fontWeight: FontWeight.w600),),
+                  ],
+                ),
               ),
             ),
           ),

@@ -60,13 +60,10 @@ class AllProductsListItem extends StatelessWidget {
                       Container(
                         key: cartKey,
                         color: Colors.transparent,
-                        child: Hero(
-                          tag: product!.prdId!,
-                          child: CachedNetworkImage(
-                            width: MediaQuery.of(context).size.width * 0.38 * 0.6,
-                            height: MediaQuery.of(context).size.height * 0.28*0.3,
-                            imageUrl: product!.imgUrl!,
-                          ),
+                        child: CachedNetworkImage(
+                          width: MediaQuery.of(context).size.width * 0.38 * 0.6,
+                          height: MediaQuery.of(context).size.height * 0.28*0.3,
+                          imageUrl: product!.imgUrl!,
                         ),
                       ),
                       SizedBox(height: 4.h),
@@ -240,23 +237,26 @@ class AllProductsListItem extends StatelessWidget {
         CustomPaint(
           painter: WavyPainter(),
           child: Container(
-            width: 24.w,
-            height: 24.h,
+            width: 32.w,
+            height: 28.h,
             padding: EdgeInsets.only(left: 4.w),
             decoration: const BoxDecoration(
               borderRadius: BorderRadius.only(topLeft: Radius.circular(8)),
               //color: AppColors.primaryColor.withOpacity(0.8)
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                    "${ (((product!.price-product!.discountPrice)/product!.price)*100).toStringAsFixed(0) }%",
-                    style: TextStyle(fontSize: 8.sp,fontWeight: FontWeight.w600),
-                ),
-                Text("OFF",style: TextStyle(fontSize: 8.sp,fontWeight: FontWeight.w600),),
-              ],
+            child: DefaultTextStyle(
+              style: TextStyle(color: Colors.white),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                      "${ (((product!.price-product!.discountPrice)/product!.price)*100).toStringAsFixed(0) }%",
+                      style: TextStyle(fontSize: 8.sp,fontWeight: FontWeight.w600),
+                  ),
+                  Text("OFF",style: TextStyle(fontSize: 8.sp,fontWeight: FontWeight.w600),),
+                ],
+              ),
             ),
           ),
         )

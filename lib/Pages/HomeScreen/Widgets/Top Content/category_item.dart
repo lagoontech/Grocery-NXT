@@ -17,6 +17,7 @@ class CategoryItem extends StatelessWidget {
   CategoryItem({Key? key, this.index,this.category}) : super(key: key);
 
   GlobalKey positionKey = GlobalKey();
+  HomeController hc = Get.find<HomeController>();
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,7 @@ class CategoryItem extends StatelessWidget {
         double offsetY = calculateOffsetY(context);
         return GestureDetector(
           onTap: (){
-            Get.to(()=>SwiggyView(
+            Get.to(()=> SwiggyView(
               categoryId: category!.id,
               categoryName: category!.name,
               imageUrl: category!.imageUrl,
@@ -83,10 +84,10 @@ class CategoryItem extends StatelessWidget {
     if (positionKey.currentContext != null) {
       RenderBox renderBox =
       positionKey.currentContext!.findRenderObject() as RenderBox;
-      Offset position = renderBox.localToGlobal(Offset.zero);
+      Offset position = renderBox.localToGlobal(Offset(0,hc.homeSc.offset));
       double centerX  = MediaQuery.of(context).size.width / 2.5;
       double centerY  = MediaQuery.of(context).size.height / 2.1;
-      double distanceToCenter = sqrt(pow(position.dx - centerX, 2) + pow(position.dy - centerY, 2));
+      double distanceToCenter = sqrt(pow(position.dx - centerX, 2) + pow(position.dy - centerY*0.96, 2));
 
       /*if (kDebugMode) {
         print("positionx-->$index-->${position.dx}");
@@ -95,7 +96,7 @@ class CategoryItem extends StatelessWidget {
       double offsetY = (centerX - distanceToCenter) * 0.1;
 
       if(centerX-distanceToCenter<50){
-        offsetY = (centerX - distanceToCenter) * 0.3;
+        offsetY = (centerX - distanceToCenter) * 0.32;
       }
       /*if(position.dx>=MediaQuery.of(context).size.width*0.64){
         offsetY = (centerX - distanceToCenter) * 0.33;

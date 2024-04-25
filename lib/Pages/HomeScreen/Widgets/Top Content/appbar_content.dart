@@ -10,35 +10,56 @@ class AppBarContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipPath(
-      clipper: BottomOutwardBezierClipper(),
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height * 0.20,
-        color: AppColors.primaryColor,
-        padding: EdgeInsets.only(
-          left: 20.w,
-          right: 20.w,
-          top: MediaQuery.of(context).viewPadding.top + 8.h,
-          bottom: 16.h,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height * 0.14,
+      color: AppColors.primaryColor,
+      padding: EdgeInsets.only(
+        top: MediaQuery.of(context).viewPadding.top + 2.h,
+        bottom: 16.h,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+
+          /*Container(
+            height: kToolbarHeight,
+            color: Colors.grey.shade100,
+          ),*/
+
+          SizedBox(
+            height: 4.h,
+          ),
+
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.w),
               child: Row(
                 children: [
+
+                  Image.asset(
+                    'assets/images/gnxt_logo.png',
+                    width: MediaQuery.of(context).size.width*0.5,
+                    color: Colors.white,
+                  ),
+
                   Expanded(
-                    child: TextFormField(
-                      decoration: decoration(),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: SizedBox(
+                        width: 48.w,
+                        child: TextFormField(
+                          decoration: decoration(),
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

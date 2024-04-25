@@ -35,7 +35,7 @@ class TopContent extends StatelessWidget {
             ClipPath(
               clipper: BottomOutwardBezierClipper(),
               child: Container(
-                height: MediaQuery.of(context).size.height * 0.3,
+                height: MediaQuery.of(context).size.height * 0.27,
                 color: AppColors.primaryColor,
               ),
             ),
@@ -44,7 +44,7 @@ class TopContent extends StatelessWidget {
               top: 40.h,
               child: SizedBox(
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height*0.3,
+                height: MediaQuery.of(context).size.height*0.27,
                 child: NotificationListener(
                   onNotification: (ScrollNotification v){
                     hc.update();
@@ -56,7 +56,7 @@ class TopContent extends StatelessWidget {
                       return AnimationLimiter(
                         child: ListView.builder(
                             controller: hc.sc,
-                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.2),
+                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.17),
                             physics: const BouncingScrollPhysics(),
                             itemCount: vc.categories.length,
                             scrollDirection: Axis.horizontal,
