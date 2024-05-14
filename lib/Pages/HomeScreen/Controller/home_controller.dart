@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:carousel_slider/carousel_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' hide Category;
 import 'package:get/get.dart';
@@ -16,6 +17,10 @@ class HomeController extends GetxController{
   ScrollController sc = ScrollController();
   ScrollController homeSc = ScrollController();
   ScrollController productsSc = ScrollController();
+  ScrollController autoScroll1 = ScrollController();
+  ScrollController autoScroll2 = ScrollController();
+  CarouselController carouselController = CarouselController();
+  int carouselIndex = 0;
   int bottomIndex = 0;
   double categoryScrollProgress = 0.0;
   double currentCategoryScrollProgress = 0.0;
@@ -92,16 +97,18 @@ class HomeController extends GetxController{
           }
           for(int i=0;i<featuredProducts.length;i++){
             featuredProducts[i].color = await getImagePalette(featuredProducts[i].imgUrl!);
+            print(i);
+            if(i==featuredProducts.length-1){
+              autoScrollProducts();
+            }
           }
         }
-        //autoScrollProducts();
       }
     }catch(e){
       if (kDebugMode) {
         print(e);
       }
     }
-    update();
   }
 
   //
@@ -137,26 +144,17 @@ class HomeController extends GetxController{
   }
 
   //
-  autoScrollProducts(){
-    autoScrollTimer = Timer.periodic(
-        const Duration(milliseconds: 3000), (timer) {
-          if(productsSc.position.pixels==productsSc.position.maxScrollExtent){
-            reverseScroll = true;
-          }else if(productsSc.position.pixels==productsSc.position.minScrollExtent){
-            reverseScroll = false;
-          }
-          if(reverseScroll){
-            productsSc.animateTo(
-                productsSc.position.pixels-172, duration: Duration(milliseconds: 500),
-                curve: Curves.easeInOut);
-          }else{
-            productsSc.animateTo(
-                productsSc.position.pixels+172, duration: Duration(milliseconds: 500),
-                curve: Curves.easeInOut);
-          }
-
-    });
-
+  autoScrollProducts() async {
+    update();
+    await Future.delayed(const Duration(milliseconds: 5000));
+    autoScroll1.animateTo(
+    autoScroll1.position.maxScrollExtent,
+    duration: const Duration(seconds: 150),
+    curve: Curves.linear);
+    autoScroll2.animateTo(
+    autoScroll2.position.maxScrollExtent,
+    duration: const Duration(seconds: 150),
+    curve: Curves.linear);
   }
 
   //
@@ -169,6 +167,11 @@ class HomeController extends GetxController{
       currentCategoryScrollProgress = (currentScrollOffset / maxScrollExtent);
     }
     update(["scrollIndicator"]);
+  }
+
+  //
+  carouselChange(){
+
   }
 
   //

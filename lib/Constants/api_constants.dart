@@ -9,5 +9,4 @@ class ApiConstants {
   String allProducts = "product";
 
 
-
 }

@@ -16,13 +16,19 @@ class HttpService {
   //
   static Future<dynamic> postRequest(
       String apiEndPoint, Map<String, dynamic> postData,
-      {bool insertHeader = false}) async {
+      {bool insertHeader = false,bool useBaseUrl = true}) async {
     if(NetworkUtil.connectivityResult == ConnectivityResult.none){
       ToastUtil().showToast(color: Colors.red,message: "No Internet Connection");
       throw NoServiceFoundException('No Service Found');
     }
-    Uri uri = Uri.parse(BASE_URL + apiEndPoint);
+    late Uri uri;
+    if(useBaseUrl) {
+      uri = Uri.parse(BASE_URL + apiEndPoint);
+    }else{
+      uri = Uri.parse(apiEndPoint);
+    }
     var client = http.Client();
+    print(postData);
     try {
       var response = await client.post(
         uri,

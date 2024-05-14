@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'package:add_to_cart_animation/add_to_cart_animation.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
+import 'package:grocery_nxt/Services/http_services.dart';
 import 'package:grocery_nxt/Utils/shared_pref_utils.dart';
 import 'package:grocery_nxt/Utils/toast_util.dart';
 import '../../AllProductsView/Model/products_list_model.dart';
+import 'package:http/http.dart' as http;
 
 class CartController extends GetxController{
 
@@ -13,8 +16,13 @@ class CartController extends GetxController{
   late Function(GlobalKey) runAddToCartAnimation;
 
   List<Product> products = [];
-  double totalCost = 0.0;
-  int totalProducts = 0;
+  double totalCost    = 0.0;
+  double subTotal     = 0.0;
+  double total        = 0.0;
+  double couponAmount = 0.0;
+  int totalProducts   = 0;
+  TextEditingController couponController = TextEditingController();
+  bool applyingCoupon = false;
 
   //
   addToCartFromDetailsPage({Product ?product}){
@@ -79,6 +87,7 @@ class CartController extends GetxController{
       calculateTotal();
       calculateTotalProducts();
       update();
+      applyCoupon();
       return;
     }
     bool hasProduct = products.firstWhere(
@@ -96,6 +105,7 @@ class CartController extends GetxController{
           "products",products.map((e){return jsonEncode(e.toJson());}).toList());
       calculateTotal();
       calculateTotalProducts();
+      applyCoupon();
       return;
     }
     if(hasProduct){
@@ -108,6 +118,7 @@ class CartController extends GetxController{
         products.map((e){return jsonEncode(e.toJson());}).toList());
     calculateTotal();
     calculateTotalProducts();
+    applyCoupon();
     update();
   }
 
@@ -123,6 +134,7 @@ class CartController extends GetxController{
     for (var element in products) {
       totalCost = totalCost + (element.discountPrice!*element.cartQuantity);
     }
+    totalCost = totalCost - couponAmount;
   }
 
   //
@@ -138,11 +150,55 @@ class CartController extends GetxController{
     products.clear();
     if(SharedPrefUtils.pref!.containsKey("products")) {
       for (var element in SharedPrefUtils.pref!.getStringList("products")!) {
-      products.add(Product.fromJson(jsonDecode(element)));
-    }
+      products.add(Product.fromJson(jsonDecode(element)));}
     }
     calculateTotalProducts();
     calculateTotal();
+    update();
+  }
+
+  //
+  calculateSubTotal(){
+   subTotal = 0.0;
+    for (var element in products) {
+      subTotal += (element.cartQuantity)*(element.discountPrice);
+    }
+  }
+
+  //
+  applyCoupon() async {
+
+    if(couponController.text.isEmpty){
+      return;
+    }
+    calculateSubTotal();
+    applyingCoupon = true;
+    update(["coupon"]);
+    try{
+      var result = await HttpService.postRequest(
+        "apply-coupon",
+        {
+          "product_ids": products.map((e) => e.prdId).toList(),
+          "coupon": couponController.text,
+          "subTotal": subTotal
+        }
+      );
+      if(result is http.Response){
+        if(result.statusCode==200){
+          couponAmount = double.parse(jsonDecode(result.body)["coupon_amount"]);
+          calculateTotal();
+          ToastUtil().showToast(
+              message: "Coupon Applied!",
+              color: AppColors.primaryColor);
+        }
+      }
+    }catch(e){
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+    applyingCoupon = false;
+    update(["coupon"]);
     update();
   }
 

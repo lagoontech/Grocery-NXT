@@ -1,12 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/SwiggyView/Controller/swiggy_view_controller.dart';
 import 'package:grocery_nxt/Pages/SwiggyView/Models/sub_categories_model.dart';
-
 import '../swiggy_view.dart';
 
 class SubCategoryItem extends StatefulWidget {
@@ -83,7 +81,7 @@ class _SubCategoryItemState extends State<SubCategoryItem> {
                   widget.subcategory!.name!,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      color: Colors.black.withOpacity(0.8),
+                      color: AppColors.secondaryColor.withOpacity(0.8),
                       fontSize: 10.sp,
                       fontWeight: FontWeight.w600
                   ),

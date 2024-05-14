@@ -1,18 +1,15 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:grocery_nxt/Pages/CartView/cart_view.dart';
 import 'package:grocery_nxt/Pages/SwiggyView/Controller/swiggy_view_controller.dart';
 import 'package:grocery_nxt/Pages/SwiggyView/Widgets/sub_category_item.dart';
 import 'package:grocery_nxt/Pages/SwiggyView/Widgets/swiggy_view_product.dart';
+import 'package:grocery_nxt/Widgets/custom_button.dart';
 import 'package:lottie/lottie.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../Constants/app_colors.dart';
@@ -221,6 +218,7 @@ class SwiggyView extends StatelessWidget {
                           }
                         }
                         return Container(
+                          clipBehavior: Clip.antiAlias,
                           height: MediaQuery.of(context).size.height-(kToolbarHeight+MediaQuery.of(context).viewPadding.top),
                           decoration: BoxDecoration(
                               color: Colors.white,
@@ -230,7 +228,7 @@ class SwiggyView extends StatelessWidget {
                             alignment: Alignment.topCenter,
                             children: [
 
-                                vc.products.isNotEmpty && vc.products.length>10?Align(
+                                vc.products.isNotEmpty && vc.products.length>=5&&vc.subIndex!=0?Align(
                                   alignment: Alignment.topCenter,
                                   child: Padding(
                                     padding: EdgeInsets.only(top: 8.h),
@@ -408,8 +406,108 @@ class SwiggyView extends StatelessWidget {
           ],
         ),
       ),
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(bottom: 36.h),
+        child: FloatingActionButton.small(
+          onPressed: (){
+            showFilterSheet(context);
+          },
+          child: Icon(Icons.filter_list)
+        ),
+      ),
     );
   }
+
+   //
+   showFilterSheet(BuildContext context) async {
+
+    await showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (context){
+          return GetBuilder<SwiggyViewController>(
+            builder: (vc) {
+              return SizedBox(
+                height: MediaQuery.of(context).size.height*0.8,
+                child: Padding(
+                  padding: EdgeInsets.all(8.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+
+                      Padding(
+                        padding: EdgeInsets.only(top: 20.h,left: 20.w),
+                        child: Text(
+                            "Choose price range",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16.sp,
+                            ),
+                        ),
+                      ),
+
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height*0.1,
+                        child: RangeSlider(
+                            values: vc.filterPriceRange!,
+                            min: 1,
+                            max: 2000,
+                            labels: RangeLabels(
+                                vc.filterPriceRange!.start.toString(),
+                                vc.filterPriceRange!.end.toString()),
+                            onChanged: (v){
+                              vc.filterPriceRange = v;
+                              vc.update();
+                            }),
+                      ),
+
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        //height: MediaQuery.of(context).size.height*0.1,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+
+                              Text("\u{20B9} "+vc.filterPriceRange!.start.toStringAsFixed(0)),
+                              Text("\u{20B9} "+vc.filterPriceRange!.end.toStringAsFixed(0)),
+
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(
+                        height: 12.h,
+                      ),
+
+                      Center(
+                        child: CustomButton(
+                          onTap: (){
+                            Get.back();
+                            svc.fetchProducts(isRefresh: true);
+                          },
+                          child: Text(
+                              "Apply Filters",
+                              style: TextStyle(
+                                color: Colors.white
+                              ),
+                          ),
+                        ),
+                      )
+
+                    ],
+                  ),
+                ),
+              );
+            }
+          );
+        }
+    );
+   }
 
   //
   initialLoader(BuildContext context){
@@ -555,49 +653,23 @@ class SwiggyView extends StatelessWidget {
                                   vc.fetchCategoryProducts();
                                   Get.back();
                                 },
-                                child: Stack(
-                                  alignment: Alignment.bottomCenter,
+                                child: Column(
                                   children: [
 
-                                    Container(
-                                      height: 90.h,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.black.withOpacity(0.4),width: 0.4),
-                                        borderRadius: BorderRadius.all(Radius.circular(12.r))
-                                      ),
-                                      child: CachedNetworkImage(
-                                          imageUrl: category!.imageUrl!,
-                                          width: double.infinity,
-                                          fit: BoxFit.fill,
-                                      ),
-                                    ),
-
-                                    Container(
-                                      height: 90.h,
-                                      decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                              begin: Alignment.bottomCenter,
-                                              end: Alignment.topCenter,
-                                              colors: [
-                                                Colors.black.withOpacity(0.6),
-                                                Colors.black.withOpacity(0.1)
-                                              ]),
-                                      ),
-                                      alignment: Alignment.bottomCenter,
-                                      child: SizedBox(
+                                    category!.imageUrl!=null? CachedNetworkImage(
+                                        imageUrl: category.imageUrl ?? "",
                                         width: double.infinity,
-                                        child: Material(
-                                          color: Colors.transparent,
-                                          child: Text(
-                                            category.name!,
-                                            textAlign: TextAlign.center,
-                                            maxLines: 2,
-                                            style: TextStyle(
-                                                fontSize: 10.sp,
-                                                color: Colors.white
-                                            ),
-                                          ),
-                                        ),
+                                        fit: BoxFit.fill,
+                                    ): Expanded(child: SizedBox()),
+
+                                    Text(
+                                      category.name!,
+                                      textAlign: TextAlign.center,
+                                      maxLines: 2,
+                                      style: TextStyle(
+                                          fontSize: 10.sp,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w600
                                       ),
                                     ),
 
@@ -611,25 +683,6 @@ class SwiggyView extends StatelessWidget {
                       ],
                     ),
                   ),
-
-                  Positioned(
-                    bottom: 0,
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 60.h,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20.r),
-                        gradient: LinearGradient(
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                            colors: [
-                          Colors.white,
-                              Colors.white.withOpacity(0.6),
-                          Colors.white.withOpacity(0.2)
-                        ])
-                      ),
-                    ),
-                  )
 
                 ],
               );

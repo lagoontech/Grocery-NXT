@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/ChooseAddressView/Controller/choose_address_controller.dart';
 import 'package:grocery_nxt/Pages/Payment%20Screen/Controller/payment_controller.dart';
@@ -35,7 +37,7 @@ class _RazorpayPaymentState extends State<RazorpayPayment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: "Razorpay",),
+      appBar: CustomAppBar(title: "Razorpay"),
       body: FutureBuilder(
           future: waitForIt(context),
           builder: (context,snapshot) {
@@ -48,29 +50,17 @@ class _RazorpayPaymentState extends State<RazorpayPayment> {
                 ],
               );
             }
-            return WebViewWidget(controller: _controller!);
+            return //WebViewWidget(controller: _controller!);
 
-            /*WebViewWidget(
+            WebView(
                 onWebResourceError: (error) => showDialog(
                     context: context,
                     builder: (ctx) {
-                      return AlertDialog(
-                        title: const Text("Loading Failed"),
-                        content: const Text("Failed to load payment page."),
+                      return const AlertDialog(
+                        title: Text("Loading Failed"),
+                        content: Text("Failed to load payment page."),
                         actions: [
-                          const Spacer(),
-                          *//*TextButton(
-                            onPressed: () => Navigator.of(context)
-                                .pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        PaymentStatusView(true)),
-                                    (Route<dynamic> route) => false),
-                            child: Text(
-                              'Return',
-                              style: TextStyle(color: AppColors.primaryColor),
-                            ),
-                          )*//*
+                          Spacer(),
                         ],
                       );
                     }),
@@ -87,14 +77,9 @@ class _RazorpayPaymentState extends State<RazorpayPayment> {
                   print('closing payment.............');
                   print('closing payment...................');
                   print('closing payment..........................');
-                  *//*if (paySuccess) {
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (context) => PaymentStatusView(false)),
-                            (Route<dynamic> route) => false);
                     return;
-                  }*//*
-                }, controller: ,);*/
+                  },
+            );
           }),
     );
   }
@@ -103,22 +88,25 @@ class _RazorpayPaymentState extends State<RazorpayPayment> {
   Future waitForIt(BuildContext context) async {
 
     final uri = Uri.parse('https://api.razorpay.com/v1/payment_links');
+    print(uri);
     // String username = "rzp_test_qfnlVh6GDZoveL";
     // String password = "1BKI89076hFeXRsbGuSaj29C";
-    final username = paymentController.selectedOption!.credentials!.apiKey!; //selectedGateaway.credentials['api_key'];
-    final password = paymentController.selectedOption!.credentials!.secretKey!; //selectedGateaway.credentials['api_secret'];
+    final username = "rzp_live_RKDSnxuUFaUL7h"; //paymentController.selectedOption!.credentials!.apiKey!; //selectedGateaway.credentials['api_key'];
+    final password = "SG4eQVsPLOPb6tvSR1KK66DX"; //paymentController.selectedOption!.credentials!.secretKey!; //selectedGateaway.credentials['api_secret'];
     final basicAuth =
         'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+    print(password);
     final header = {
       "Content-Type": "application/json",
       "Accept": "application/json",
       "Authorization": basicAuth,
     };
-    final orderId = paymentController.orderId;
+    final orderId = Random().nextInt(1000);
+    print(orderId);
     final response = await http.post(uri,
         headers: header,
         body: jsonEncode({
-          "amount": 1,//cProvider.totalOrderAmount.round() * 100,
+          "amount": 100,//cProvider.totalOrderAmount.round() * 100,
           "currency": "INR",
           "accept_partial": false,
           "reference_id": orderId.toString(),
@@ -131,31 +119,11 @@ class _RazorpayPaymentState extends State<RazorpayPayment> {
           // "notify": {"sms": true, "email": true},
           "notes": {"policy_name": "GroceryNxt"},
         }));
+    print(response.statusCode);
     print(response.body);
     if (response.statusCode == 200) {
-      _controller = WebViewController()
-        ..setJavaScriptMode(JavaScriptMode.unrestricted)
-        ..setBackgroundColor(const Color(0x00000000))
-        ..setNavigationDelegate(
-          NavigationDelegate(
-            onProgress: (int progress) {
-              // Update loading bar.
-            },
-            onPageStarted: (String url) {},
-            onPageFinished: (String url) {},
-            onWebResourceError: (WebResourceError error) {},
-            onNavigationRequest: (NavigationRequest request) {
-              if (request.url.startsWith('https://www.youtube.com/')) {
-                return NavigationDecision.prevent;
-              }
-              return NavigationDecision.navigate;
-            },
-          ),
-        )
-        ..loadRequest(Uri.parse(url!));
       url = jsonDecode(response.body)['short_url'];
       paymentID = jsonDecode(response.body)['id'];
-      print(url);
       return;
     }
     //showToast(asProvider.getString('Connection failed'), cc.red);

@@ -11,8 +11,11 @@ class AutoSlideProductsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
+      didUpdateWidget: (c,v){
+        print("updated");
+      },
       builder: (vc) {
-        return Container(
+        return vc.featuredProducts.isNotEmpty?Container(
           height: MediaQuery.of(context).size.height*0.36,
           width: MediaQuery.of(context).size.width,
           padding: EdgeInsets.symmetric(vertical: 8.h),
@@ -22,10 +25,14 @@ class AutoSlideProductsView extends StatelessWidget {
 
               Expanded(
                 child: ListView.builder(
-                    itemCount: vc.featuredProducts.length,
+                    itemCount: 36,
                     scrollDirection: Axis.horizontal,
+                    controller: vc.autoScroll1,
                     itemBuilder: (context,index){
-                    var product = vc.featuredProducts[index];
+                      final itemIndex = index==0
+                          ? 0
+                          : index % vc.featuredProducts.length;
+                      final product = vc.featuredProducts[itemIndex];
                       return Container(
                         width: MediaQuery.of(context).size.width*0.36,
                         height: MediaQuery.of(context).size.height*0.16,
@@ -50,6 +57,7 @@ class AutoSlideProductsView extends StatelessWidget {
                 child: ListView.builder(
                     itemCount: (vc.featuredProducts.length/2).floor(),
                     scrollDirection: Axis.horizontal,
+                    controller: vc.autoScroll2,
                     padding: EdgeInsets.only(left: 40.w),
                     itemBuilder: (context,index){
                       var product = vc.featuredProducts[(vc.featuredProducts.length/2).floor()];
@@ -72,7 +80,7 @@ class AutoSlideProductsView extends StatelessWidget {
 
             ],
           ),
-        );
+        ):SizedBox();
       }
     );
   }

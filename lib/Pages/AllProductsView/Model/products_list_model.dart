@@ -130,8 +130,8 @@ class Product {
     "stock_count": stockCount,
     "avg_ratting": avgRatting,
     "is_cart_able": isCartAble,
-    "vendor_id": vendorId,
-    "vendor_name": vendorName,
+    /*"vendor_id": vendorId,
+    "vendor_name": vendorName,*/
     "category_id": categoryId,
     "sub_category_id": subCategoryId,
     "child_category_ids": childCategoryIds == null ? [] : List<dynamic>.from(childCategoryIds!.map((x) => x)),
@@ -153,7 +153,7 @@ class Product {
       "variant_id": productColor==null?"":productColor!.id!,
       "attributes": {},
       "used_categories": categoryId,
-      "vendor_id": vendorId ?? 'admin',
+      //"vendor_id": vendorId ?? 'admin',
     },
     "stock": stockCount,
     "subtotal": cartQuantity * discountPrice!

@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Services/http_services.dart';
 import 'package:http/http.dart' as http;
+import '../../HomeScreen/Controller/cart_controller.dart';
 import '../Models/shipping_addresses_model.dart';
 
 class ChooseAddressController extends GetxController{
@@ -9,6 +11,8 @@ class ChooseAddressController extends GetxController{
   List<ShippingAddress> addresses = [];
   dynamic selectedAddressId;
   ShippingAddress ?selectedAddress;
+  bool fetchingShippingCharge = false;
+  String shippingCharge = "0.00";
 
   //
   getAddresses() async {
@@ -28,6 +32,38 @@ class ChooseAddressController extends GetxController{
       print(e);
     }
     loadingAddresses = false;
+    update();
+  }
+
+  //
+  getShippingCharge() async {
+
+    String products_ids = "";
+    fetchingShippingCharge = true;
+    update();
+    try{
+      CartController cc = Get.find<CartController>();
+      for (var element in cc.products) {
+        products_ids = "$products_ids${element.prdId},";
+      }
+      final Uri uri = Uri.parse('http://grocerynxt.lagoontechcloud.com/api/shippingaddresszipcode.php');
+      final map = <String, dynamic>{};
+      map['zipcode']    = "629157";
+      map['productids'] = products_ids;
+      http.Response result = await http.post(
+        uri,
+        body: map,
+      );
+      if(result is http.Response){
+        if(result.statusCode == 200){
+          shippingCharge = jsonDecode(result.body)["finalcost"];
+          cc.total = double.parse(shippingCharge) + cc.totalCost;
+        }
+      }
+    }catch(e){
+      print(e);
+    }
+    fetchingShippingCharge = false;
     update();
   }
 

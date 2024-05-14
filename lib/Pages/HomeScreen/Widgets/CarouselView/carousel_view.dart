@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -24,8 +25,9 @@ class CarouselView extends StatelessWidget {
         GetBuilder<HomeController>(
           builder: (vc) {
             return !hc.loadingCarousel?SizedBox(
-              height: 108.h,
+              height: 98.h,
               child: CarouselSlider(
+                carouselController: hc.carouselController,
                 items: vc.carousels.map((carousel) => Stack(
               children: [
                 Container(
@@ -35,12 +37,12 @@ class CarouselView extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                         colors: [
-                          const Color(0xff6de02c),
                           AppColors.primaryColor,
+                          AppColors.primaryColor.withOpacity(0.4),
                         ],
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
-                        stops: const [0.0,0.5]
+                        stops: const [0.3,0.8]
                     ),
                     borderRadius: BorderRadius.all(Radius.circular(8.r)),
                   ),
@@ -54,7 +56,7 @@ class CarouselView extends StatelessWidget {
                           children: [
 
                             SizedBox(
-                              height: 54.h,
+                              height: 44.h,
                               child: Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
@@ -72,14 +74,14 @@ class CarouselView extends StatelessWidget {
                             ),
 
                             SizedBox(
-                              height: 54.h,
+                              height: 44.h,
                               child: Align(
                                 alignment: Alignment.centerLeft,
                                 child: Container(
                                   padding: EdgeInsets.all(8.w),
                                   decoration: BoxDecoration(
                                       color: Colors.white,
-                                      borderRadius: BorderRadius.circular(8.r)
+                                      borderRadius: BorderRadius.circular(20.r)
                                   ),
                                   child: Text(
                                     carousel.buttonText!,
@@ -114,10 +116,54 @@ class CarouselView extends StatelessWidget {
                 height: MediaQuery.of(context).size.height*0.24,
                 viewportFraction: 1.0,
                 autoPlay: true,
+                onPageChanged: (i,r){
+                  vc.carouselIndex = i;
+                  vc.update(["carouselIndicator"]);
+                }
               ),),
-            ):SizedBox();
+            ):const SizedBox();
           }
         ),
+
+        SizedBox(height: 4.h),
+
+        GetBuilder<HomeController>(
+            id: "carouselIndicator",
+            builder: (vc){
+          return Align(
+            alignment: Alignment.center,
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: 20.h,
+              child: Center(
+                child: ListView.builder(
+                    padding: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width*0.5-20.w),
+                    itemCount: vc.carousels.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context,index){
+
+                  return  AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    margin: EdgeInsets.symmetric(horizontal: 2.w),
+                    width: index==vc.carouselIndex
+                        ? 16.w
+                        : vc.carouselIndex<index
+                        ? index==1
+                        ? 8.w*0.6
+                        : (index-vc.carouselIndex)*8.w*0.6
+                        : (index+1)*8.w*0.6,
+                    height: index==vc.carouselIndex?16.h:8.h,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.primaryColor.withOpacity((1.0-index*0.2))
+                    ),
+                  );
+                }),
+              ),
+            ),
+          );
+        })
       ],
     );
   }

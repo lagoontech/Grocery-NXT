@@ -1,10 +1,8 @@
 import 'package:add_to_cart_animation/add_to_cart_animation.dart';
 import 'package:animated_search_bar/animated_search_bar.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
@@ -342,7 +340,9 @@ class AllProductsView extends StatelessWidget {
                         //await cc.runAddToCartAnimation(widgetKey);
                       },
                       child: const Center(
-                          child: Icon(Icons.add, color: Colors.green))),
+                          child: Icon(
+                              Icons.add,
+                              color: Colors.green))),
                 ),
               )
             ],
@@ -351,4 +351,5 @@ class AllProductsView extends StatelessWidget {
       ),
     );
   }
+
 }

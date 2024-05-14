@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -26,97 +27,141 @@ class AddCheckoutAddressView extends StatelessWidget {
         appBar: CustomAppBar(
           title: "Checkout Address",
         ),
-        body: Container(
-          color: Colors.white,
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 16.h,
-                  ),
-                  Row(
+        body: Stack(
+          children: [
+            Container(
+              color: Colors.white,
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Text(
-                          "Delivery Address",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16.sp),
-                        ),
+                      SizedBox(
+                        height: 16.h,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "Delivery Address",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16.sp),
+                            ),
+                          ),
+                        ],
+                      ),
+                      label("Title"),
+                      customTextField(context,
+                          borderRadius: 12.r,
+                          borderColor: const Color(0xffD7DFE9),
+                          hint: "Enter a title",
+                          controller: vc.titleTEC,
+                          onChanged: (v) {}),
+                      label("Email"),
+                      customTextField(context,
+                          borderRadius: 12.r,
+                          borderColor: const Color(0xffD7DFE9),
+                          hint: "Enter your email",
+                          controller: vc.emailTEC,
+                          onChanged: (v) {}),
+                      label("Phone"),
+                      customTextField(context,
+                          borderRadius: 12.r,
+                          borderColor: const Color(0xffD7DFE9),
+                          hint: "Enter a phone number",
+                          textInputType: TextInputType.number,
+                          controller: vc.phoneTEC,
+                          onChanged: (v) {}),
+                      GetBuilder<AddCheckoutAddressController>(builder: (vc) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            label("State"),
+                            customTextField(context,
+                                readOnly: true,
+                                controller: vc.stateTEC,
+                                borderRadius: 12.r,
+                                borderColor: const Color(0xffD7DFE9),
+                                hint: "Select a state", onTap: () {
+                              showStatesBottomSheet(context);
+                            }),
+                          ],
+                        );
+                      }),
+                      label("Address"),
+                      customTextField(context,
+                          borderRadius: 12.r,
+                          borderColor: const Color(0xffD7DFE9),
+                          hint: "Enter an address",
+                          controller: vc.addressTEC,
+                          onChanged: (v) {}),
+                      label("Zipcode"),
+                      customTextField(context,
+                          borderRadius: 12.r,
+                          borderColor: const Color(0xffD7DFE9),
+                          textInputType: TextInputType.number,
+                          hint: "Enter zipcode",
+                          controller: vc.zipcodeTEC,
+                          onChanged: (v) {
+                            if(v!.length==6){
+                              vc.getShippingCharge();
+                            }
+                          }),
+                      SizedBox(height: 8.h),
+
+                      GetBuilder<AddCheckoutAddressController>(builder: (vc){
+                        return vc.fetchingShippingCharge
+                            ? AnimatedTextKit(
+                              animatedTexts: [
+                                TypewriterAnimatedText(
+                                  'Calculating delivery charge',
+                                  textStyle: TextStyle(
+                                    fontSize: 12.0.sp,
+                                    color: AppColors.primaryColor,
+                                  ),
+                                  speed: const Duration(milliseconds: 10),
+                                ),
+                              ],
+                              totalRepeatCount: 4,
+                              pause: const Duration(milliseconds: 10),
+                              displayFullTextOnTap: true,
+                              stopPauseOnTap: true,
+                            )
+                            : vc.shippingCost.isNotEmpty
+                            ? Row(
+                              children: [
+                                Text("Shipping Cost is  \u{20B9}"),
+                                Text(
+                                  vc.shippingCost,
+                                  style: TextStyle(
+                                    color: AppColors.primaryColor
+                                  ),
+                                ),
+                                Text(" for your current cart"),
+                              ],
+                            )
+                            : SizedBox();
+                      }),
+                      label("Order Note"),
+                      customTextField(context,
+                          borderRadius: 12.r,
+                          borderColor: const Color(0xffD7DFE9),
+                          hint: "Enter Order Note",
+                          controller: vc.orderNoteTEC,
+                          onChanged: (v) {}),
+                      SizedBox(
+                        height: 32.h,
                       ),
                     ],
                   ),
-                  label("Title"),
-                  customTextField(context,
-                      borderRadius: 12.r,
-                      borderColor: const Color(0xffD7DFE9),
-                      hint: "Enter a title",
-                      controller: vc.titleTEC,
-                      onChanged: (v) {}),
-                  label("Email"),
-                  customTextField(context,
-                      borderRadius: 12.r,
-                      borderColor: const Color(0xffD7DFE9),
-                      hint: "Enter a title",
-                      controller: vc.emailTEC,
-                      onChanged: (v) {}),
-                  label("Phone"),
-                  customTextField(context,
-                      borderRadius: 12.r,
-                      borderColor: const Color(0xffD7DFE9),
-                      hint: "Enter a phone number",
-                      textInputType: TextInputType.number,
-                      controller: vc.phoneTEC,
-                      onChanged: (v) {}),
-                  GetBuilder<AddCheckoutAddressController>(builder: (vc) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        label("State"),
-                        customTextField(context,
-                            readOnly: true,
-                            controller: vc.stateTEC,
-                            borderRadius: 12.r,
-                            borderColor: const Color(0xffD7DFE9),
-                            hint: "Select a state", onTap: () {
-                          showStatesBottomSheet(context);
-                        }),
-                      ],
-                    );
-                  }),
-                  label("Address"),
-                  customTextField(context,
-                      borderRadius: 12.r,
-                      borderColor: const Color(0xffD7DFE9),
-                      hint: "Enter an address",
-                      controller: vc.addressTEC,
-                      onChanged: (v) {}),
-                  label("Zipcode"),
-                  customTextField(context,
-                      borderRadius: 12.r,
-                      borderColor: const Color(0xffD7DFE9),
-                      textInputType: TextInputType.number,
-                      hint: "Enter zipcode",
-                      controller: vc.zipcodeTEC,
-                      onChanged: (v) {}),
-                  label("Order Note"),
-                  customTextField(context,
-                      borderRadius: 12.r,
-                      borderColor: const Color(0xffD7DFE9),
-                      hint: "Enter Order Note",
-                      controller: vc.orderNoteTEC,
-                      onChanged: (v) {}),
-                  SizedBox(
-                    height: 32.h,
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
+
+          ],
         ),
         bottomNavigationBar:
             GetBuilder<AddCheckoutAddressController>(builder: (cc) {

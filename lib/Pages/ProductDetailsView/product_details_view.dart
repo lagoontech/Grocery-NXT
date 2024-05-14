@@ -10,6 +10,7 @@ import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/HomeProductsView/product_list_item.dart';
 import 'package:grocery_nxt/Pages/ProductDetailsView/Controller/product_details_controller.dart';
 import 'package:grocery_nxt/Pages/ProductDetailsView/Widgets/animated_bottom_curved_container.dart';
+import 'package:grocery_nxt/Pages/ProductDetailsView/product_image_screen.dart';
 import 'package:grocery_nxt/Widgets/custom_button.dart';
 import 'package:grocery_nxt/Widgets/internet_checker.dart';
 import 'package:readmore/readmore.dart';
@@ -68,12 +69,17 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                   child: CustomPaint(
                                     painter: AnimatedBottomCurvedContainer(vc.animation.value),
                                     child: Center(
-                                      child: SizedBox(
-                                        width: MediaQuery.of(context).size.width / 2,
-                                        height: MediaQuery.of(context).size.height * 0.20,
-                                        child: FittedBox(
-                                          child: CachedNetworkImage(
-                                              imageUrl: vc.selectedImage,
+                                      child: GestureDetector(
+                                        onTap: (){
+                                          Get.to(()=> ProductImageScreen(imgUrl: vc.selectedImage));
+                                        },
+                                        child: SizedBox(
+                                          width: MediaQuery.of(context).size.width / 2,
+                                          height: MediaQuery.of(context).size.height * 0.20,
+                                          child: FittedBox(
+                                            child: CachedNetworkImage(
+                                                imageUrl: vc.selectedImage,
+                                            ),
                                           ),
                                         ),
                                       ),

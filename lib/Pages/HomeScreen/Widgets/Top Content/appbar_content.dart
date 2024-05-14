@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/Top%20Content/top_content.dart';
+import 'package:grocery_nxt/Pages/ProductsSearchScreen/products_search_screen.dart';
 
 class AppBarContent extends StatelessWidget {
   AppBarContent({super.key});
@@ -21,11 +22,6 @@ class AppBarContent extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-
-          /*Container(
-            height: kToolbarHeight,
-            color: Colors.grey.shade100,
-          ),*/
 
           SizedBox(
             height: 4.h,
@@ -51,6 +47,10 @@ class AppBarContent extends StatelessWidget {
                         width: 48.w,
                         child: TextFormField(
                           decoration: decoration(),
+                          readOnly: true,
+                          onTap: (){
+                            Get.to(()=> ProductsSearchScreen());
+                          },
                         ),
                       ),
                     ),
@@ -73,12 +73,12 @@ class AppBarContent extends StatelessWidget {
         contentPadding: EdgeInsets.symmetric(vertical: 4.h),
         hintText: "Search Products",
         hintStyle: TextStyle(color: Colors.grey.shade500, fontSize: 12.sp),
-        prefixIcon: Icon(Icons.search, color: Colors.green),
+        prefixIcon: const Icon(Icons.search, color: Colors.green),
         enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(width: 0, color: Colors.transparent),
+            borderSide: const BorderSide(width: 0, color: Colors.transparent),
             borderRadius: BorderRadius.circular(28.r)),
         focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(28.r),
-            borderSide: BorderSide(width: 0)));
+            borderSide: const BorderSide(width: 0)));
   }
 }

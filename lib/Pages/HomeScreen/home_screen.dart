@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/home_controller.dart';
@@ -71,9 +70,11 @@ class HomeScreen extends StatelessWidget {
                 body: CustomScrollView(
                   controller: hc.homeSc,
                   slivers: <Widget>[
+
                     SliverList(
                       delegate: SliverChildListDelegate(
                         [
+
                           TopContent(),
 
                           SizedBox(height: 52.h),
@@ -86,13 +87,14 @@ class HomeScreen extends StatelessWidget {
 
                           FeaturedProductsView(),
 
-                          //SizedBox(height: 24.h),
+                          SizedBox(height: 24.h),
 
-                          AutoSlideProductsView()
+                          //AutoSlideProductsView()
 
                         ],
                       ),
                     ),
+
                   ],
                 ),
                 headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -108,6 +110,7 @@ class HomeScreen extends StatelessWidget {
                     color: AppColors.primaryColor,
                     child: Stack(
                       children: [
+
                         Image.asset(
                             "assets/images/grocery.png",
                             width: MediaQuery.of(context).size.width,

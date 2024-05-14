@@ -7,6 +7,7 @@ import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/CartView/Widgets/cart_item.dart';
 import 'package:grocery_nxt/Pages/ChooseAddressView/choose_address_view.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
+import 'package:grocery_nxt/Widgets/custom_circular_loader.dart';
 import 'package:lottie/lottie.dart';
 import '../../Widgets/custom_button.dart';
 import '../AddCheckoutAddressView/add_checkout_address_view.dart';
@@ -137,6 +138,7 @@ class CartView extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 32.w),
                 child: TextFormField(
+                  controller: cc.couponController,
                   decoration: decoration(),
                   onChanged: (v){},
                 ),
@@ -168,7 +170,7 @@ class CartView extends StatelessWidget {
                         ),
                         SummaryItem(
                             title: "Coupon Discount",
-                            value: "0"
+                            value: "\u{20B9} ${cc.couponAmount.toString()}"
                         ),
                         SummaryItem(
                             title: "Tax",
@@ -215,7 +217,7 @@ class CartView extends StatelessWidget {
               ),
 
             ],
-          ):SizedBox();
+          ):const SizedBox();
         }
       ),
     );
@@ -245,17 +247,29 @@ class CartView extends StatelessWidget {
       suffixIcon: Container(
         width: 60.w,
         height: 32.h,
-        margin: EdgeInsets.symmetric(vertical: 8.h,horizontal: 14.w),
+        margin: EdgeInsets.symmetric(
+            vertical: 8.h,
+            horizontal: 14.w),
         decoration: BoxDecoration(
           color: Colors.black,
           borderRadius: BorderRadius.circular(4.r)
         ),
-        child: Center(
-            child: Text(
-              "Apply",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 12.sp),)),
+        child: GetBuilder<CartController>(
+          id: "coupon",
+          builder: (cc) {
+            return GestureDetector(
+              onTap: (){
+                cc.applyCoupon();
+              },
+              child: Center(
+                  child: cc.applyingCoupon?CustomCircularLoader():Text(
+                    "Apply",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12.sp))),
+            );
+          }
+        ),
       ),
       fillColor: const Color(0xfff5f5f5),
       hintText: "Enter Coupon Code",

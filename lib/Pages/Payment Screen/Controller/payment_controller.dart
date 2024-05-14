@@ -13,6 +13,8 @@ import 'package:grocery_nxt/Pages/Payment%20Screen/RazorpayPayment/razorpay_paym
 import 'package:grocery_nxt/Services/http_services.dart';
 import 'package:grocery_nxt/Utils/shared_pref_utils.dart';
 import 'package:http/http.dart' as http;
+import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:uuid/uuid.dart';
 
 class PaymentController extends GetxController {
   bool loadingPaymentOptions = false;
@@ -24,6 +26,7 @@ class PaymentController extends GetxController {
   bool isPlacingOrder = false;
   int    ?orderId;
   dynamic totalAmount;
+  var razorpay = Razorpay();
 
   //
   loadPaymentOptions() async {
@@ -52,11 +55,16 @@ class PaymentController extends GetxController {
   placeOrder() async {
 
     isPlacingOrder = true;
+    Map<String,dynamic> cart_post = {};
+    cartController.products.forEach((element) {
+      var id = const Uuid().v1();
+      cart_post[id] = element.toJson()..["row_id"]=id;
+    });
+    print(cart_post);
     update();
     try {
       var headers = {
-        'Authorization':
-            'Bearer 204|fP4iyoV8HNi1VmoiYfKomjne9DZnbMJXZuIzdxZr3e541c27',
+        'Authorization': "${await SharedPrefUtils().getToken()}",
       };
       var request = http.MultipartRequest(
           'POST', Uri.parse('${ApiConstants().baseUrl}checkout'));
@@ -65,51 +73,77 @@ class PaymentController extends GetxController {
         'note': "",
         'phone': "9080761312",
         'cart_items':
-            jsonEncode(cartController.products.map((e) => e.toJson()).toList()),
+            jsonEncode(cart_post),
         'selected_payment_gateway': 'cash',
         'country_id': "70",
         'state_id': addressController.selectedAddress!.stateId.toString(),
         'zip_code': addressController.selectedAddress!.zipCode!,
         'email': addressController.selectedAddress!.email,
-        'shipping_cost': jsonEncode("0"),
+        'shipping_cost': addressController.shippingCharge.toString(),//jsonEncode([{"shipping_cost":addressController.shippingCharge}]),
         'address': addressController.selectedAddress!.address!,
         'agree': 'on',
         'coupon': ''
       });
       request.headers.addAll(headers);
+      print(request.fields);
       log(request.fields.toString());
       http.StreamedResponse response = await request.send();
-
-      final resData = await response.stream.bytesToString();
-      if (jsonDecode(resData)["success"] == true) {
-        print(jsonDecode(resData));
-        orderId = jsonDecode(resData)["order_id"];
-        totalAmount = jsonDecode(resData)["total_amount"];
-        if(selectedOption!.name!.contains("razor")){
-          Get.to(()=>RazorpayPayment());
-          return;
-        }
-        SharedPrefUtils().clearCart().then((value) {
-          cartController.loadProducts();
-          orderController.getOrders();
-          Get.back();
-          Get.back();
-          Get.to(()=>const OrderSuccessScreen());
-        });
-      }
+       await response.stream.bytesToString().then((value) async {
+         if(response.statusCode==200) {
+           orderId = jsonDecode(value)["order_id"];
+           totalAmount = jsonDecode(value)["total_amount"];
+           if(selectedOption!.name!.contains("razorpay")) {
+             var options = {
+               'key': 'rzp_live_RKDSnxuUFaUL7h',
+               'amount': 100,
+               'name': 'Acme Corp.',
+               'description': 'Fine T-Shirt',
+               "timeout": "180",
+               "currency": "INR",
+               'prefill': {
+                 'contact': '8888888888',
+                 'email': 'test@razorpay.com'
+               }
+             };
+             razorpay.open(options);
+           }
+           else {
+             SharedPrefUtils().clearCart().then((value) {
+             cartController.loadProducts();
+             orderController.getOrders();
+             Get.back();
+             Get.back();
+             Get.to(()=>const OrderSuccessScreen());
+           });
+           }
+         }
+       });
     } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
+      print(e);
     }
     isPlacingOrder = false;
     update();
   }
 
   //
+
+
+  //
   @override
   void onInit() {
     super.onInit();
     loadPaymentOptions();
+    razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, (v){
+      SharedPrefUtils().clearCart().then((value) {
+        cartController.loadProducts();
+        orderController.getOrders();
+        Get.back();
+        Get.back();
+        Get.to(()=>const OrderSuccessScreen());
+      });
+    });
+    razorpay.on(Razorpay.EVENT_PAYMENT_ERROR,(v){
+      print("razorpay error-->$v");
+    });
   }
 }

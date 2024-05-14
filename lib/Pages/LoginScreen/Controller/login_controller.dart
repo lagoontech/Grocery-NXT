@@ -20,7 +20,7 @@ class LoginController extends GetxController{
     update();
     try{
       var result = await HttpService.postRequest("loginotp",{
-        "mobile":phoneTEC.text
+        "mobile": phoneTEC.text,
       });
       if(result is http.Response){
         if(result.statusCode==200){

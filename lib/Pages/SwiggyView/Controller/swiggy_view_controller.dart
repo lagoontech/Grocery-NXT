@@ -46,6 +46,7 @@ class SwiggyViewController extends GetxController with GetTickerProviderStateMix
   double scrollOffset = 0;
   GlobalKey selectedKey = GlobalKey();
   Timer ?pageScrollTimer;
+  RangeValues ?filterPriceRange = const RangeValues(1,1500);
 
   //
   fetchSubCategories() async {
@@ -94,7 +95,7 @@ class SwiggyViewController extends GetxController with GetTickerProviderStateMix
     update();
     try{
       var result = await HttpService.getRequest(
-          "${ApiConstants().allProducts}?name=${searchTEC.text}&page=$page&category=$categoryName&sub_category=${selectedSubCategory!.name}");
+          "${ApiConstants().allProducts}?name=${searchTEC.text}&page=$page&category=$categoryName&sub_category=${selectedSubCategory!.name}&min_price=${filterPriceRange!.start}&max_price=${filterPriceRange!.end}");
       if(result is http.Response){
         if(result.statusCode==200){
           if(isRefresh) {
@@ -174,6 +175,17 @@ class SwiggyViewController extends GetxController with GetTickerProviderStateMix
                 duration: const Duration(milliseconds: 500),
                 curve: Curves.easeOutSine).then((value){
                   isAnimatingToNext = false;
+            });
+            fetchProducts(isRefresh: true);
+          } else if(pos<-70.h && !isAnimatingToNext){
+            isAnimatingToNext = true;
+            selectedSubCategory = subCategories[subIndex-1];
+            findCategoryIndicatorOffset();
+            pageController.animateToPage(
+                subIndex-1,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeOutSine).then((value){
+              isAnimatingToNext = false;
             });
             fetchProducts(isRefresh: true);
           }
