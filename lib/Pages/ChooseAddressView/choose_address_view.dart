@@ -173,7 +173,7 @@ class ChooseAddressView extends StatelessWidget {
 
                             SummaryItem(
                                 title: "Items Total",
-                                value: "\u{20B9} ${cc.totalCost}"
+                                value: "\u{20B9} ${cc.total}"
                             ),
                             SummaryItem(
                                 title: "Coupon Discount",
@@ -198,7 +198,7 @@ class ChooseAddressView extends StatelessWidget {
 
                             SummaryItem(
                                 title: "Total",
-                                value: "\u{20B9} ${cc.total}"
+                                value: "\u{20B9} ${vc.finalTotal}"
                             ),
 
                             SizedBox(

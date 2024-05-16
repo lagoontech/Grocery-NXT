@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:add_to_cart_animation/add_to_cart_animation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,7 @@ class ProductsSearchController extends GetxController{
   List<Product> searchedProducts = [];
   bool loading = false;
   bool showNextLoading = false;
+  GlobalKey<CartIconKey> cartIconKey = GlobalKey<CartIconKey>();
 
   //
   listenToSearch(){

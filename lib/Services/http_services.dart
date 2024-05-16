@@ -36,7 +36,8 @@ class HttpService {
             ? {
                 'content-type': 'application/json',
                 'accept': 'application/json',
-                'authorization': 'Bearer '+await SharedPrefUtils().getToken()
+                'authorization': 'Bearer '+await SharedPrefUtils().getToken(),
+                'app-secret-key': ApiConstants().paymentStatusUpdateKey,
               }
             : {'content-type': 'application/json'},
         body: json.encode(postData),

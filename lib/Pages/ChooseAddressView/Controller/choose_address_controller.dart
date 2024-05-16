@@ -13,6 +13,8 @@ class ChooseAddressController extends GetxController{
   ShippingAddress ?selectedAddress;
   bool fetchingShippingCharge = false;
   String shippingCharge = "0.00";
+  bool showCOD = true;
+  double finalTotal = 0.00;
 
   //
   getAddresses() async {
@@ -57,7 +59,8 @@ class ChooseAddressController extends GetxController{
       if(result is http.Response){
         if(result.statusCode == 200){
           shippingCharge = jsonDecode(result.body)["finalcost"];
-          cc.total = double.parse(shippingCharge) + cc.totalCost;
+          showCOD = jsonDecode(result.body)["exclude"]=='0'?false:true;
+          finalTotal = double.parse(shippingCharge) + cc.total;
         }
       }
     }catch(e){

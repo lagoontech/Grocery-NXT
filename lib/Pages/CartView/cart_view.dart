@@ -166,7 +166,7 @@ class CartView extends StatelessWidget {
 
                         SummaryItem(
                             title: "Items Total",
-                            value: "\u{20B9} ${cc.totalCost}"
+                            value: "\u{20B9} ${cc.subTotal}"
                         ),
                         SummaryItem(
                             title: "Coupon Discount",
@@ -187,7 +187,7 @@ class CartView extends StatelessWidget {
 
                         SummaryItem(
                             title: "Total",
-                            value: "\u{20B9} ${cc.totalCost}"
+                            value: "\u{20B9} ${cc.total}"
                         ),
 
                         SizedBox(

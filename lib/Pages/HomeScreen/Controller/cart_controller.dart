@@ -130,11 +130,8 @@ class CartController extends GetxController{
 
   //
   calculateTotal(){
-    totalCost = 0.0;
-    for (var element in products) {
-      totalCost = totalCost + (element.discountPrice!*element.cartQuantity);
-    }
-    totalCost = totalCost - couponAmount;
+    calculateSubTotal();
+    total = subTotal - couponAmount;
   }
 
   //
@@ -159,6 +156,7 @@ class CartController extends GetxController{
 
   //
   calculateSubTotal(){
+
    subTotal = 0.0;
     for (var element in products) {
       subTotal += (element.cartQuantity)*(element.discountPrice);

@@ -16,7 +16,7 @@ class SplashController extends GetxController{
   checkToken(){
 
       Future.delayed(const Duration(milliseconds: 3000),() async {
-        if(await SharedPrefUtils().isLoggedIn()){
+        if(!await SharedPrefUtils().isLoggedIn()){
           Get.offAll(()=> OnboardingScreen());
         }else{
           Get.offAll(()=> DashboardView());

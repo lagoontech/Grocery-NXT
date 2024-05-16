@@ -48,10 +48,13 @@ class ProductListItem extends StatelessWidget {
                         return;
                       }
                       Product copyProduct = Product.fromJson(product!.toJson());
-                      Get.to(() => ProductDetailsView(
-                            productId: product!.prdId,
-                            product: copyProduct,
-                          ));
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context){
+                        return ProductDetailsView(
+                          productId: product!.prdId,
+                          product: copyProduct
+                        );
+                      }));
+                      print("product tapped");
                     },
                     child: Column(
                       children: [

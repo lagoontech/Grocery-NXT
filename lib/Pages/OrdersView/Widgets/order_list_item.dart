@@ -41,6 +41,9 @@ class OrderListItem extends StatelessWidget {
                color: Colors.white,
                 borderRadius: BorderRadius.circular(12.r),
               ),
+              child: order!.paymentStatus=="pending"
+                  ? const Icon(Icons.pending,color: Colors.red)
+                  : Icon(Icons.paid,color: AppColors.primaryColor),
             ),
 
             SizedBox(

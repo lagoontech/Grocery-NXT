@@ -33,6 +33,7 @@ class OtpController extends GetxController{
         if(result.statusCode==200){
           var res = json.decode(result.body);
           if(res["token"]!=null){
+            print(res["token"]);
             SharedPrefUtils().setString("token",res["token"]);
             ToastUtil().showToast(message: "Welcome ${res["users"]["username"]}");
             Get.offAll(()=>DashboardView());

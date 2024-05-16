@@ -120,7 +120,7 @@ class PaymentScreen extends StatelessWidget {
                                     crossAxisSpacing: 12.w),
                             itemBuilder: (context, index) {
                               var option = vc.options[index];
-                              return GestureDetector(
+                              return option.status==1?GestureDetector(
                                 onTap: () {
                                   vc.selectedOption = option;
                                   vc.update();
@@ -142,7 +142,7 @@ class PaymentScreen extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                              );
+                              ):SizedBox();
                             }),
                       ],
                     );

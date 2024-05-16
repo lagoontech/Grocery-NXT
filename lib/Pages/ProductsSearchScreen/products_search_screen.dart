@@ -1,3 +1,5 @@
+import 'package:add_to_cart_animation/add_to_cart_animation.dart';
+import 'package:add_to_cart_animation/add_to_cart_icon.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,6 +13,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../AllProductsView/Widgets/all_products_list_item.dart';
 import '../AllProductsView/Widgets/all_products_list_item_curved_container.dart';
+import '../CartView/cart_view.dart';
+import '../HomeScreen/Controller/cart_controller.dart';
 import '../HomeScreen/Widgets/HomeProductsView/curved_cart_add_container.dart';
 import 'Controller/products_search_controller.dart';
 
@@ -21,152 +25,184 @@ class ProductsSearchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: CustomScrollView(
-        controller: vc.sc,
-        slivers: [
+    return AddToCartAnimation(
+      cartKey: vc.cartIconKey,
+      height: 30,
+      width: 30,
+      opacity: 1,
+      dragAnimation: const DragToCartAnimationOptions(
+        rotation: true,
+      ),
+      jumpAnimation: const JumpAnimationOptions(
+          curve: Curves.easeOutSine,
+          duration: Duration(milliseconds: 250)
+      ),
+      createAddToCartAnimation: (runAddToCartAnimation) {
+        vc.runAddToCartAnimation = runAddToCartAnimation;
+      },
+      child: Scaffold(
+        body: CustomScrollView(
+          controller: vc.sc,
+          slivers: [
 
-          SliverAppBar(
-            pinned: true,
-            floating: true,
-            automaticallyImplyLeading: false,
-            toolbarHeight: kToolbarHeight * 1.4,
-            flexibleSpace: Column(
-              children: [
-                SizedBox(
-                    height: MediaQuery.of(context).viewPadding.top + 12.h),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: TextFormField(
-                    controller: vc.searchTEC,
-                    decoration: InputDecoration(
-                      hintText: "Search Products",
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color: AppColors.primaryColor,
+            SliverAppBar(
+              pinned: true,
+              floating: true,
+              automaticallyImplyLeading: false,
+              toolbarHeight: kToolbarHeight * 1.4,
+              flexibleSpace: Column(
+                children: [
+                  SizedBox(
+                      height: MediaQuery.of(context).viewPadding.top + 12.h),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    child: TextFormField(
+                      controller: vc.searchTEC,
+                      decoration: InputDecoration(
+                        hintText: "Search Products",
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: AppColors.primaryColor,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: AppColors.primaryColor,
+                            ),
+                            borderRadius: BorderRadius.circular(12.r)),
                       ),
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: AppColors.primaryColor,
-                          ),
-                          borderRadius: BorderRadius.circular(12.r)),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
 
-          SliverToBoxAdapter(
-            child: Column(
-              children: [
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
 
-                SizedBox(
-                  height: 20.h,
-                ),
+                  SizedBox(
+                    height: 20.h,
+                  ),
 
-                GetBuilder<ProductsSearchController>(builder: (vc) {
-                  return !vc.loading && vc.searchedProducts.isEmpty
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Lottie.asset(
-                                "assets/animations/not_found.json"),
-                            SizedBox(height: 20.h),
-                            Text(
-                              "No Products Found",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: Colors.black.withOpacity(0.5),
-                                  fontSize: 16.sp),
-                            ),
-                          ],
-                        )
-                      : !vc.loading
-                          ? AnimationLimiter(
-                              child: GridView.builder(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 16.w,
-                                      vertical: 8.h),
-                                  itemCount: vc.searchedProducts.length,
-                                  shrinkWrap: true,
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 2,
-                                          mainAxisExtent: MediaQuery.of(context)
-                                                      .size
-                                                      .height * 0.28,
-                                          mainAxisSpacing: 2.h,
-                                          crossAxisSpacing: 8.w),
-                                  itemBuilder: (context, index) {
-                                    var product = vc.searchedProducts[index];
-                                    return AnimationConfiguration
-                                        .staggeredGrid(
-                                      columnCount: 2,
-                                      position: index,
-                                      child: SlideAnimation(
-                                        verticalOffset: 50.h,
-                                        duration: const Duration(
-                                            milliseconds: 750),
-                                        child: FadeInAnimation(
+                  GetBuilder<ProductsSearchController>(builder: (vc) {
+                    return !vc.loading && vc.searchedProducts.isEmpty
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Lottie.asset(
+                                  "assets/animations/not_found.json"),
+                              SizedBox(height: 20.h),
+                              Text(
+                                "No Products Found",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.black.withOpacity(0.5),
+                                    fontSize: 16.sp),
+                              ),
+                            ],
+                          )
+                        : !vc.loading
+                            ? AnimationLimiter(
+                                child: GridView.builder(
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 16.w,
+                                        vertical: 8.h),
+                                    itemCount: vc.searchedProducts.length,
+                                    shrinkWrap: true,
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 2,
+                                            mainAxisExtent: MediaQuery.of(context)
+                                                        .size
+                                                        .height * 0.28,
+                                            mainAxisSpacing: 2.h,
+                                            crossAxisSpacing: 8.w),
+                                    itemBuilder: (context, index) {
+                                      var product = vc.searchedProducts[index];
+                                      return AnimationConfiguration
+                                          .staggeredGrid(
+                                        columnCount: 2,
+                                        position: index,
+                                        child: SlideAnimation(
+                                          verticalOffset: 50.h,
                                           duration: const Duration(
                                               milliseconds: 750),
-                                          child: SearchedProduct(
-                                              index: index,
-                                              product: product),
+                                          child: FadeInAnimation(
+                                            duration: const Duration(
+                                                milliseconds: 750),
+                                            child: SearchedProduct(
+                                                index: index,
+                                                product: product),
+                                          ),
                                         ),
-                                      ),
-                                    );
-                                  }),
-                            )
-                          : GridView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 16.w, vertical: 8.h),
-                              itemCount: 9,
-                              shrinkWrap: true,
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2,
-                                      mainAxisExtent:
-                                          MediaQuery.of(context).size.height * 0.28,
-                                      mainAxisSpacing: 2.h,
-                                      crossAxisSpacing: 8.w),
-                              itemBuilder: (context, index) {
-                                return loader(context);
-                              });
-                }),
-
-                GetBuilder<ProductsSearchController>(
-                  builder: (vc) {
-                    return vc.showNextLoading
-                        ? GetBuilder<ProductsSearchController>(
-                        builder: (vc){
-                          return AnimatedContainer(
-                              duration: const Duration(milliseconds: 300),
-                              width: MediaQuery.of(context).size.width,
-                              margin: EdgeInsets.only(bottom: 8.h),
-                              decoration: BoxDecoration(
-                                  color: AppColors.secondaryColor
-                              ),
-                              height: vc.showNextLoading?36.h:0,
-                              child: Center(
-                                child: SizedBox(
-                                    width: 24.w,
-                                    height: 24.w,
-                                    child: Lottie.asset("assets/animations/preloader_white.json")
-                                ),
+                                      );
+                                    }),
                               )
-                          );}): const SizedBox();
-                  }
-                )
+                            : GridView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 16.w, vertical: 8.h),
+                                itemCount: 9,
+                                shrinkWrap: true,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        mainAxisExtent:
+                                            MediaQuery.of(context).size.height * 0.28,
+                                        mainAxisSpacing: 2.h,
+                                        crossAxisSpacing: 8.w),
+                                itemBuilder: (context, index) {
+                                  return loader(context);
+                                });
+                  }),
 
-              ],
+                  GetBuilder<ProductsSearchController>(
+                    builder: (vc) {
+                      return vc.showNextLoading
+                          ? GetBuilder<ProductsSearchController>(
+                          builder: (vc){
+                            return AnimatedContainer(
+                                duration: const Duration(milliseconds: 300),
+                                width: MediaQuery.of(context).size.width,
+                                margin: EdgeInsets.only(bottom: 8.h),
+                                decoration: BoxDecoration(
+                                    color: AppColors.secondaryColor
+                                ),
+                                height: vc.showNextLoading?36.h:0,
+                                child: Center(
+                                  child: SizedBox(
+                                      width: 24.w,
+                                      height: 24.w,
+                                      child: Lottie.asset("assets/animations/preloader_white.json")
+                                  ),
+                                )
+                            );}): const SizedBox();
+                    }
+                  )
+
+                ],
+              ),
             ),
-          ),
 
-        ],
+          ],
+        ),
+        floatingActionButton: Padding(
+          padding: EdgeInsets.only(bottom: 60.h),
+          child: FloatingActionButton(
+            onPressed: (){
+              Get.to(()=>CartView());
+            },
+            child: AddToCartIcon(
+                key: vc.cartIconKey,
+                badgeOptions: const BadgeOptions(active: false),
+                icon: GetBuilder<CartController>(builder: (vc) {
+                  return Badge(
+                      label: Text(vc.totalProducts.toString()),
+                      child: const Icon(Icons.shopping_bag_outlined));
+                })),
+          ),
+        ),
       ),
     );
   }

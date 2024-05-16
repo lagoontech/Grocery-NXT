@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/OrderDetailsView/Controller/order_details_controller.dart';
 import 'package:grocery_nxt/Widgets/custom_appbar.dart';
+import 'package:grocery_nxt/Widgets/custom_button.dart';
 import 'package:grocery_nxt/Widgets/custom_circular_loader.dart';
 
 class OrderDetailsView extends StatelessWidget {
@@ -23,6 +24,7 @@ class OrderDetailsView extends StatelessWidget {
       orderDetailsController.getOrderDetails();
     }
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: CustomAppBar(
         title: "Order Details",
       ),
@@ -65,7 +67,7 @@ class OrderDetailsView extends StatelessWidget {
                                           style: TextStyle(fontSize: 10.sp)),
                                     ),
                                     Text(
-                                        product.quantity.toString()+" X "+product.price!,
+                                        "${product.quantity} X ${product.price!}",
                                         style: TextStyle(fontSize: 10.sp),
                                     )
                                   ],
@@ -94,7 +96,25 @@ class OrderDetailsView extends StatelessWidget {
                       title: "Total",
                       detail: vc.orderDetails!.order![0].totalAmount
                     ),
+                    OrderDetail(
+                      title: "Payment Method",
+                      detail: vc.orderDetails!.paymentDetails!.paymentGateway!.toUpperCase()
+                    ),
+                    OrderDetail(
+                      title: "Payment Status",
+                      detail: vc.orderDetails!.paymentDetails!.paymentStatus
+                    ),
 
+                    SizedBox(height: 16.h),
+
+                    vc.orderDetails!.paymentDetails!.paymentStatus == "pending"
+                        ? CustomButton(
+                            child: Text("Pay Now",style: TextStyle(color: Colors.white)),
+                            onTap: () {
+                              vc.processPayment();
+                            },
+                          )
+                        : SizedBox()
                   ],
                 ),
               );
