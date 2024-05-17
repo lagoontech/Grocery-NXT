@@ -15,6 +15,13 @@ class SplashController extends GetxController{
   //
   checkToken(){
 
+    networkError = false;
+    if(!NetworkUtil().isConnected()){
+      networkError = true;
+      update();
+      return;
+    }
+
       Future.delayed(const Duration(milliseconds: 3000),() async {
         if(!await SharedPrefUtils().isLoggedIn()){
           Get.offAll(()=> OnboardingScreen());

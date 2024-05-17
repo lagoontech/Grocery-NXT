@@ -55,6 +55,13 @@ class SplashScreen extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                       color: Colors.white
                     ),
+                ),
+
+                CustomButton(
+                  onTap: (){
+                    vc.checkToken();
+                  },
+                  child: Text("Try Again"),
                 )
 
               ],

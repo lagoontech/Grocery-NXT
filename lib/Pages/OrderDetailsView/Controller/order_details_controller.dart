@@ -4,7 +4,6 @@ import 'package:grocery_nxt/Pages/OrderDetailsView/Model/order_details_model.dar
 import 'package:grocery_nxt/Services/http_services.dart';
 import 'package:http/http.dart' as http;
 import 'package:razorpay_flutter/razorpay_flutter.dart';
-
 import '../../Payment Screen/Models/order_success_response.dart';
 import '../../Payment Screen/payment_failed.dart';
 
@@ -15,7 +14,8 @@ class OrderDetailsController extends GetxController{
   OrderDetailsModel ?orderDetails;
   var razorpay = Razorpay();
   String ?transactionId;
-  OrderSuccessResponse? successResponse;
+  OrderSuccessResponse? successResponse = OrderSuccessResponse();
+  bool statusChanged = false;
 
   //
   getOrderDetails() async {
@@ -44,7 +44,7 @@ class OrderDetailsController extends GetxController{
     double amount = double.parse(orderDetails!.order![0].totalAmount!);
     var options = {
       'key': 'rzp_live_RKDSnxuUFaUL7h',
-      'amount': int.parse(amount.toStringAsFixed(0))*100,//totalAmount*100,
+      'amount': 100,//int.parse(amount.toStringAsFixed(0))*100,//totalAmount*100,
       'reference_id': orderId.toString(),
       'name': '',
       'description': '',
@@ -62,7 +62,7 @@ class OrderDetailsController extends GetxController{
 
     successResponse!.type = "success";
     successResponse!.transactionId = transactionId;
-    print(successResponse!.toJson());
+    successResponse!.orderId = orderId;
     try{
       var result = await HttpService.postRequest(
           "update-payment",
@@ -71,7 +71,8 @@ class OrderDetailsController extends GetxController{
       );
       if(result is http.Response){
         if(result.statusCode==200){
-
+          getOrderDetails();
+          statusChanged = true;
         }
       }
     }catch(e){
@@ -82,7 +83,6 @@ class OrderDetailsController extends GetxController{
   //
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
     razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, (v){
       print("razorpay trId-->${v.paymentId}");

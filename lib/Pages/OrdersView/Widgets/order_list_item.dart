@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/OrderDetailsView/order_details_view.dart';
+import 'package:grocery_nxt/Pages/OrdersView/Controller/order_controller.dart';
 import 'package:grocery_nxt/Widgets/custom_button.dart';
 import '../Model/order_list_model.dart';
 
@@ -13,6 +14,7 @@ class OrderListItem extends StatelessWidget {
    OrderListItem({super.key,this.order});
 
    Order ?order;
+   OrderController vc = Get.find<OrderController>();
 
   @override
   Widget build(BuildContext context) {
@@ -88,8 +90,13 @@ class OrderListItem extends StatelessWidget {
                 child: CustomButton(
                   width: 80.w,
                   height: 28.h,
-                  onTap: (){
-                    Get.to(()=>OrderDetailsView(orderId: order!.id,));
+                  onTap: () async {
+                    var result = await Get.to(()=>OrderDetailsView(
+                      orderId: order!.id
+                    ));
+                    if(result==1){
+                      vc.getOrders();
+                    }
                   },
                   child: const Text("Details",style: TextStyle(color: Colors.white),),
                 ),

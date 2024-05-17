@@ -1,9 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' hide Category;
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/status/http_status.dart';
 import 'package:grocery_nxt/Constants/api_constants.dart';
+import 'package:grocery_nxt/Pages/HomeScreen/Models/home_campaign_model.dart';
+import 'package:grocery_nxt/Pages/SwiggyView/Models/sub_categories_model.dart';
 import 'package:grocery_nxt/Services/http_services.dart';
 import 'package:palette_generator/palette_generator.dart';
 import '../../AllProductsView/Model/products_list_model.dart';
@@ -14,23 +18,27 @@ import 'package:image/image.dart' as img;
 
 class HomeController extends GetxController{
 
-  ScrollController sc = ScrollController();
-  ScrollController homeSc = ScrollController();
-  ScrollController productsSc = ScrollController();
-  ScrollController autoScroll1 = ScrollController();
-  ScrollController autoScroll2 = ScrollController();
+  ScrollController sc                   = ScrollController();
+  ScrollController homeSc               = ScrollController();
+  ScrollController productsSc           = ScrollController();
+  ScrollController autoScroll1          = ScrollController();
+  ScrollController autoScroll2          = ScrollController();
   CarouselController carouselController = CarouselController();
   int carouselIndex = 0;
-  int bottomIndex = 0;
-  double categoryScrollProgress = 0.0;
+  int bottomIndex   = 0;
+  double categoryScrollProgress        = 0.0;
   double currentCategoryScrollProgress = 0.0;
   Timer ?autoScrollTimer;
-  bool reverseScroll = false;
+  bool reverseScroll     = false;
   List<Product> products = [];
-  List<Product> featuredProducts = [];
-  List<CategoryModel?> categories = [];
+  List<Product> featuredProducts   = [];
+  List<CategoryModel?> categories  = [];
+  List<Subcategory> subcategories1 = [];
+  List<Subcategory> subcategories2 = [];
+  List<Subcategory> subcategories3 = [];
   List<Carousel> carousels = [];
-  bool loadingCarousel = false;
+  bool loadingCarousel     = false;
+  HomeCampaignsModel ?campaign;
 
   //
   fetchCategories()async{
@@ -40,12 +48,6 @@ class HomeController extends GetxController{
       if(result is http.Response){
         if(result.statusCode == 200 || result.statusCode==201){
           categories = homeCategoriesModelFromJson(result.body)!.categories!;
-          /*Future.delayed(const Duration(milliseconds: 100),(){
-            sc.animateTo(
-                -20,
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.decelerate);
-          });*/
         }
       }
     }catch(e){
@@ -54,6 +56,27 @@ class HomeController extends GetxController{
       }
     }
     update(["categories"]);
+  }
+
+  //
+  fetchCampaigns() async {
+
+    update();
+    try{
+      var result = await HttpService.getRequest("campaign");
+      if(result is http.Response){
+        if(result.statusCode==200){
+          campaign = HomeCampaignsModel.fromJson(jsonDecode(result.body));
+          print(campaign!.data![0]!.image);
+        }
+        //autoScrollProducts();
+      }
+    }catch(e){
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+    update();
   }
 
   //
@@ -71,7 +94,6 @@ class HomeController extends GetxController{
             products.addAll(productsListFromJson(result.body).products!);
           }
         }
-        //autoScrollProducts();
       }
     }catch(e){
       if (kDebugMode) {
@@ -79,6 +101,63 @@ class HomeController extends GetxController{
       }
     }
     update();
+  }
+
+  //
+  fetchSubCategories() async {
+
+    update(["category_1"]);
+    try{
+      var result = await HttpService.getRequest("subcategory/23");
+      if(result is http.Response){
+        if(result.statusCode==200){
+          subcategories1.addAll(subcategoriesModelFromJson(result.body).subcategories!);
+        }
+      }
+    }catch(e){
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+    update(["category_1"]);
+  }
+
+  //
+  fetchSubCategories2() async {
+
+    update(["category_2"]);
+    try{
+      var result = await HttpService.getRequest("subcategory/38");
+      if(result is http.Response){
+        if(result.statusCode==200){
+          subcategories2.addAll(subcategoriesModelFromJson(result.body).subcategories!);
+        }
+      }
+    }catch(e){
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+    update(["category_2"]);
+  }
+
+  //
+  fetchSubCategories3() async {
+
+    update(["category_3"]);
+    try{
+      var result = await HttpService.getRequest("subcategory/32");
+      if(result is http.Response){
+        if(result.statusCode==200){
+          subcategories3.addAll(subcategoriesModelFromJson(result.body).subcategories!);
+        }
+      }
+    }catch(e){
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+    update(["category_3"]);
   }
 
   //
@@ -182,6 +261,10 @@ class HomeController extends GetxController{
     fetchProducts(isRefresh: true);
     fetchFeaturedProducts();
     fetchCarousel1();
+    fetchCampaigns();
+    fetchSubCategories();
+    fetchSubCategories2();
+    fetchSubCategories3();
     sc.addListener(() {
       calculateCurrentScrollPosition();
       update();

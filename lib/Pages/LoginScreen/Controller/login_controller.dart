@@ -43,11 +43,10 @@ class LoginController extends GetxController{
     }
     if(await MobileNumber.hasPhonePermission){
       MobileNumber.getSimCards!.then((value) async {
-        await Get.defaultDialog(
-            backgroundColor: Colors.white,
-            title: "Choose your number",
-            titleStyle: TextStyle(fontSize: 14.sp),
-            content: ListView.builder(
+        print(value);
+        if(value.isNotEmpty)
+        await Get.dialog(
+            ListView.builder(
                 shrinkWrap: true,
                 itemCount: value.length,
                 itemBuilder: (context,index){

@@ -9,12 +9,17 @@ import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/home_controller.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/AutoSlideProductsView/auto_slide_products_view.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/CarouselView/carousel_view.dart';
+import 'package:grocery_nxt/Pages/HomeScreen/Widgets/FeaturedCategory1/featured_category_1.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/FeaturedProductsView/featured_products_view.dart';
+import 'package:grocery_nxt/Pages/HomeScreen/Widgets/HomeCampaign/home_campaign.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/HomeProductsView/home_products_view.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/ScrollIndicator/scroll_indicator.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/Top%20Content/appbar_content.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/Top%20Content/top_content.dart';
 import 'package:lottie/lottie.dart';
+
+import 'Widgets/FeaturedCategory1/featured_category_2.dart';
+import 'Widgets/FeaturedCategory1/featured_category_3.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
@@ -81,11 +86,25 @@ class HomeScreen extends StatelessWidget {
 
                           const ScrollIndicator(),
 
-                          HomeProductsView(),
+                          FeaturedProductsView(),
 
                           CarouselView(),
 
-                          FeaturedProductsView(),
+                          HomeProductsView(),
+
+                          SizedBox(height: 24.h),
+
+                          HomeCampaign(),
+
+                          FeaturedCategory1(),
+
+                          SizedBox(height: 24.h),
+
+                          FeaturedCategory2(),
+
+                          SizedBox(height: 24.h),
+
+                          FeaturedCategory3(),
 
                           SizedBox(height: 24.h),
 
