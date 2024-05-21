@@ -12,6 +12,7 @@ class CustomButton extends StatefulWidget {
     this.onTap,
     this.width,
     this.height,
+    this.color,
   }) : super(key: key);
 
   final bool isLoading;
@@ -20,6 +21,7 @@ class CustomButton extends StatefulWidget {
   final Function()? onTap;
   final double? width;
   final double? height;
+  Color ?color;
 
   @override
   _CustomButtonState createState() => _CustomButtonState();
@@ -82,7 +84,7 @@ class _CustomButtonState extends State<CustomButton>
               width: widget.width ?? MediaQuery.of(context).size.width * 0.5,
               height: widget.height ?? 40.h,
               decoration: BoxDecoration(
-                color: AppColors.primaryColor,
+                color: widget.color ?? AppColors.primaryColor,
                 borderRadius: BorderRadius.circular(30.r),
               ),
               child: Center(

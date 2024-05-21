@@ -15,6 +15,7 @@ import 'package:grocery_nxt/Pages/Payment%20Screen/payment_failed.dart';
 import 'package:grocery_nxt/Pages/Payment%20Screen/payment_success.dart';
 import 'package:grocery_nxt/Services/http_services.dart';
 import 'package:grocery_nxt/Utils/shared_pref_utils.dart';
+import 'package:grocery_nxt/Utils/toast_util.dart';
 import 'package:http/http.dart' as http;
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:uuid/uuid.dart';
@@ -27,11 +28,12 @@ class PaymentController extends GetxController {
   OrderController orderController = Get.find<OrderController>();
   ChooseAddressController addressController = Get.find<ChooseAddressController>();
   bool isPlacingOrder = false;
-  int    ?orderId;
+  int ?orderId;
   dynamic totalAmount;
   var razorpay = Razorpay();
   OrderSuccessResponse ?successResponse;
   String ?transactionId;
+  bool confirmingPayment = false;
 
   //
   loadPaymentOptions() async {
@@ -43,6 +45,9 @@ class PaymentController extends GetxController {
         if (result.statusCode == 200) {
           options = paymentOptionsModelFromJson(result.body).paymentOptions!;
           log(options[1].credentials!.secretKey.toString());
+          if(!addressController.showCOD){
+            options.removeWhere((element) => element.name=="cash_on_delivery");
+          }
         } else {
           print(result.body);
         }
@@ -59,6 +64,10 @@ class PaymentController extends GetxController {
   //
   placeOrder() async {
 
+    if(selectedOption==null){
+      ToastUtil().showToast(message: "Select a payment method");
+      return;
+    }
     isPlacingOrder = true;
     Map<String,dynamic> cart_post = {};
     for (var element in cartController.products) {
@@ -134,6 +143,8 @@ class PaymentController extends GetxController {
   //
   updatePaymentStatus()async{
 
+    confirmingPayment = true;
+    update();
     successResponse!.type = "success";
     successResponse!.transactionId = transactionId;
     print(successResponse!.toJson());
@@ -141,10 +152,12 @@ class PaymentController extends GetxController {
       var result = await HttpService.postRequest(
           "update-payment",
           successResponse!.toJson(),
-        insertHeader: true
+          insertHeader: true
       );
       if(result is http.Response){
         if(result.statusCode==200){
+          confirmingPayment = false;
+          update();
           SharedPrefUtils().clearCart().then((value) {
             cartController.loadProducts();
             orderController.getOrders();
@@ -157,7 +170,10 @@ class PaymentController extends GetxController {
       }
     }catch(e){
       print(e);
+      confirmingPayment = false;
     }
+    confirmingPayment = false;
+    update();
   }
 
   //

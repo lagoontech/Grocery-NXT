@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
@@ -69,8 +68,9 @@ class TopContent extends StatelessWidget {
                                 position: index,
                                 child: SlideAnimation(
                                   horizontalOffset: 200.w,
-                                  duration: const Duration(milliseconds: 750),
+                                  duration: const Duration(milliseconds: 1200),
                                   child: FadeInAnimation(
+                                    duration: const Duration(milliseconds: 1200),
                                     child: CategoryItem(
                                         index:index,
                                         category: category

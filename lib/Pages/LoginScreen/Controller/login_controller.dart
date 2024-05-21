@@ -51,17 +51,19 @@ class LoginController extends GetxController{
                 itemCount: value.length,
                 itemBuilder: (context,index){
                   var sim = value[index].number;
-                  return ListTile(
-                    leading: Text("SIM ${index+1}"),
-                    title: Text(value[index].number!),
-                    onTap: (){
-                      if(sim!.length>12) {
-                        phoneTEC.text = sim.substring(4);
-                      }else{
-                        phoneTEC.text = sim.substring(2);
-                      }
-                      Get.close(1);
-                    },
+                  return Material(
+                    child: ListTile(
+                      leading: Text("SIM ${index+1}"),
+                      title: Text(value[index].number!),
+                      onTap: (){
+                        if(sim!.length>12) {
+                          phoneTEC.text = sim.substring(4);
+                        }else{
+                          phoneTEC.text = sim.substring(2);
+                        }
+                        Get.close(1);
+                      },
+                    ),
                   );
                 })
         );

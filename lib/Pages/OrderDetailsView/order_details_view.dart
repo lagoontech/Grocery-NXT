@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/OrderDetailsView/Controller/order_details_controller.dart';
+import 'package:grocery_nxt/Utils/date_utils.dart';
 import 'package:grocery_nxt/Widgets/custom_appbar.dart';
 import 'package:grocery_nxt/Widgets/custom_button.dart';
 import 'package:grocery_nxt/Widgets/custom_circular_loader.dart';
@@ -40,52 +41,132 @@ class OrderDetailsView extends StatelessWidget {
                   color: AppColors.primaryColor))
               : SingleChildScrollView(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+
+                      Padding(
+                        padding: EdgeInsets.only(left: 16.w),
+                        child: Text(
+                            "Order Id - ${orderDetailsController.orderDetails!.paymentDetails!.invoiceNumber.toString()}",
+                            style: TextStyle(
+                              color: Colors.grey.shade500,
+                              fontSize: 13.sp
+                            ),
+                        ),
+                      ),
+
+                      Divider(
+                        color: Colors.grey.shade300,
+                      ),
+
                       Container(
-                        margin: EdgeInsets.symmetric(
-                            horizontal: 16.w, vertical: 12.h),
+                        margin: EdgeInsets.symmetric(vertical: 12.h),
                         decoration: BoxDecoration(
-                            color: Colors.grey.shade100,
                             borderRadius: BorderRadius.circular(12.r)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                               const Text("Products"),
-                              ListView.builder(
-                                  itemCount: vc
-                                      .orderDetails!.order![0].orderItem!.length,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+
+                            Padding(
+                              padding: EdgeInsets.only(left: 12.w),
+                              child: Text(
+                                  "${orderDetailsController!.orderDetails!.order![0].orderItem!.length.toString()} Items in Basket",
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600
+                                  ),
+                              ),
+                            ),
+
+                            SizedBox(height: 12.h),
+
+                            SizedBox(
+                              height: 70.h,
+                              child: ListView.separated(
+                                  separatorBuilder: (c,s){
+                                    return SizedBox(width: 8.w);
+                                  },
+                                  padding: EdgeInsets.only(left: 12.w),
+                                  itemCount: vc.orderDetails!.order![0].orderItem!.length,
                                   shrinkWrap: true,
+                                  scrollDirection: Axis.horizontal,
                                   itemBuilder: (context, index) {
-                                    var product = vc.orderDetails!.order![0]
-                                        .orderItem![index];
-                                    return ListTile(
-                                      leading: CachedNetworkImage(
-                                        imageUrl: product.product!.image!,
-                                        width: 30.w,
+                                    var product = vc.orderDetails!.order![0].orderItem![index];
+                                    return SizedBox(
+                                      width: 75.w,
+                                      height: 50.h,
+                                      child: FittedBox(
+                                        child: CachedNetworkImage(
+                                            imageUrl: product.product!.image!,
+                                            fit: BoxFit.fitHeight,
+                                        ),
                                       ),
-                                      title: Row(
-                                        children: [
-                                          Expanded(
-                                            child: Text(product.product!.name!,
-                                                maxLines: 2,
-                                                style:
-                                                    TextStyle(fontSize: 10.sp)),
-                                          ),
-                                          Text(
-                                            "${product.quantity} X ${product.price!}",
-                                            style: TextStyle(fontSize: 10.sp),
-                                          )
-                                        ],
-                                      ),
-                                      trailing: Text(((product.quantity! *
-                                              double.parse(
-                                                  product.price.toString()))
-                                          .toStringAsFixed(0))),
                                     );
                                   }),
-                            ],
-                          ),
+                            ),
+
+                            SizedBox(height: 12.h),
+
+                            Padding(
+                              padding: EdgeInsets.only(left: 12.w),
+                              child: Text(
+                                  "\u{20B9} ${vc.orderDetails!.order![0].totalAmount!}",
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w600
+                                  ),
+                              ),
+                            ),
+
+                            Divider(
+                              color: Colors.grey.shade300,
+                            ),
+
+                            Padding(
+                              padding: EdgeInsets.only(left: 12.w,top: 8.h),
+                              child: Row(
+                                children: [
+
+                                  Container(
+                                    width: 28.w,
+                                    height: 28.h,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primaryColor,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(Icons.check,color: Colors.white),
+                                  ),
+
+                                  SizedBox(width: 4.w),
+
+                                  Text("Order Confirmed "+DateFormatUtil().displayFormat(dateTime: vc.orderDetails!.orderTrack!.createdAt)),
+
+                                ],
+                              ),
+                            ),
+
+                            Padding(
+                              padding: EdgeInsets.only(left: 12.w,top: 8.h),
+                              child: Row(
+                                children: [
+
+                                  Container(
+                                    width: 28.w,
+                                    height: 28.h,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.secondaryColor,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(Icons.delivery_dining,color: Colors.white),
+                                  ),
+
+                                  SizedBox(width: 4.w),
+
+                                  Text("Delivery Cost \u{20B9} "+vc.orderDetails!.order![0].shippingCost!),
+
+                                ],
+                              ),
+                            ),
+
+                          ],
                         ),
                       ),
 
@@ -93,7 +174,7 @@ class OrderDetailsView extends StatelessWidget {
                         padding: EdgeInsets.only(left: 6.w, right: 6.w),
                         child: Column(
                           children: [
-                            OrderDetail(
+                            /*OrderDetail(
                                 title: "Order Status",
                                 detail: vc.orderDetails!.order![0].orderStatus!
                                     .toUpperCase()),
@@ -110,7 +191,7 @@ class OrderDetailsView extends StatelessWidget {
                                 title: "Payment Method",
                                 detail: vc
                                     .orderDetails!.paymentDetails!.paymentGateway!
-                                    .toUpperCase()),
+                                    .toUpperCase()),*/
                             OrderDetail(
                                 title: "Payment Status",
                                 detail: vc
@@ -122,15 +203,17 @@ class OrderDetailsView extends StatelessWidget {
                       SizedBox(height: 16.h),
 
                       vc.orderDetails!.paymentDetails!.paymentStatus == "pending"
-                          ? SizedBox(
-                            width: MediaQuery.of(context).size.width*0.8,
-                            child: CustomButton(
-                                child: const Text("Pay Now",
-                                    style: TextStyle(color: Colors.white)),
-                                onTap: () {
-                                  vc.processPayment();
-                                },
-                              ),
+                          ? Center(
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width*0.8,
+                              child: CustomButton(
+                                  child: const Text("Pay Now",
+                                      style: TextStyle(color: Colors.white)),
+                                  onTap: () {
+                                    vc.processPayment();
+                                  },
+                                ),
+                            ),
                           )
                           : const SizedBox()
                     ],

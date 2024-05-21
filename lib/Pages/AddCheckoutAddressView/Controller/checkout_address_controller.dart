@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
 import 'package:grocery_nxt/Pages/ProfileView/Controller/profile_controller.dart';
 import 'package:grocery_nxt/Services/http_services.dart';
+import 'package:grocery_nxt/Utils/toast_util.dart';
 import 'package:http/http.dart' as http;
 import '../Models/countries_model.dart';
 import '../Models/states_model.dart';
@@ -96,6 +97,10 @@ class AddCheckoutAddressController extends GetxController{
   createAddress()async{
 
     ProfileController profileController = Get.find<ProfileController>();
+    if(selectedState==null){
+      ToastUtil().showToast(message: "Please select a state");
+      return;
+    }
     creatingAddress = true;
     update();
     try{
@@ -114,7 +119,7 @@ class AddCheckoutAddressController extends GetxController{
       if(result is http.Response){
         print(result.body);
         if(result.statusCode==200){
-          Get.back();
+          Get.back(result: 1);
         }else{
           print(result.body);
         }

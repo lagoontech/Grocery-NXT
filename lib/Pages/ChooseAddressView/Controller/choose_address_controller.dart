@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Services/http_services.dart';
 import 'package:http/http.dart' as http;
@@ -15,6 +16,7 @@ class ChooseAddressController extends GetxController{
   String shippingCharge = "0.00";
   bool showCOD = true;
   double finalTotal = 0.00;
+  ScrollController scrollController = ScrollController();
 
   //
   getAddresses() async {
@@ -50,7 +52,7 @@ class ChooseAddressController extends GetxController{
       }
       final Uri uri = Uri.parse('http://grocerynxt.lagoontechcloud.com/api/shippingaddresszipcode.php');
       final map = <String, dynamic>{};
-      map['zipcode']    = "629157";
+      map['zipcode']    = selectedAddress!.zipCode;
       map['productids'] = products_ids;
       http.Response result = await http.post(
         uri,

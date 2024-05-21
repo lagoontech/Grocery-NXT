@@ -10,6 +10,21 @@ class NetworkUtil {
   //
   bool isConnected(){
 
+    Connectivity().checkConnectivity().then((value){
+      connectivityResult = value[0];
+    });
+    if(connectivityResult!=ConnectivityResult.none){
+      return true;
+    }
+    return false;
+  }
+
+  //
+  Future<bool> checkConnection() async {
+
+    await Connectivity().checkConnectivity().then((value){
+      connectivityResult = value[0];
+    });
     if(connectivityResult!=ConnectivityResult.none){
       return true;
     }

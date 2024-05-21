@@ -16,6 +16,7 @@ class FeaturedProductsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
+        id: "featured_products",
         builder: (hc) {
           return hc.featuredProducts.isNotEmpty?Column(
             crossAxisAlignment: CrossAxisAlignment.start,

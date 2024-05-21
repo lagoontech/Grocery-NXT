@@ -41,60 +41,83 @@ class ChooseAddressView extends StatelessWidget {
                     height: 24.h,
                   ),
 
-                  vc.addresses.isNotEmpty ? ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: vc.addresses.length,
-                      itemBuilder: (context, index) {
-                        var address = vc.addresses[index];
-                        return Container(
-                          decoration: BoxDecoration(
-                              border: Border(
-                                  bottom: BorderSide(
-                                      color: Colors.grey.shade100
-                                  ),
-                                  top: BorderSide(
-                                      color: Colors.grey.shade100
-                                  )
-                              )
-                          ),
-                          child: ListTile(
-                            leading: Container(
-                              width: 55.w,
-                              height: 55.w,
-                              padding: EdgeInsets.all(0.4.w),
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12.r),
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.black.withOpacity(0.2),
-                                        blurRadius: 2
+                  vc.addresses.isNotEmpty ? ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxHeight: fromProfile!
+                          ? MediaQuery.of(context).size.height*0.6
+                          : MediaQuery.of(context).size.height*0.3
+                    ),
+                    child: ScrollbarTheme(
+                      data: ScrollbarThemeData(
+                        thumbColor: MaterialStateProperty.all(AppColors.primaryColor)
+                      ),
+                      child: Scrollbar(
+                        trackVisibility: true,
+                        thumbVisibility: true,
+                        thickness: 3,
+                        radius: Radius.circular(30.r),
+                        child: ListView.builder(
+                          controller: vc.scrollController,
+                            shrinkWrap: true,
+                            itemCount: vc.addresses.length,
+                            itemBuilder: (context, index) {
+                              var address = vc.addresses[index];
+                              return Container(
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                        bottom: BorderSide(
+                                            color: Colors.grey.shade100
+                                        ),
+                                        top: BorderSide(
+                                            color: Colors.grey.shade100
+                                        )
                                     )
-                                  ]
-                              ),
-                              child: Image.asset("assets/images/map.png"),
-                            ),
-                            title: Text(address.name, style: TextStyle(
-                              color: AppColors.primaryColor,
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w600,
-                            ),),
-                            subtitle: Text(address.address!),
-                            trailing: !fromProfile! ? Radio(
-                                value: address.id,
-                                groupValue: vc.selectedAddressId,
-                                onChanged: (v) {
-                                  vc.selectedAddressId = v;
-                                  vc.selectedAddress
-                                  = vc.addresses.firstWhere((element) =>
-                                  element.id == vc.selectedAddressId);
-                                  vc.update();
-                                  vc.getShippingCharge();
-                                }
-                            ) : const SizedBox(),
-                          ),
-                        );
-                      }) : SizedBox(
+                                ),
+                                child: ListTile(
+                                  leading: Container(
+                                    width: 55.w,
+                                    height: 55.w,
+                                    padding: EdgeInsets.all(0.4.w),
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(12.r),
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: Colors.black.withOpacity(0.2),
+                                              blurRadius: 2
+                                          )
+                                        ]
+                                    ),
+                                    child: Image.asset("assets/images/map.png"),
+                                  ),
+                                  title: Text(address.name, style: TextStyle(
+                                    color: AppColors.primaryColor,
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),),
+                                  subtitle: Text(address.address!,maxLines: 2,style: TextStyle(
+                                    color: Colors.grey.shade400,
+                                    fontSize: 12.sp,
+                                    overflow: TextOverflow.ellipsis
+                                  ),),
+                                  trailing: !fromProfile! ? Radio(
+                                      value: address.id,
+                                      groupValue: vc.selectedAddressId,
+                                      onChanged: (v) {
+                                        vc.selectedAddressId = v;
+                                        vc.selectedAddress
+                                        = vc.addresses.firstWhere((element) =>
+                                        element.id == vc.selectedAddressId);
+                                        vc.update();
+                                        vc.getShippingCharge();
+                                      }
+                                  ) : const SizedBox(),
+                                ),
+                              );
+                            }),
+                      ),
+                    ),
+                  ) : SizedBox(
                     height: MediaQuery
                         .of(context)
                         .size
@@ -105,12 +128,15 @@ class ChooseAddressView extends StatelessWidget {
                   ),
 
                   SizedBox(
-                    height: 90.h,
+                    height: 40.h,
                   ),
 
                   InkWell(
-                    onTap: () {
-                      Get.to(() => AddCheckoutAddressView());
+                    onTap: () async {
+                      var result = await Get.to(() => AddCheckoutAddressView());
+                      if(result==1) {
+                        vc.getAddresses();
+                      }
                     },
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 24.w),

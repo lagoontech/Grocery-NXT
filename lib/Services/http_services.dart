@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/api_constants.dart';
@@ -42,6 +44,9 @@ class HttpService {
             : {'content-type': 'application/json'},
         body: json.encode(postData),
       );
+      if(kDebugMode){
+        log(response.body);
+      }
       return response;
     } on SocketException catch (e) {
       return e;
@@ -76,6 +81,9 @@ class HttpService {
           .timeout(const Duration(seconds: 10), onTimeout: () {
         return http.Response('Timeout', 408);
       });
+      if(kDebugMode){
+        log(response.body);
+      }
       //handleExceptions(response);
       return response;
     } on SocketException catch (e) {
@@ -84,23 +92,6 @@ class HttpService {
       throw NoServiceFoundException('No Service Found');
     }
   }
-
- /* //
-  static handleExceptions(http.Response response){
-
-    if(response.statusCode==401){
-      ToastUtil().showToast(color: Colors.red,message: "Session Expired");
-      Get.offAll(()=>const LoginScreen());
-    }
-    else if(response.statusCode==400){
-      if((jsonDecode(response.body)as Map<String,dynamic>).containsKey("error")){
-        ToastUtil().showToast(color: Colors.red,message: jsonDecode(response.body)["error"]);
-      }else if((jsonDecode(response.body)as Map<String,dynamic>).containsKey("errors")){
-        ToastUtil().showToast(color: Colors.red,message: jsonDecode(response.body)["errors"][0]["msg"]);
-      }
-    }
-  }*/
-
 }
 
 class NoInternetException {

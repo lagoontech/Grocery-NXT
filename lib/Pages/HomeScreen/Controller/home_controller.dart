@@ -163,7 +163,6 @@ class HomeController extends GetxController{
   //
   fetchFeaturedProducts({bool isRefresh = false,bool isLoadingNext = false}) async {
 
-    update();
     try{
       var result = await HttpService.getRequest(
           "featured/${ApiConstants().allProducts}");
@@ -174,13 +173,6 @@ class HomeController extends GetxController{
           }else{
             featuredProducts.addAll(productsListFromJson(result.body).products!);
           }
-          for(int i=0;i<featuredProducts.length;i++){
-            featuredProducts[i].color = await getImagePalette(featuredProducts[i].imgUrl!);
-            print(i);
-            if(i==featuredProducts.length-1){
-              autoScrollProducts();
-            }
-          }
         }
       }
     }catch(e){
@@ -188,6 +180,7 @@ class HomeController extends GetxController{
         print(e);
       }
     }
+    update(["featured_products"]);
   }
 
   //
@@ -205,7 +198,7 @@ class HomeController extends GetxController{
   fetchCarousel1() async {
 
     loadingCarousel = true;
-    update();
+    update(["carousel"]);
     try {
       var result = await HttpService.getRequest("mobile-slider/1");
       if(result is http.Response){
@@ -219,11 +212,11 @@ class HomeController extends GetxController{
       }
     }
     loadingCarousel = false;
-    update();
+    update(["carousel"]);
   }
 
   //
-  autoScrollProducts() async {
+  /*autoScrollProducts() async {
     update();
     await Future.delayed(const Duration(milliseconds: 5000));
     autoScroll1.animateTo(
@@ -234,7 +227,7 @@ class HomeController extends GetxController{
     autoScroll2.position.maxScrollExtent,
     duration: const Duration(seconds: 150),
     curve: Curves.linear);
-  }
+  }*/
 
   //
   calculateCurrentScrollPosition(){

@@ -2,12 +2,10 @@ import 'package:add_to_cart_animation/add_to_cart_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/home_controller.dart';
-import 'package:grocery_nxt/Pages/HomeScreen/Widgets/AutoSlideProductsView/auto_slide_products_view.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/CarouselView/carousel_view.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/FeaturedCategory1/featured_category_1.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/FeaturedProductsView/featured_products_view.dart';
@@ -17,7 +15,6 @@ import 'package:grocery_nxt/Pages/HomeScreen/Widgets/ScrollIndicator/scroll_indi
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/Top%20Content/appbar_content.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/Top%20Content/top_content.dart';
 import 'package:lottie/lottie.dart';
-
 import 'Widgets/FeaturedCategory1/featured_category_2.dart';
 import 'Widgets/FeaturedCategory1/featured_category_3.dart';
 
@@ -100,6 +97,10 @@ class HomeScreen extends StatelessWidget {
 
                           SizedBox(height: 24.h),
 
+                          CarouselView(),
+
+                          SizedBox(height: 24.h),
+
                           FeaturedCategory2(),
 
                           SizedBox(height: 24.h),
@@ -135,7 +136,7 @@ class HomeScreen extends StatelessWidget {
                             width: MediaQuery.of(context).size.width,
                             height: MediaQuery.of(context).size.height,
                             fit: BoxFit.fitWidth,
-                          color: Colors.white.withOpacity(0.2),
+                            color: Colors.white.withOpacity(0.1),
                         ),
 
                         Container(

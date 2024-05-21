@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
@@ -5,7 +6,6 @@ import 'package:grocery_nxt/Pages/OrdersView/Controller/order_controller.dart';
 import 'package:grocery_nxt/Widgets/custom_appbar.dart';
 import 'package:grocery_nxt/Widgets/custom_circular_loader.dart';
 import 'package:lottie/lottie.dart';
-
 import 'Widgets/order_list_item.dart';
 
 class OrdersView extends StatelessWidget {
@@ -30,20 +30,46 @@ class OrdersView extends StatelessWidget {
                   )
                 : Container(
                     color: Colors.white,
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          ListView.builder(
+                    child: CustomScrollView(
+                      slivers: [
+
+                        SliverAppBar(
+                          backgroundColor: Colors.white,
+                          scrolledUnderElevation: 0,
+                          pinned: true,
+                          title: TabBar(
+                              controller: vc.tabController,
+                              dividerColor: Colors.transparent,
+                              labelStyle: TextStyle(
+                                fontWeight: FontWeight.w600
+                              ),
+                              tabs: const [
+                                Tab(
+                                  text: "Pending",
+                                ),
+                                Tab(
+                                  text: "Delivered",
+                                ),
+                              ]),
+                        ),
+
+                        SliverToBoxAdapter(
+                          child: ListView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
-                              itemCount: vc.orders.length,
+                              itemCount: vc.tabController!.index == 0
+                                  ? vc.pendingOrders.length
+                                  : vc.completedOrders.length,
                               itemBuilder: (context, index) {
                                 return OrderListItem(
-                                  order: vc.orders[index],
+                                  order: vc.tabController!.index == 0
+                                      ? vc.pendingOrders[index]
+                                      : vc.completedOrders[index],
                                 );
-                              })
-                        ],
-                      ),
+                              }),
+                        )
+
+                      ],
                     ),
                   );
       }),

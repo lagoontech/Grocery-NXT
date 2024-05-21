@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,12 +16,13 @@ import '../HomeScreen/Controller/cart_controller.dart';
 import '../HomeScreen/Widgets/HomeProductsView/discount_wavy_bottom_container.dart';
 
 class SwiggyView extends StatelessWidget {
-   SwiggyView({super.key,this.categoryId,this.categoryName,this.imageUrl});
+   SwiggyView({super.key,this.categoryId,this.categoryName,this.imageUrl,this.subCategoryId});
 
    SwiggyViewController svc = Get.put(SwiggyViewController());
    int    ?categoryId;
    String ?categoryName;
    String ?imageUrl;
+   int    ?subCategoryId;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +30,7 @@ class SwiggyView extends StatelessWidget {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if(svc.categoryId==null){
         svc.categoryId = categoryId;
+        svc.subCategoryId = subCategoryId;
         svc.categoryName = categoryName;
         svc.fetchSubCategories();
         svc.fetchCategoryProducts();
@@ -66,8 +67,11 @@ class SwiggyView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CachedNetworkImage(
-                    imageUrl: imageUrl!,
+                    imageUrl: imageUrl ?? "",
                     width: 40.w,
+                    errorWidget: (b,s,o){
+                      return Image(image: AssetImage("assets/images/gnxt_logo.png"));
+                    },
                     height: 40.h,
                   ),
                   SizedBox(width: 4.w),
@@ -130,280 +134,431 @@ class SwiggyView extends StatelessWidget {
       body: Container(
         color: Colors.grey.shade100,
         padding: EdgeInsets.only(top: 4.h),
-        child: Row(
-          children: [
+        child: GetBuilder<SwiggyViewController>(
+          builder: (vc) {
+            return !vc.somethingWentWrong?Row(
+              children: [
 
-            GetBuilder<SwiggyViewController>(
-              builder: (vc) {
-                return Expanded(
-                    flex: 3,
-                    child: Container(
-                      height: MediaQuery.of(context).size.height-(kToolbarHeight+MediaQuery.of(context).viewPadding.top),
-                      padding: EdgeInsets.only(top: 24.h),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                          border: Border.all(color: Colors.grey.shade400,width: 0.4),
-                        borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(12.r))
-                      ),
-                      child: !vc.isLoadingSubCategories ?Stack(
-                        children: [
-
-                          ListView.builder(
-                              shrinkWrap: true,
-                              physics: const BouncingScrollPhysics(),
-                              controller: svc.scrollController,
-                              itemCount: vc.subCategories.length,
-                              itemBuilder: (context,index){
-                                var sub = vc.subCategories[index];
-                                return SubCategoryItem(subcategory: sub);
-                              }
-                          ),
-
-                          AnimatedPositioned(
-                            left: 0,
-                            top: svc.scrollOffset,
-                            duration: const Duration(milliseconds: 300),
-                            child: Container(
-                              height: 88.h,
-                              width: 3.w,
-                              decoration: BoxDecoration(
-                                color: AppColors.secondaryColor,
-                                borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(12.r),
-                                    bottomRight: Radius.circular(12.r)
-                                )
-                              ),
-                            ),
-                          )
-
-                        ],
-                      ):ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: 6,
-                          itemBuilder: (context,index){
-                            return categoriesLoader();
-                          }
-                      ),
-                    )
-                );
-              }
-            ),
-
-            SizedBox(width: 4.w),
-
-            Expanded(
-                flex: 12,
-                child: GetBuilder<SwiggyViewController>(
+                GetBuilder<SwiggyViewController>(
                   builder: (vc) {
-                    return !vc.isLoadingSubCategories?PageView(
-                      scrollDirection: Axis.vertical,
-                      controller: svc.pageController,
-                      physics: const NeverScrollableScrollPhysics(),
-                      children: svc.subCategories.map((e){
-                        String previousSub = "";
-                        String nextSub     = "";
-                        try{
-                          if(vc.subIndex!=vc.subCategories.length-1){
-                            nextSub = vc.subCategories[vc.subCategories.indexOf(
-                                vc.selectedSubCategory!)+1].name!;
-                          }
-                          if(vc.subIndex!=0) {
-                            previousSub = vc.subCategories[vc.subCategories.indexOf(
-                                vc.selectedSubCategory!)-1].name!;
-                          }
-                        }catch(e){
-                          if (kDebugMode) {
-                            print(e);
-                          }
-                        }
-                        return Container(
-                          clipBehavior: Clip.antiAlias,
+                    return vc.subCategories.isNotEmpty?Expanded(
+                        flex: 3,
+                        child: Container(
                           height: MediaQuery.of(context).size.height-(kToolbarHeight+MediaQuery.of(context).viewPadding.top),
+                          padding: EdgeInsets.only(top: 24.h),
                           decoration: BoxDecoration(
-                              color: Colors.white,
+                            color: Colors.white,
                               border: Border.all(color: Colors.grey.shade400,width: 0.4),
-                              borderRadius: BorderRadius.circular(12.r)),
-                          child: Stack(
-                            alignment: Alignment.topCenter,
+                            borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(12.r))
+                          ),
+                          child: !vc.isLoadingSubCategories ?Stack(
                             children: [
 
-                                vc.products.isNotEmpty && vc.products.length>=5&&vc.subIndex!=0?Align(
-                                  alignment: Alignment.topCenter,
-                                  child: Padding(
-                                    padding: EdgeInsets.only(top: 8.h),
-                                    child: Column(
-                                      children: [
-                                        Icon(
-                                          Icons.keyboard_arrow_down_rounded,
-                                          color: AppColors.secondaryColor,
-                                        ).animate(
-                                            onPlay: (v){
-                                              v.repeat(reverse: true);
-                                            },
-                                            effects: [
-                                              const SlideEffect()
-                                            ]
-                                        ),Transform.translate(
-                                          offset: Offset(0,-4.h),
-                                          child: Icon(
-                                            Icons.keyboard_arrow_down_rounded,
-                                            color: AppColors.secondaryColor,
-                                          ).animate(
-                                              onPlay: (v){
-                                                v.repeat(reverse: true);
-                                              },
-                                              effects: [
-                                                const SlideEffect()
-                                              ]
-                                          ),
+                              ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const BouncingScrollPhysics(),
+                                  controller: svc.scrollController,
+                                  itemCount: vc.subCategories.length,
+                                  itemBuilder: (context,index){
+                                    var sub = vc.subCategories[index];
+                                    return SubCategoryItem(subcategory: sub);
+                                  }
+                              ),
+
+                              AnimatedPositioned(
+                                left: 0,
+                                top: svc.scrollOffset,
+                                duration: const Duration(milliseconds: 300),
+                                child: Container(
+                                  height: 88.h,
+                                  width: 3.w,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.secondaryColor,
+                                    borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(12.r),
+                                        bottomRight: Radius.circular(12.r)
+                                    )
+                                  ),
+                                ),
+                              )
+
+                            ],
+                          ):ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: 6,
+                              itemBuilder: (context,index){
+                                return categoriesLoader();
+                              }
+                          ),
+                        )
+                    ):SizedBox();
+                  }
+                ),
+
+                SizedBox(width: 4.w),
+
+                Expanded(
+                    flex: 12,
+                    child: GetBuilder<SwiggyViewController>(
+                      builder: (vc) {
+                        return !vc.isLoadingSubCategories&&vc.subCategories.isNotEmpty?PageView(
+                          scrollDirection: Axis.vertical,
+                          controller: svc.pageController,
+                          physics: const NeverScrollableScrollPhysics(),
+                          children: svc.subCategories.map((e){
+                            String previousSub = "";
+                            String nextSub     = "";
+                            try{
+                              if(vc.subIndex!=vc.subCategories.length-1){
+                                nextSub = vc.subCategories[vc.subCategories.indexOf(
+                                    vc.selectedSubCategory!)+1].name!;
+                              }
+                              if(vc.subIndex!=0) {
+                                previousSub = vc.subCategories[vc.subCategories.indexOf(
+                                    vc.selectedSubCategory!)-1].name!;
+                              }
+                            }catch(e){
+                              if (kDebugMode) {
+                                print(e);
+                              }
+                            }
+                            return Container(
+                              clipBehavior: Clip.antiAlias,
+                              height: MediaQuery.of(context).size.height-(kToolbarHeight+MediaQuery.of(context).viewPadding.top),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(color: Colors.grey.shade400,width: 0.4),
+                                  borderRadius: BorderRadius.circular(12.r)),
+                              child: Stack(
+                                alignment: Alignment.topCenter,
+                                children: [
+
+                                    vc.products.isNotEmpty && vc.products.length>=5&&vc.subIndex!=0?Align(
+                                      alignment: Alignment.topCenter,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(top: 8.h),
+                                        child: Column(
+                                          children: [
+                                            Icon(
+                                              Icons.keyboard_arrow_down_rounded,
+                                              color: AppColors.secondaryColor,
+                                            ).animate(
+                                                onPlay: (v){
+                                                  v.repeat(reverse: true);
+                                                },
+                                                effects: [
+                                                  const SlideEffect()
+                                                ]
+                                            ),Transform.translate(
+                                              offset: Offset(0,-4.h),
+                                              child: Icon(
+                                                Icons.keyboard_arrow_down_rounded,
+                                                color: AppColors.secondaryColor,
+                                              ).animate(
+                                                  onPlay: (v){
+                                                    v.repeat(reverse: true);
+                                                  },
+                                                  effects: [
+                                                    const SlideEffect()
+                                                  ]
+                                              ),
+                                            ),
+                                            Text(previousSub),
+                                          ],
                                         ),
-                                        Text(previousSub),
+                                      )):SizedBox(),
+
+                                  vc.products.length>10 && vc.isLastPage?Padding(
+                                    padding: EdgeInsets.only(bottom: 12.h),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Text(nextSub),
+                                        Icon(
+                                            Icons.keyboard_arrow_up_rounded,
+                                            color: AppColors.secondaryColor,
+                                        ).animate(
+                                          onPlay: (v){
+                                            v.repeat(reverse: true);
+                                          },
+                                          effects: [
+                                            SlideEffect()
+                                          ]
+                                        )
                                       ],
                                     ),
-                                  )):SizedBox(),
+                                  ):SizedBox(),
 
-                              vc.products.length>10 && vc.isLastPage?Padding(
-                                padding: EdgeInsets.only(bottom: 12.h),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(nextSub),
-                                    Icon(
-                                        Icons.keyboard_arrow_up_rounded,
-                                        color: AppColors.secondaryColor,
-                                    ).animate(
-                                      onPlay: (v){
-                                        v.repeat(reverse: true);
-                                      },
-                                      effects: [
-                                        SlideEffect()
-                                      ]
-                                    )
-                                  ],
-                                ),
-                              ):SizedBox(),
+                                  SingleChildScrollView(
+                                    physics: const BouncingScrollPhysics(),
+                                    controller: e.scrollController,
+                                    child: Column(
+                                      children: [
 
-                              SingleChildScrollView(
-                                physics: const BouncingScrollPhysics(),
-                                controller: e.scrollController,
-                                child: Column(
-                                  children: [
-
-                                    Container(
-                                      height: kToolbarHeight*0.9,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(12.r),
-                                            bottomLeft: Radius.circular(12.r)
-                                        )
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-
-                                          Padding(
-                                            padding: const EdgeInsets.all(12),
-                                            child: GetBuilder<SwiggyViewController>(
-                                                builder: (vc) {
-                                                  return !vc.isLoading?Row(
-                                                    children: [
-
-                                                      Text(
-                                                          "${svc.totalProducts} items",
-                                                          style: const TextStyle(fontWeight: FontWeight.w600)),
-
-                                                      Text(" in ${svc.selectedSubCategory!=null
-                                                          ? svc.selectedSubCategory!.name!
-                                                          : ""}")
-
-                                                    ],
-                                                  ): Container(
-                                                    width: MediaQuery.of(context).size.width * 0.20,
-                                                    height: MediaQuery.of(context).size.height*0.32*0.08,
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.grey.shade100,
-                                                    ),
-                                                  );
-                                                }
-                                            ),
+                                        Container(
+                                          height: kToolbarHeight*0.9,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(12.r),
+                                                bottomLeft: Radius.circular(12.r)
+                                            )
                                           ),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
 
-                                          Expanded(
-                                              child: Align(
-                                                  alignment: Alignment.bottomCenter,
-                                                  child: Divider(color: Colors.grey.shade300,thickness: 0.6,height: 0)))
+                                              Padding(
+                                                padding: const EdgeInsets.all(12),
+                                                child: GetBuilder<SwiggyViewController>(
+                                                    builder: (vc) {
+                                                      return !vc.isLoading?Row(
+                                                        children: [
 
-                                        ],
-                                      ),
-                                    ),
+                                                          Text(
+                                                              "${svc.totalProducts} items",
+                                                              style: const TextStyle(fontWeight: FontWeight.w600)),
 
-                                    GetBuilder<SwiggyViewController>(
-                                        builder: (vc) {
-                                          return !vc.isLoading?GridView.builder(
-                                              padding: EdgeInsets.zero,
-                                              shrinkWrap: true,
-                                              itemCount: svc.products.length,
-                                              physics: const NeverScrollableScrollPhysics(),
-                                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                                crossAxisCount: 2,
-                                                mainAxisExtent: MediaQuery.of(context).size.height*0.34,
+                                                          Text(" in ${svc.selectedSubCategory!=null
+                                                              ? svc.selectedSubCategory!.name!
+                                                              : ""}")
+
+                                                        ],
+                                                      ): Container(
+                                                        width: MediaQuery.of(context).size.width * 0.20,
+                                                        height: MediaQuery.of(context).size.height*0.32*0.08,
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.grey.shade100,
+                                                        ),
+                                                      );
+                                                    }
+                                                ),
                                               ),
-                                              itemBuilder: (context,index){
-                                                var product = svc.products[index];
-                                                return SwiggyViewProduct(
-                                                  product: product,
-                                                  index: index,
-                                                );
-                                              }
-                                          ):GridView.builder(
-                                              padding: EdgeInsets.zero,
-                                              shrinkWrap: true,
-                                              itemCount: 6,
-                                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                                crossAxisCount: 2,
-                                                mainAxisExtent: MediaQuery.of(context).size.height*0.34,
-                                              ),
-                                              itemBuilder: (context,index){
-                                                return loader(context,index);
-                                              }
-                                          );
-                                        }
-                                    ),
 
-                                    GetBuilder<SwiggyViewController>(
-                                        builder: (vc){
-                                      return AnimatedContainer(
-                                        duration: const Duration(milliseconds: 300),
-                                        width: MediaQuery.of(context).size.width,
-                                        margin: EdgeInsets.only(bottom: 8.h),
-                                        decoration: BoxDecoration(
-                                          color: AppColors.secondaryColor
+                                              Expanded(
+                                                  child: Align(
+                                                      alignment: Alignment.bottomCenter,
+                                                      child: Divider(color: Colors.grey.shade300,thickness: 0.6,height: 0)))
+
+                                            ],
+                                          ),
                                         ),
-                                        height: vc.isLoadingNextPage?36.h:0,
-                                        child: Center(
-                                          child: SizedBox(
-                                            width: 24.w,
-                                            height: 24.w,
-                                            child: Lottie.asset("assets/animations/preloader_white.json")
-                                          ),
-                                        )
-                                    );})
 
-                                  ],
-                                ),
+                                        GetBuilder<SwiggyViewController>(
+                                            builder: (vc) {
+                                              return !vc.isLoading?GridView.builder(
+                                                  padding: EdgeInsets.zero,
+                                                  shrinkWrap: true,
+                                                  itemCount: svc.products.length,
+                                                  physics: const NeverScrollableScrollPhysics(),
+                                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                    crossAxisCount: 2,
+                                                    mainAxisExtent: MediaQuery.of(context).size.height*0.34,
+                                                  ),
+                                                  itemBuilder: (context,index){
+                                                    var product = svc.products[index];
+                                                    return SwiggyViewProduct(
+                                                      product: product,
+                                                      index: index,
+                                                    );
+                                                  }
+                                              ):GridView.builder(
+                                                  padding: EdgeInsets.zero,
+                                                  shrinkWrap: true,
+                                                  itemCount: 6,
+                                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                    crossAxisCount: 2,
+                                                    mainAxisExtent: MediaQuery.of(context).size.height*0.34,
+                                                  ),
+                                                  itemBuilder: (context,index){
+                                                    return loader(context,index);
+                                                  }
+                                              );
+                                            }
+                                        ),
+
+                                        GetBuilder<SwiggyViewController>(
+                                            builder: (vc){
+                                          return AnimatedContainer(
+                                            duration: const Duration(milliseconds: 300),
+                                            width: MediaQuery.of(context).size.width,
+                                            margin: EdgeInsets.only(bottom: 8.h),
+                                            decoration: BoxDecoration(
+                                              color: AppColors.secondaryColor
+                                            ),
+                                            height: vc.isLoadingNextPage?36.h:0,
+                                            child: Center(
+                                              child: SizedBox(
+                                                width: 24.w,
+                                                height: 24.w,
+                                                child: Lottie.asset("assets/animations/preloader_white.json")
+                                              ),
+                                            )
+                                        );})
+
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                    ) : initialLoader(context);
-                  }
-                )
-            ),
+                            );
+                          }).toList(),
+                        ): vc.products.isNotEmpty
+                            ? SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        height: kToolbarHeight * 0.9,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(12.r),
+                                                bottomLeft: Radius.circular(12.r))),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.all(12),
+                                              child:
+                                                  GetBuilder<SwiggyViewController>(
+                                                      builder: (vc) {
+                                                return !vc.isLoading
+                                                    ? Row(
+                                                        children: [
+                                                          Text(
+                                                              "${svc.totalProducts} items",
+                                                              style: const TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600)),
+                                                          Text(
+                                                              " in ${svc.selectedSubCategory != null ? svc.selectedSubCategory!.name! : ""}")
+                                                        ],
+                                                      )
+                                                    : Container(
+                                                        width:
+                                                            MediaQuery.of(context)
+                                                                    .size
+                                                                    .width *
+                                                                0.20,
+                                                        height:
+                                                            MediaQuery.of(context)
+                                                                    .size
+                                                                    .height *
+                                                                0.32 *
+                                                                0.08,
+                                                        decoration: BoxDecoration(
+                                                          color:
+                                                              Colors.grey.shade100,
+                                                        ),
+                                                      );
+                                              }),
+                                            ),
+                                            Expanded(
+                                                child: Align(
+                                                    alignment:
+                                                        Alignment.bottomCenter,
+                                                    child: Divider(
+                                                        color: Colors.grey.shade300,
+                                                        thickness: 0.6,
+                                                        height: 0)))
+                                          ],
+                                        ),
+                                      ),
+                                      GetBuilder<SwiggyViewController>(
+                                          builder: (vc) {
+                                        return !vc.isLoading
+                                            ? GridView.builder(
+                                                padding: EdgeInsets.zero,
+                                                shrinkWrap: true,
+                                                itemCount: svc.products.length,
+                                                physics:
+                                                    const NeverScrollableScrollPhysics(),
+                                                gridDelegate:
+                                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                                  crossAxisCount: 2,
+                                                  mainAxisExtent:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .height *
+                                                          0.34,
+                                                ),
+                                                itemBuilder: (context, index) {
+                                                  var product = svc.products[index];
+                                                  return SwiggyViewProduct(
+                                                    product: product,
+                                                    index: index,
+                                                  );
+                                                })
+                                            : GridView.builder(
+                                                padding: EdgeInsets.zero,
+                                                shrinkWrap: true,
+                                                itemCount: 6,
+                                                gridDelegate:
+                                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                                  crossAxisCount: 2,
+                                                  mainAxisExtent:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .height *
+                                                          0.34,
+                                                ),
+                                                itemBuilder: (context, index) {
+                                                  return loader(context, index);
+                                                });
+                                      }),
+                                      GetBuilder<SwiggyViewController>(
+                                          builder: (vc) {
+                                        return AnimatedContainer(
+                                            duration:
+                                                const Duration(milliseconds: 300),
+                                            width:
+                                                MediaQuery.of(context).size.width,
+                                            margin: EdgeInsets.only(bottom: 8.h),
+                                            decoration: BoxDecoration(
+                                                color: AppColors.secondaryColor),
+                                            height: vc.isLoadingNextPage ? 36.h : 0,
+                                            child: Center(
+                                              child: SizedBox(
+                                                  width: 24.w,
+                                                  height: 24.w,
+                                                  child: Lottie.asset(
+                                                      "assets/animations/preloader_white.json")),
+                                            ));
+                                      })
+                                    ],
+                                  ),
+                                )
+                              : initialLoader(context);
+                      }
+                    )
+                ),
 
-          ],
+              ],
+            ) : Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: Center(
+                child: Column(
+                  children: [
+
+
+
+                    CustomButton(
+                      child: Text("Load Products"),
+                      onTap: (){
+                        svc.fetchSubCategories();
+                        svc.fetchCategoryProducts();
+                      },
+                    ),
+
+                  ],
+                ),
+              ),
+            );
+          }
         ),
       ),
       floatingActionButton: Padding(

@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/home_controller.dart';
 
+import '../../../SwiggyView/swiggy_view.dart';
+
 class FeaturedCategory2 extends StatelessWidget {
   FeaturedCategory2({super.key});
 
@@ -75,38 +77,48 @@ class FeaturedCategory2 extends StatelessWidget {
                       ),
                       itemBuilder: (context,index){
                         var subCategory = vc.subcategories2[index];
-                        return Container(
-                          decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.6),
-                              borderRadius: BorderRadius.circular(12.r),
-                              border: Border.all(color: Colors.grey.shade200)
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
+                        return GestureDetector(
+                          onTap: (){
+                            Get.to(()=>SwiggyView(
+                              categoryName: vc.categories.firstWhere((element) => element!.id==subCategory.categoryId)!.name,
+                              categoryId: subCategory.categoryId,
+                              imageUrl: vc.categories.firstWhere((element) => element!.id==subCategory.categoryId)!.imageUrl,
+                              subCategoryId: subCategory.id,
+                            ));
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.6),
+                                borderRadius: BorderRadius.circular(12.r),
+                                border: Border.all(color: Colors.grey.shade200)
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
 
-                              Container(
-                                width: 56.w,
-                                height: 56.w,
-                                alignment: Alignment.bottomCenter,
-                                child: CachedNetworkImage(
-                                  imageUrl: subCategory.imageUrl!,
+                                Container(
+                                  width: 56.w,
+                                  height: 56.w,
+                                  alignment: Alignment.bottomCenter,
+                                  child: CachedNetworkImage(
+                                    imageUrl: subCategory.imageUrl!,
+                                  ),
                                 ),
-                              ),
 
-                              SizedBox(height: 4.h),
+                                SizedBox(height: 4.h),
 
 
-                              Text(
-                                  subCategory.name!,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.brown,
-                                      fontSize: 10.sp,
-                                      fontWeight: FontWeight.w600
-                                  )),
+                                Text(
+                                    subCategory.name!,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.brown,
+                                        fontSize: 10.sp,
+                                        fontWeight: FontWeight.w600
+                                    )),
 
-                            ],
+                              ],
+                            ),
                           ),
                         );
                       }),

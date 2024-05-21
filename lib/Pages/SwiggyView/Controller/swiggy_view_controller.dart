@@ -18,6 +18,7 @@ class SwiggyViewController extends GetxController with GetTickerProviderStateMix
 
   int ?categoryId;
   int subIndex = 0;
+  int ?subCategoryId;
   String ?categoryName;
   List<Subcategory> subCategories = [];
   Subcategory ?selectedSubCategory;
@@ -47,11 +48,13 @@ class SwiggyViewController extends GetxController with GetTickerProviderStateMix
   GlobalKey selectedKey = GlobalKey();
   Timer ?pageScrollTimer;
   RangeValues ?filterPriceRange = const RangeValues(1,1500);
+  bool somethingWentWrong = false;
 
   //
   fetchSubCategories() async {
 
     isLoadingSubCategories = true;
+    somethingWentWrong = false;
     update();
     try{
       var result = await HttpService.getRequest("subcategory/$categoryId");
@@ -63,7 +66,12 @@ class SwiggyViewController extends GetxController with GetTickerProviderStateMix
             subCategories[i].positionKey = GlobalKey();
             subCategories[i].scrollController = ScrollController();
           }
-          selectedSubCategory = subCategories[0];
+          if(subCategories.isNotEmpty) {
+            selectedSubCategory = subCategories[0];
+          }
+          if(subCategoryId!=null){
+            selectedSubCategory = subCategories.firstWhere((element) => element.id==subCategoryId);
+          }
           fetchProducts(isRefresh: true);
           attachScrollListeners();
         }
@@ -72,14 +80,21 @@ class SwiggyViewController extends GetxController with GetTickerProviderStateMix
       if (kDebugMode) {
         print(e);
       }
+      somethingWentWrong = true;
     }
     isLoadingSubCategories = false;
     update();
+    Future.delayed(const Duration(milliseconds: 1000),(){
+      if(subCategoryId!=null){
+        findCategoryIndicatorOffset();
+      }
+    });
   }
 
   //
   fetchProducts({bool isRefresh = false,bool isLoadingNext = false}) async {
 
+    somethingWentWrong = false;
     if(isLoadingNextPage){
       return;
     }
@@ -95,7 +110,7 @@ class SwiggyViewController extends GetxController with GetTickerProviderStateMix
     update();
     try{
       var result = await HttpService.getRequest(
-          "${ApiConstants().allProducts}?name=${searchTEC.text}&page=$page&category=$categoryName&sub_category=${selectedSubCategory!.name}&min_price=${filterPriceRange!.start}&max_price=${filterPriceRange!.end}");
+          "${ApiConstants().allProducts}?name=${searchTEC.text}&page=$page&category=$categoryName&sub_category=${selectedSubCategory!=null?selectedSubCategory!.name:""}&min_price=${filterPriceRange!.start}&max_price=${filterPriceRange!.end}");
       if(result is http.Response){
         if(result.statusCode==200){
           if(isRefresh) {
@@ -117,6 +132,7 @@ class SwiggyViewController extends GetxController with GetTickerProviderStateMix
     }catch(e){
       if (kDebugMode) {
         print(e);
+        somethingWentWrong = true;
       }
     }
     isLoading = false;
@@ -128,10 +144,7 @@ class SwiggyViewController extends GetxController with GetTickerProviderStateMix
   }
 
   //
-  scrollUp(){
-
-
-  }
+  scrollUp(){}
 
   //
   fetchCategoryProducts({bool isRefresh = false,bool isLoadingNext = false}) async {
@@ -203,6 +216,7 @@ class SwiggyViewController extends GetxController with GetTickerProviderStateMix
     if (renderBox != null) {
       Offset localOffset = renderBox.localToGlobal(Offset.zero);
       scrollOffset = localOffset.dy-100.h;
+      print("scroll offset-->${scrollOffset}");
       update();
     }
   }
