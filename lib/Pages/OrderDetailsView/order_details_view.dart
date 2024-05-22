@@ -135,9 +135,9 @@ class OrderDetailsView extends StatelessWidget {
                                     child: Icon(Icons.check,color: Colors.white),
                                   ),
 
-                                  SizedBox(width: 4.w),
+                                  SizedBox(width: 8.w),
 
-                                  Text("Order Confirmed "+DateFormatUtil().displayFormat(dateTime: vc.orderDetails!.orderTrack!.createdAt)),
+                                  Text("Order confirmed - "+DateFormatUtil().displayFormat(dateTime: vc.orderDetails!.orderTrack!.createdAt)),
 
                                 ],
                               ),
@@ -155,12 +155,36 @@ class OrderDetailsView extends StatelessWidget {
                                       color: AppColors.secondaryColor,
                                       shape: BoxShape.circle,
                                     ),
-                                    child: Icon(Icons.delivery_dining,color: Colors.white),
+                                    child: const Icon(Icons.delivery_dining,color: Colors.white),
                                   ),
 
-                                  SizedBox(width: 4.w),
+                                  SizedBox(width: 8.w),
 
-                                  Text("Delivery Cost \u{20B9} "+vc.orderDetails!.order![0].shippingCost!),
+                                  Text("Delivery cost \u{20B9} - ${vc.orderDetails!.order![0].shippingCost!}"),
+
+                                ],
+                              ),
+                            ),
+
+                            Padding(
+                              padding: EdgeInsets.only(left: 12.w,top: 8.h),
+                              child: Row(
+                                children: [
+
+                                  Container(
+                                    width: 28.w,
+                                    height: 28.h,
+                                    padding: EdgeInsets.all(2.w),
+                                    decoration: const BoxDecoration(
+                                      color: Colors.blue,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(Icons.payment_outlined,color: Colors.white),
+                                  ),
+
+                                  SizedBox(width: 8.w),
+
+                                  Text("Payment status - ${vc.orderDetails!.paymentDetails!.paymentStatus}"),
 
                                 ],
                               ),
@@ -191,11 +215,11 @@ class OrderDetailsView extends StatelessWidget {
                                 title: "Payment Method",
                                 detail: vc
                                     .orderDetails!.paymentDetails!.paymentGateway!
-                                    .toUpperCase()),*/
+                                    .toUpperCase()),
                             OrderDetail(
                                 title: "Payment Status",
                                 detail: vc
-                                    .orderDetails!.paymentDetails!.paymentStatus),
+                                    .orderDetails!.paymentDetails!.paymentStatus),*/
                           ],
                         ),
                       ),

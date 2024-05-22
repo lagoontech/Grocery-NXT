@@ -1,7 +1,9 @@
+import 'package:double_back_to_close/toast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Pages/OrderDetailsView/Model/order_details_model.dart';
 import 'package:grocery_nxt/Services/http_services.dart';
+import 'package:grocery_nxt/Utils/toast_util.dart';
 import 'package:http/http.dart' as http;
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import '../../Payment Screen/Models/order_success_response.dart';
@@ -90,7 +92,8 @@ class OrderDetailsController extends GetxController{
       updatePaymentStatus();
     });
     razorpay.on(Razorpay.EVENT_PAYMENT_ERROR,(v){
-      Get.to(()=>const PaymentFailed());
+      //Get.to(()=>const PaymentFailed());
+      ToastUtil().showToast(message: "Payment Failed");
     });
   }
 

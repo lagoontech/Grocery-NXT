@@ -43,30 +43,31 @@ class LoginController extends GetxController{
     }
     if(await MobileNumber.hasPhonePermission){
       MobileNumber.getSimCards!.then((value) async {
-        print(value);
-        if(value.isNotEmpty)
-        await Get.dialog(
-            ListView.builder(
-                shrinkWrap: true,
-                itemCount: value.length,
-                itemBuilder: (context,index){
-                  var sim = value[index].number;
-                  return Material(
-                    child: ListTile(
-                      leading: Text("SIM ${index+1}"),
+        if(value.isNotEmpty) {
+          await Get.defaultDialog(
+          title: "Choose number",
+          titleStyle: TextStyle(
+            fontSize: 14.sp
+          ),
+          content: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: value.length,
+                  itemBuilder: (context, index) {
+                    var sim = value[index].number;
+                    return ListTile(
+                      leading: Text("SIM ${index + 1}"),
                       title: Text(value[index].number!),
-                      onTap: (){
-                        if(sim!.length>12) {
+                      onTap: () {
+                        if (sim!.length > 12) {
                           phoneTEC.text = sim.substring(4);
-                        }else{
+                        } else {
                           phoneTEC.text = sim.substring(2);
                         }
                         Get.close(1);
                       },
-                    ),
-                  );
-                })
-        );
+                    );
+                  }));
+        }
       });
       update();
       return;
