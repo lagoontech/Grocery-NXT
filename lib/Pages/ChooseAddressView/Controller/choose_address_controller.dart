@@ -67,6 +67,7 @@ class ChooseAddressController extends GetxController{
       }
     }catch(e){
       print(e);
+      fetchingShippingCharge = false;
     }
     fetchingShippingCharge = false;
     update();

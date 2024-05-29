@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -8,9 +9,10 @@ import 'package:grocery_nxt/Widgets/custom_button.dart';
 import '../Model/order_list_model.dart';
 
 class OrderListItem extends StatelessWidget {
-  OrderListItem({super.key, this.order});
+  OrderListItem({super.key, this.order, this.index});
 
-  Order? order;
+  SubordersDatum? order;
+  int? index;
   OrderController vc = Get.find<OrderController>();
 
   @override
@@ -35,9 +37,24 @@ class OrderListItem extends StatelessWidget {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12.r),
               ),
-              child: order!.paymentStatus == "pending"
-                  ? const Icon(Icons.pending, color: Colors.red)
-                  : Icon(Icons.paid, color: AppColors.primaryColor),
+              child: order!.orderItem!.length > 1
+                  ? GridView.builder(
+                      itemCount: order!.orderItem!.length,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 1,
+                      ),
+                      itemBuilder: (context, index) {
+                        var image = order!.orderItem![index].product!.image;
+                        return CachedNetworkImage(
+                            imageUrl:
+                                "https://grocerynxt.ltcloud247.com/assets/uploads/media-uploader/${image!.path}");
+                      })
+                  : CachedNetworkImage(
+                      imageUrl:
+                          "https://grocerynxt.ltcloud247.com/assets/uploads/media-uploader/${order!.orderItem![0].product!.image!.path}"),
             ),
             SizedBox(
               width: 16.w,
@@ -48,19 +65,15 @@ class OrderListItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text(
-                    "# ${order!.invoiceNumber}",
-                    style: TextStyle(fontWeight: FontWeight.w600),
+                    "# ${order!.order!.invoiceNumber!.toString()}",
+                    style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
-                  Text(
-                    order!.paymentGateway!.capitalizeFirst.toString(),
-                    style: const TextStyle(color: Color(0xffb9b9b9)),
-                  ),
-                  order!.paymentMeta != null
+                  order!.order!.paymentMeta != null
                       ? Text(
-                          "\u{20B9} ${order!.paymentMeta!.totalAmount!}",
-                          style: TextStyle(fontWeight: FontWeight.w600),
+                          "\u{20B9} ${order!.order!.paymentMeta!.totalAmount!}",
+                          style: const TextStyle(fontWeight: FontWeight.w600),
                         )
-                      : SizedBox()
+                      : const SizedBox()
                 ],
               ),
             ),
@@ -73,7 +86,7 @@ class OrderListItem extends StatelessWidget {
                   height: 24.h,
                   onTap: () async {
                     var result = await Get.to(
-                        () => OrderDetailsView(orderId: order!.id));
+                        () => OrderDetailsView(orderId: order!.orderId));
                     if (result == 1) {
                       vc.getOrders();
                     }

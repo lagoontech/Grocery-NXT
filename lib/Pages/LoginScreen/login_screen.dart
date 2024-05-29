@@ -2,7 +2,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:grocery_nxt/Pages/LoginScreen/Controller/login_controller.dart';
 import 'package:grocery_nxt/Widgets/custom_circular_loader.dart';
 import 'package:numpad/numpad.dart';
@@ -103,7 +102,7 @@ class LoginScreen extends StatelessWidget {
               ),
 
 
-              SizedBox(height: 48.h),
+              SizedBox(height: 24.h),
 
               GetBuilder<LoginController>(builder: (vc) {
                     return CustomButton(
@@ -125,7 +124,7 @@ class LoginScreen extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12.w),
                 child: const Text.rich(
-                    TextSpan(text: "By clicking on “Continue” you are agreeing to our ",children: [
+                    TextSpan(text: "By clicking on “Continue” you are agreeing to our \n",children: [
                       TextSpan(
                           text: "terms of use",
                           style: TextStyle(
@@ -142,7 +141,7 @@ class LoginScreen extends StatelessWidget {
           )),
 
           Expanded(
-              flex: 4,
+              flex: 5,
               child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(

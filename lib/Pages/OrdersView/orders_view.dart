@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/OrdersView/Controller/order_controller.dart';
+import 'package:grocery_nxt/Pages/OrdersView/Widgets/order_pending_list_item.dart';
 import 'package:grocery_nxt/Widgets/custom_appbar.dart';
 import 'package:grocery_nxt/Widgets/custom_circular_loader.dart';
 import 'package:lottie/lottie.dart';
@@ -15,12 +15,13 @@ class OrdersView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: CustomAppBar(title: "Orders"),
       body: GetBuilder<OrderController>(builder: (vc) {
         return vc.loadingOrders
             ? Center(child: CustomCircularLoader(color: AppColors.primaryColor))
-            : vc.orders.isEmpty
+            : vc.pendingOrders.isEmpty && vc.completedOrders.isEmpty
                 ? Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -32,27 +33,35 @@ class OrdersView extends StatelessWidget {
                     color: Colors.white,
                     child: CustomScrollView(
                       slivers: [
-
                         SliverAppBar(
                           backgroundColor: Colors.white,
                           scrolledUnderElevation: 0,
+                          titleSpacing: 0,
                           pinned: true,
-                          title: TabBar(
-                              controller: vc.tabController,
-                              dividerColor: Colors.transparent,
-                              labelStyle: TextStyle(
-                                fontWeight: FontWeight.w600
-                              ),
-                              tabs: const [
-                                Tab(
-                                  text: "Pending",
-                                ),
-                                Tab(
-                                  text: "Delivered",
-                                ),
-                              ]),
+                          title: Container(
+                            decoration:
+                                BoxDecoration(color: Colors.white, boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.2),
+                                blurRadius: 1,
+                                offset: const Offset(0, 2), // changes position of shadow
+                              )
+                            ]),
+                            child: TabBar(
+                                controller: vc.tabController,
+                                dividerColor: Colors.transparent,
+                                labelStyle: const TextStyle(
+                                    fontWeight: FontWeight.w600),
+                                tabs: const [
+                                  Tab(
+                                    text: "Pending",
+                                  ),
+                                  Tab(
+                                    text: "Delivered",
+                                  ),
+                                ]),
+                          ),
                         ),
-
                         SliverToBoxAdapter(
                           child: ListView.builder(
                               shrinkWrap: true,
@@ -61,14 +70,14 @@ class OrdersView extends StatelessWidget {
                                   ? vc.pendingOrders.length
                                   : vc.completedOrders.length,
                               itemBuilder: (context, index) {
-                                return OrderListItem(
-                                  order: vc.tabController!.index == 0
-                                      ? vc.pendingOrders[index]
-                                      : vc.completedOrders[index],
+                                return vc.tabController!.index==0
+                                    ? OrderPendingListItem(
+                                  order: vc.pendingOrders[index],
+                                ):OrderListItem(
+                                  order: vc.completedOrders[index],
                                 );
                               }),
                         )
-
                       ],
                     ),
                   );

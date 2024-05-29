@@ -87,7 +87,6 @@ class CartController extends GetxController{
       calculateTotal();
       calculateTotalProducts();
       update();
-      applyCoupon();
       return;
     }
     bool hasProduct = products.firstWhere(
@@ -105,7 +104,6 @@ class CartController extends GetxController{
           "products",products.map((e){return jsonEncode(e.toJson());}).toList());
       calculateTotal();
       calculateTotalProducts();
-      applyCoupon();
       return;
     }
     if(hasProduct){
@@ -118,7 +116,6 @@ class CartController extends GetxController{
         products.map((e){return jsonEncode(e.toJson());}).toList());
     calculateTotal();
     calculateTotalProducts();
-    applyCoupon();
     update();
   }
 
@@ -164,7 +161,7 @@ class CartController extends GetxController{
   }
 
   //
-  applyCoupon() async {
+  Future<void> applyCoupon() async {
 
     if(couponController.text.isEmpty){
       return;

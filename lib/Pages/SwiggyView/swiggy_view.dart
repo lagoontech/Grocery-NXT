@@ -136,7 +136,7 @@ class SwiggyView extends StatelessWidget {
         padding: EdgeInsets.only(top: 4.h),
         child: GetBuilder<SwiggyViewController>(
           builder: (vc) {
-            return !vc.somethingWentWrong?Row(
+            return Row(
               children: [
 
                 GetBuilder<SwiggyViewController>(
@@ -406,6 +406,8 @@ class SwiggyView extends StatelessWidget {
                           }).toList(),
                         ): vc.products.isNotEmpty
                             ? SingleChildScrollView(
+                                  controller: svc.noSubScrollController,
+                                  physics: const BouncingScrollPhysics(),
                                   child: Column(
                                     children: [
                                       Container(
@@ -537,26 +539,6 @@ class SwiggyView extends StatelessWidget {
                 ),
 
               ],
-            ) : Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: Center(
-                child: Column(
-                  children: [
-
-
-
-                    CustomButton(
-                      child: Text("Load Products"),
-                      onTap: (){
-                        svc.fetchSubCategories();
-                        svc.fetchCategoryProducts();
-                      },
-                    ),
-
-                  ],
-                ),
-              ),
             );
           }
         ),

@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/ChooseAddressView/choose_address_view.dart';
+import 'package:grocery_nxt/Pages/Help_center/HelpCenter_view.dart';
 import 'package:grocery_nxt/Pages/LoginScreen/login_screen.dart';
 import 'package:grocery_nxt/Pages/ProfileView/Controller/profile_controller.dart';
 import 'package:grocery_nxt/Pages/ProfileView/Views/WishlistView/wishlist_view.dart';
 import 'package:grocery_nxt/Pages/ProfileView/Widgets/profile_item.dart';
 import 'package:grocery_nxt/Utils/shared_pref_utils.dart';
-import 'package:grocery_nxt/Widgets/custom_appbar.dart';
 import 'package:grocery_nxt/Widgets/custom_button.dart';
 import 'package:grocery_nxt/Widgets/custom_circular_loader.dart';
 import 'package:lottie/lottie.dart';
@@ -28,7 +26,6 @@ class ProfileView extends StatelessWidget {
       body: GetBuilder<ProfileController>(
         builder: (vc) {
           return Container(
-            //duration: const Duration(milliseconds: 2000),
             decoration: BoxDecoration(
               color: Colors.white,
               gradient: RadialGradient(
@@ -112,11 +109,7 @@ class ProfileView extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 12.h),
-                    ProfileItem(
-                      iconAsset: "profile",
-                      title: "Personal Info",
-                      onTap: () {},
-                    ),
+
                     ProfileItem(
                       iconAsset: "heart",
                       title: "My Wishlist",
@@ -124,21 +117,15 @@ class ProfileView extends StatelessWidget {
                         Get.to(() => WishListView());
                       },
                     ),
-                    ProfileItem(
-                      iconAsset: "payments",
-                      title: "Payments",
-                      onTap: () {},
-                    ),
-                    ProfileItem(
-                      iconAsset: "notification",
-                      title: "Notifications",
-                      onTap: () {},
-                    ),
+
                     ProfileItem(
                       iconAsset: "profile",
                       title: "Help Center",
-                      onTap: () {},
+                      onTap: () {
+                        Get.to(()=> const HelpCenterView());
+                      },
                     ),
+
                     ProfileItem(
                       iconAsset: "location",
                       title: "My Address",
@@ -146,11 +133,13 @@ class ProfileView extends StatelessWidget {
                         Get.to(() => ChooseAddressView(fromProfile: true));
                       },
                     ),
+
                     ProfileItem(
                       iconAsset: "coupon",
                       title: "My Coupons",
                       onTap: () {},
                     ),
+
                     ProfileItem(
                       iconAsset: "logout",
                       title: "Log Out",

@@ -15,6 +15,7 @@ import '../../../AllProductsView/Model/products_list_model.dart' hide Badge;
 import '../../../AllProductsView/Widgets/all_products_list_item_curved_container.dart';
 import '../../../HomeScreen/Controller/cart_controller.dart';
 import '../../../HomeScreen/Widgets/HomeProductsView/curved_cart_add_container.dart';
+import '../../../HomeScreen/Widgets/HomeProductsView/discount_wavy_bottom_container.dart';
 import '../../../ProductDetailsView/product_details_view.dart';
 
 class WishListView extends StatelessWidget {
@@ -281,28 +282,35 @@ class WishListView extends StatelessWidget {
                                 );
                               }),
                             ),
-                            Container(
-                              width: 24.w,
-                              height: 24.h,
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(8)),
-                                //color: AppColors.primaryColor.withOpacity(0.8)
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "${product.discountPrice!}%",
-                                    style: TextStyle(fontSize: 8.sp),
+                            Padding(
+                              padding: EdgeInsets.only(left: 0.w),
+                              child: CustomPaint(
+                                painter: WavyPainter(),
+                                child: Container(
+                                  width: 32.w,
+                                  height: 28.h,
+                                  padding: EdgeInsets.only(left: 4.w),
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.only(topLeft: Radius.circular(8)),
+                                    //color: AppColors.primaryColor.withOpacity(0.8)
                                   ),
-                                  Text(
-                                    "OFF",
-                                    style: TextStyle(fontSize: 8.sp),
+                                  child: DefaultTextStyle(
+                                    style: const TextStyle(color: Colors.white),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "${ (((product!.price-product!.discountPrice)/product!.price)*100).toStringAsFixed(0) }%",
+                                          style: TextStyle(fontSize: 8.sp,fontWeight: FontWeight.w600),
+                                        ),
+                                        Text("OFF",style: TextStyle(fontSize: 8.sp,fontWeight: FontWeight.w600),),
+                                      ],
+                                    ),
                                   ),
-                                ],
+                                ),
                               ),
-                            )
+                            ),
                           ],
                         );
                       }),

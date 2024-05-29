@@ -3,14 +3,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/CartView/Widgets/cart_item.dart';
 import 'package:grocery_nxt/Pages/ChooseAddressView/choose_address_view.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
 import 'package:grocery_nxt/Widgets/custom_circular_loader.dart';
 import 'package:lottie/lottie.dart';
 import '../../Widgets/custom_button.dart';
-import '../AddCheckoutAddressView/add_checkout_address_view.dart';
 
 class CartView extends StatelessWidget {
    CartView({super.key});
@@ -19,6 +17,7 @@ class CartView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -79,29 +78,43 @@ class CartView extends StatelessWidget {
 
                   GetBuilder<CartController>(
                     builder: (cc) {
-                      return AnimationLimiter(
-                        child: ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: cc.products.length,
-                            itemBuilder: (context,index){
-                              var product = cc.products[index];
-                          return AnimationConfiguration.staggeredList(
-                              position: index,
-                              duration: const Duration(milliseconds: 750),
-                              child: SlideAnimation(
-                                verticalOffset: 50.h,
-                                curve: Curves.bounceOut,
-                                child: CartItem(
-                                  product: product,
-                                  isLast: index==cc.products.length-1,
-                                  index: index,
-                                )
-                              ));
-                        }),
+                      return ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxHeight: MediaQuery.of(context).size.height*0.4
+                        ),
+                        child: AnimationLimiter(
+                          child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: cc.products.length,
+                              itemBuilder: (context,index){
+                                var product = cc.products[index];
+                            return AnimationConfiguration.staggeredList(
+                                position: index,
+                                duration: const Duration(milliseconds: 750),
+                                child: SlideAnimation(
+                                  verticalOffset: 50.h,
+                                  curve: Curves.bounceOut,
+                                  child: CartItem(
+                                    product: product,
+                                    isLast: index==cc.products.length-1,
+                                    index: index,
+                                  )
+                                ));
+                          }),
+                        ),
                       );
                     }
                   ),
+
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 32.w,vertical: 24.h),
+                    child: TextFormField(
+                      controller: cc.couponController,
+                      decoration: decoration(),
+                      onChanged: (v){},
+                    ),
+                  ),
+
                 ],
               ),
             ),
@@ -130,19 +143,6 @@ class CartView extends StatelessWidget {
           return cc.products.isNotEmpty?Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-
-              SizedBox(
-                height: 32.h,
-              ),
-
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 32.w),
-                child: TextFormField(
-                  controller: cc.couponController,
-                  decoration: decoration(),
-                  onChanged: (v){},
-                ),
-              ),
 
               SizedBox(
                 height: 24.h,
@@ -208,13 +208,16 @@ class CartView extends StatelessWidget {
                       child: const Text(
                         "Checkout",
                         style: TextStyle(color: Colors.white),),
-                      onTap: (){
+                      onTap: () async {
+                        if(cc.couponController.text.isNotEmpty){
+                          await cc.applyCoupon();
+                        }
                         Get.to(()=> ChooseAddressView());
                       },
                     ),
                   ):const SizedBox();
                 }
-              ),
+              )
 
             ],
           ):const SizedBox();

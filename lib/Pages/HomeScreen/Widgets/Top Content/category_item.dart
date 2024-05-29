@@ -1,11 +1,9 @@
 import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:grocery_nxt/Pages/AllProductsView/all_products_view.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/home_controller.dart';
 import 'package:grocery_nxt/Pages/SwiggyView/swiggy_view.dart';
 import '../../Models/home_categories_model.dart';
@@ -45,7 +43,7 @@ class CategoryItem extends StatelessWidget {
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width*0.25,
                     child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 2000),
+                      duration: const Duration(milliseconds: 1000),
                       key: positionKey,
                       width: MediaQuery.of(context).size.width * 0.16,
                       margin: EdgeInsets.symmetric(horizontal: 12.w),
@@ -69,7 +67,7 @@ class CategoryItem extends StatelessWidget {
                 Text(category!.name??"",
                   style: TextStyle(
                       fontSize: 10.sp,
-                      fontWeight: FontWeight.w600
+                      fontWeight: FontWeight.w600,
                   ),)
               ],
             ),

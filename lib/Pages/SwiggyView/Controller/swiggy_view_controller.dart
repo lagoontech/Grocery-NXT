@@ -40,6 +40,7 @@ class SwiggyViewController extends GetxController with GetTickerProviderStateMix
   bool isLoadingNextPage = false;
   TextEditingController searchTEC = TextEditingController();
   ScrollController scrollController = ScrollController();
+  ScrollController noSubScrollController = ScrollController();
   PageController pageController     = PageController();
   Timer ?searchTimer;
   int totalProducts = 0;
@@ -168,6 +169,43 @@ class SwiggyViewController extends GetxController with GetTickerProviderStateMix
   //
   attachScrollListeners(){
 
+    if(subCategories.isEmpty){
+      noSubScrollController.addListener(() {
+        double pos = noSubScrollController.position.pixels;
+        double max = noSubScrollController.position.maxScrollExtent;
+        if(pos-max>40.h&& !isLastPage && !isLoadingNextPage && !isAnimatingToNext){
+          fetchProducts(isLoadingNext: true);
+        }
+        if(pageScrollTimer!=null&&pageScrollTimer!.isActive){
+          pageScrollTimer!.cancel();
+        }
+        pageScrollTimer = Timer(const Duration(milliseconds: 10),(){
+          if(isLastPage && (pos-max)>70.h && !isAnimatingToNext){
+            isAnimatingToNext = true;
+            selectedSubCategory = subCategories[subIndex+1];
+            findCategoryIndicatorOffset();
+            pageController.animateToPage(
+                subIndex+1,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeOutSine).then((value){
+              isAnimatingToNext = false;
+            });
+            fetchProducts(isRefresh: true);
+          } else if(pos<-70.h && !isAnimatingToNext){
+            isAnimatingToNext = true;
+            selectedSubCategory = subCategories[subIndex-1];
+            findCategoryIndicatorOffset();
+            pageController.animateToPage(
+                subIndex-1,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeOutSine).then((value){
+              isAnimatingToNext = false;
+            });
+            fetchProducts(isRefresh: true);
+          }
+        });
+      });
+    }
     for (int i=0;i<subCategories.length;i++) {
       subCategories[i].scrollController!.addListener(() {
         double pos = subCategories[i].scrollController!.position.pixels;

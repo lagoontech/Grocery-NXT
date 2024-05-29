@@ -6,6 +6,7 @@ import 'package:grocery_nxt/Pages/ChooseAddressView/Controller/choose_address_co
 import 'package:grocery_nxt/Pages/Payment%20Screen/Controller/payment_controller.dart';
 import 'package:grocery_nxt/Widgets/custom_appbar.dart';
 import 'package:grocery_nxt/Widgets/custom_circular_loader.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../../Constants/app_colors.dart';
 import '../../Widgets/custom_button.dart';
 import '../HomeScreen/Controller/cart_controller.dart';
@@ -40,7 +41,7 @@ class PaymentScreen extends StatelessWidget {
                       style: TextStyle(
                           color: const Color(0xff2B3241),
                           fontWeight: FontWeight.w600,
-                          fontSize: 18.sp),
+                          fontSize: 16.sp),
                     ),
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 16.h),
@@ -58,7 +59,7 @@ class PaymentScreen extends StatelessWidget {
                         leading: Container(
                           width: 55.w,
                           height: 55.w,
-                          padding: EdgeInsets.all(1.2.w),
+                          padding: EdgeInsets.symmetric(vertical: 0.8.h),
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(12.r),
@@ -70,7 +71,7 @@ class PaymentScreen extends StatelessWidget {
                               ]),
                           child: Stack(
                             children: [
-                              Image.asset("assets/images/map.png"),
+                              Image.asset("assets/images/map.png",width: 55.w),
                               Center(
                                 child: Container(
                                   width: 30.w,
@@ -97,16 +98,38 @@ class PaymentScreen extends StatelessWidget {
                       style: TextStyle(
                           color: const Color(0xff2B3241),
                           fontWeight: FontWeight.w600,
-                          fontSize: 18.sp),
+                          fontSize: 16.sp),
                     ),
                     GetBuilder<PaymentController>(builder: (vc) {
                       return vc.loadingPaymentOptions
                           ? Padding(
                               padding: EdgeInsets.only(top: 16.h),
-                              child: Center(
-                                  child: CustomCircularLoader(
-                                color: AppColors.primaryColor,
-                              )),
+                              child: GridView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: 4,
+                                  gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      mainAxisExtent: 40.h,
+                                      mainAxisSpacing: 16.h,
+                                      crossAxisSpacing: 12.w),
+                                  itemBuilder: (context, index) {
+                                    return Skeletonizer(
+                                      child: Container(
+                                            padding: EdgeInsets.all(2.w),
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.circular(2.r),
+                                              child: CachedNetworkImage(
+                                                imageUrl: "",
+                                                errorWidget: (b,s,o){
+                                                  return Image.asset("assets/images/gnxt_logo.png");
+                                                },
+                                                fit: BoxFit.fitWidth,
+                                              ),
+                                            ),
+                                          ),
+                                    );
+                                  })
                             )
                           : Column(
                               children: [

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/OrderDetailsView/Controller/order_details_controller.dart';
+import 'package:grocery_nxt/Pages/OrderDetailsView/Widgets/order_products.dart';
 import 'package:grocery_nxt/Utils/date_utils.dart';
 import 'package:grocery_nxt/Widgets/custom_appbar.dart';
 import 'package:grocery_nxt/Widgets/custom_button.dart';
@@ -21,6 +22,7 @@ class OrderDetailsView extends StatelessWidget {
   Widget build(BuildContext context) {
     if (orderDetailsController.orderId == null) {
       orderDetailsController.orderId = orderId;
+      print(orderId);
       orderDetailsController.getOrderDetails();
     }
     return PopScope(
@@ -45,7 +47,7 @@ class OrderDetailsView extends StatelessWidget {
                     children: [
 
                       Padding(
-                        padding: EdgeInsets.only(left: 16.w),
+                        padding: EdgeInsets.only(left: 16.w,top: 12.h),
                         child: Text(
                             "Order Id - ${orderDetailsController.orderDetails!.paymentDetails!.invoiceNumber.toString()}",
                             style: TextStyle(
@@ -68,12 +70,27 @@ class OrderDetailsView extends StatelessWidget {
                           children: [
 
                             Padding(
-                              padding: EdgeInsets.only(left: 12.w),
-                              child: Text(
-                                  "${orderDetailsController!.orderDetails!.order![0].orderItem!.length.toString()} Items in Basket",
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w600
-                                  ),
+                              padding: EdgeInsets.only(left: 12.w,right: 12.w),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+
+                                  orderDetailsController.orderDetails!.order!.isNotEmpty? Text(
+                                      "${orderDetailsController.orderDetails!.order![0].orderItem!.length.toString()} Items in Basket",
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w600
+                                      ),
+                                  ) : const SizedBox(),
+
+                                  TextButton(
+                                      onPressed: (){
+                                        Get.to(()=> OrderProducts(details: orderDetailsController.orderDetails));
+                                      },
+                                      child: const Text(
+                                          "View",
+                                          style: TextStyle(fontWeight: FontWeight.w600)))
+
+                                ],
                               ),
                             ),
 
@@ -132,12 +149,12 @@ class OrderDetailsView extends StatelessWidget {
                                       color: AppColors.primaryColor,
                                       shape: BoxShape.circle,
                                     ),
-                                    child: Icon(Icons.check,color: Colors.white),
+                                    child: const Icon(Icons.check,color: Colors.white),
                                   ),
 
                                   SizedBox(width: 8.w),
 
-                                  Text("Order confirmed - "+DateFormatUtil().displayFormat(dateTime: vc.orderDetails!.orderTrack!.createdAt)),
+                                  Text("Order confirmed - ${DateFormatUtil().displayFormat(dateTime: vc.orderDetails!.orderTrack!.createdAt)}"),
 
                                 ],
                               ),

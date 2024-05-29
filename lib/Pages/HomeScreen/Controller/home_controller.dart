@@ -4,7 +4,6 @@ import 'package:carousel_slider/carousel_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' hide Category;
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/status/http_status.dart';
 import 'package:grocery_nxt/Constants/api_constants.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Models/home_campaign_model.dart';
 import 'package:grocery_nxt/Pages/SwiggyView/Models/sub_categories_model.dart';
@@ -69,7 +68,6 @@ class HomeController extends GetxController{
           campaign = HomeCampaignsModel.fromJson(jsonDecode(result.body));
           print(campaign!.data![0]!.image);
         }
-        //autoScrollProducts();
       }
     }catch(e){
       if (kDebugMode) {
