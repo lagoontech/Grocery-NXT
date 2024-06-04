@@ -40,7 +40,7 @@ class PaymentSuccess extends StatelessWidget {
                 Get.back();
               },
               child: const Text(
-                "Back to home",
+                "Continue Shopping",
                 style: TextStyle(color: Colors.white),
               ))
 

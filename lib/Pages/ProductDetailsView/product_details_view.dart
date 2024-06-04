@@ -12,6 +12,7 @@ import 'package:grocery_nxt/Pages/ProductDetailsView/Controller/product_details_
 import 'package:grocery_nxt/Pages/ProductDetailsView/Widgets/animated_bottom_curved_container.dart';
 import 'package:grocery_nxt/Pages/ProductDetailsView/product_image_screen.dart';
 import 'package:grocery_nxt/Widgets/custom_button.dart';
+import 'package:grocery_nxt/Widgets/custom_textfield.dart';
 import 'package:grocery_nxt/Widgets/internet_checker.dart';
 import 'package:readmore/readmore.dart';
 import '../AllProductsView/Model/products_list_model.dart' hide Badge;
@@ -292,6 +293,27 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
 
                                   SizedBox(height: 8.h),
 
+                                  customTextField(
+                                      context,
+                                      textInputType: TextInputType.text,
+                                      borderColor: AppColors.primaryColor,
+                                      hint: "Eg: 5Kg,20Kg",
+                                      onChanged: (v){
+                                        vc.preBook = v!;
+                                      }
+                                  ),
+
+                                  SizedBox(height: 8.h),
+
+                                  CustomButton(
+                                    height: 36.h,
+                                    child: const Text(
+                                        "Pre-Book",
+                                        style: TextStyle(color: Colors.white)),
+                                  ),
+
+                                  SizedBox(height: 12.h),
+
                                   vc.productDetails!.allUnits!=null
                                       && vc.productDetails!.allUnits!.isNotEmpty?
                                   ListView.builder(
@@ -311,7 +333,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                           ),
                                         );
                                       }
-                                  ): SizedBox(),
+                                  ): const SizedBox(),
 
                                   ReadMoreText(
                                     HtmlParser.parseHTML(

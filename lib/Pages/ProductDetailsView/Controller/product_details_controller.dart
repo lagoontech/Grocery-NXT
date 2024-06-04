@@ -20,6 +20,7 @@ class ProductDetailsController extends GetxController
   List<AdditionalInfoStore> additionalInfos = [];
   Product? product;
   int? quantity = 1;
+  String preBook = "";
 
   //
   getProductDetails() async {
@@ -57,7 +58,7 @@ class ProductDetailsController extends GetxController
     if (kDebugMode) {
       print("selected variant index-->$index");
     }
-    if (index == 0) {
+    /*if (index == 0) {
       productDetails!.product!.salePrice =
           additionalInfos[index].additionalPrice;
       product!.discountPrice =
@@ -68,7 +69,7 @@ class ProductDetailsController extends GetxController
       product!.stockCount = additionalInfos[index].stockCount;
       update();
       return;
-    }
+    }*/
     productDetails!.product!.salePrice = additionalInfos[index].additionalPrice;
     product!.discountPrice =
         int.parse(additionalInfos[index].additionalPrice.ceil().toString());

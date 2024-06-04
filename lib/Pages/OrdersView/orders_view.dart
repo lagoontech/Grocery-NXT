@@ -6,6 +6,7 @@ import 'package:grocery_nxt/Pages/OrdersView/Widgets/order_pending_list_item.dar
 import 'package:grocery_nxt/Widgets/custom_appbar.dart';
 import 'package:grocery_nxt/Widgets/custom_circular_loader.dart';
 import 'package:lottie/lottie.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'Widgets/order_list_item.dart';
 
 class OrdersView extends StatelessWidget {
@@ -31,54 +32,74 @@ class OrdersView extends StatelessWidget {
                   )
                 : Container(
                     color: Colors.white,
-                    child: CustomScrollView(
-                      slivers: [
-                        SliverAppBar(
-                          backgroundColor: Colors.white,
-                          scrolledUnderElevation: 0,
-                          titleSpacing: 0,
-                          pinned: true,
-                          title: Container(
-                            decoration:
-                                BoxDecoration(color: Colors.white, boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.2),
-                                blurRadius: 1,
-                                offset: const Offset(0, 2), // changes position of shadow
-                              )
-                            ]),
-                            child: TabBar(
-                                controller: vc.tabController,
-                                dividerColor: Colors.transparent,
-                                labelStyle: const TextStyle(
-                                    fontWeight: FontWeight.w600),
-                                tabs: const [
-                                  Tab(
-                                    text: "Pending",
-                                  ),
-                                  Tab(
-                                    text: "Delivered",
-                                  ),
-                                ]),
+                    height: MediaQuery.of(context).size.height,
+                    child: SmartRefresher(
+                      controller: vc.refreshController,
+                      enablePullUp: true,
+                      onRefresh: (){
+                        if(vc.tabController!.index==0)
+                          vc.getPendingOrders();
+                        else{
+                          vc.getOrders();
+                        }
+                        vc.refreshController.refreshCompleted();
+                      },
+                      onLoading: (){
+                        if(vc.tabController!.index==0) {
+                          vc.getPendingOrders(isLoading: true);
+                        } else{
+                          vc.getOrders(isLoading: true);
+                        }
+                      },
+                      child: CustomScrollView(
+                        slivers: [
+                          SliverAppBar(
+                            backgroundColor: Colors.white,
+                            scrolledUnderElevation: 0,
+                            titleSpacing: 0,
+                            pinned: true,
+                            title: Container(
+                              decoration:
+                                  BoxDecoration(color: Colors.white, boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.2),
+                                  blurRadius: 1,
+                                  offset: const Offset(0, 2), // changes position of shadow
+                                )
+                              ]),
+                              child: TabBar(
+                                  controller: vc.tabController,
+                                  dividerColor: Colors.transparent,
+                                  labelStyle: const TextStyle(
+                                      fontWeight: FontWeight.w600),
+                                  tabs: const [
+                                    Tab(
+                                      text: "Pending",
+                                    ),
+                                    Tab(
+                                      text: "Delivered",
+                                    ),
+                                  ]),
+                            ),
                           ),
-                        ),
-                        SliverToBoxAdapter(
-                          child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: vc.tabController!.index == 0
-                                  ? vc.pendingOrders.length
-                                  : vc.completedOrders.length,
-                              itemBuilder: (context, index) {
-                                return vc.tabController!.index==0
-                                    ? OrderPendingListItem(
-                                  order: vc.pendingOrders[index],
-                                ):OrderListItem(
-                                  order: vc.completedOrders[index],
-                                );
-                              }),
-                        )
-                      ],
+                          SliverToBoxAdapter(
+                            child: ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: vc.tabController!.index == 0
+                                    ? vc.pendingOrders.length
+                                    : vc.completedOrders.length,
+                                itemBuilder: (context, index) {
+                                  return vc.tabController!.index==0
+                                      ? OrderPendingListItem(
+                                    order: vc.pendingOrders[index],
+                                  ):OrderListItem(
+                                    order: vc.completedOrders[index],
+                                  );
+                                }),
+                          )
+                        ],
+                      ),
                     ),
                   );
       }),

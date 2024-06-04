@@ -136,7 +136,7 @@ class OrderElement {
     coupon: json["coupon"],
     couponAmount: json["coupon_amount"],
     paymentTrack: json["payment_track"],
-    paymentGateway: paymentGatewayValues.map[json["payment_gateway"]]!,
+    paymentGateway: paymentGatewayValues.map[json["payment_gateway"]],
     transactionId: json["transaction_id"],
     orderStatus: statusValues.map[json["order_status"]]!,
     paymentStatus: statusValues.map[json["payment_status"]]!,
@@ -200,7 +200,7 @@ class OrderTrack {
   factory OrderTrack.fromJson(Map<String, dynamic> json) => OrderTrack(
     id: json["id"],
     orderId: json["order_id"],
-    name: orderTrackNameValues.map[json["name"]]!,
+    //name: orderTrackNameValues.map[json["name"]]!,
     updatedBy: json["updated_by"],
     table: tableValues.map[json["table"]]!,
     createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
