@@ -124,6 +124,134 @@ class AdditionalInfoStore {
   };
 }
 
+class InventoryDetails {
+  List<InventoryDetail>? inventoryDetail;
+
+  InventoryDetails({
+    this.inventoryDetail,
+  });
+
+  factory InventoryDetails.fromJson(Map<String, dynamic> json) => InventoryDetails(
+    inventoryDetail: json["inventory_detail"] == null ? [] : List<InventoryDetail>.from(json["inventory_detail"]!.map((x) => InventoryDetail.fromJson(x))),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "inventory_detail": inventoryDetail == null ? [] : List<dynamic>.from(inventoryDetail!.map((x) => x.toJson())),
+  };
+}
+
+class InventoryDetail {
+  int? id;
+  int? productInventoryId;
+  int? productId;
+  dynamic color;
+  String? size;
+  String? hash;
+  int? additionalPrice;
+  int? addCost;
+  dynamic image;
+  int? stockCount;
+  int? soldCount;
+  int? adregularPrice;
+  List<dynamic>? attribute;
+  dynamic attrImage;
+  dynamic productColor;
+  ProductSize? productSize;
+
+  InventoryDetail({
+    this.id,
+    this.productInventoryId,
+    this.productId,
+    this.color,
+    this.size,
+    this.hash,
+    this.additionalPrice,
+    this.addCost,
+    this.image,
+    this.stockCount,
+    this.soldCount,
+    this.adregularPrice,
+    this.attribute,
+    this.attrImage,
+    this.productColor,
+    this.productSize,
+  });
+
+  factory InventoryDetail.fromJson(Map<String, dynamic> json) => InventoryDetail(
+    id: json["id"],
+    productInventoryId: json["product_inventory_id"],
+    productId: json["product_id"],
+    color: json["color"],
+    size: json["size"],
+    hash: json["hash"],
+    additionalPrice: json["additional_price"],
+    addCost: json["add_cost"],
+    image: json["image"],
+    stockCount: json["stock_count"],
+    soldCount: json["sold_count"],
+    adregularPrice: json["adregular_price"],
+    attribute: json["attribute"] == null ? [] : List<dynamic>.from(json["attribute"]!.map((x) => x)),
+    attrImage: json["attr_image"],
+    productColor: json["product_color"],
+    productSize: json["product_size"] == null ? null : ProductSize.fromJson(json["product_size"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "product_inventory_id": productInventoryId,
+    "product_id": productId,
+    "color": color,
+    "size": size,
+    "hash": hash,
+    "additional_price": additionalPrice,
+    "add_cost": addCost,
+    "image": image,
+    "stock_count": stockCount,
+    "sold_count": soldCount,
+    "adregular_price": adregularPrice,
+    "attribute": attribute == null ? [] : List<dynamic>.from(attribute!.map((x) => x)),
+    "attr_image": attrImage,
+    "product_color": productColor,
+    "product_size": productSize?.toJson(),
+  };
+}
+
+class ProductSize {
+  int? id;
+  String? name;
+  String? sizeCode;
+  String? slug;
+  dynamic createdAt;
+  dynamic updatedAt;
+
+  ProductSize({
+    this.id,
+    this.name,
+    this.sizeCode,
+    this.slug,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  factory ProductSize.fromJson(Map<String, dynamic> json) => ProductSize(
+    id: json["id"],
+    name: json["name"],
+    sizeCode: json["size_code"],
+    slug: json["slug"],
+    createdAt: json["created_at"],
+    updatedAt: json["updated_at"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+    "size_code": sizeCode,
+    "slug": slug,
+    "created_at": createdAt,
+    "updated_at": updatedAt,
+  };
+}
+
 class Tag {
   Tag({
     required this.id,
@@ -238,6 +366,7 @@ class ProductDetailsModelProduct {
     this.vendor,
     this.randomKey,
     this.randomSecret,
+    this.inventoryDetails
   });
 
   dynamic id;
@@ -276,6 +405,7 @@ class ProductDetailsModelProduct {
   List<Tag>? tag;
   List<ProductColor>? color;
   List<ProductColor>? size;
+  List<InventoryDetail>? inventoryDetails;
   CampaignProduct? campaignProduct;
   dynamic inventoryDetail;
   List<Review>? reviews;
@@ -347,6 +477,10 @@ class ProductDetailsModelProduct {
         campaignProduct: json["campaign_product"] == null
             ? null
             : CampaignProduct.fromJson(json["campaign_product"]),
+        inventoryDetails: json["inventory_detail"] == null
+            ? null
+            : List<InventoryDetail>.from(
+            json["inventory_detail"].map((x) => InventoryDetail.fromJson(x))),
         inventoryDetail: json["inventory_detail"],
         reviews:
         List<Review>.from(json["reviews"].map((x) => Review.fromJson(x))),
@@ -554,82 +688,6 @@ class Inventory {
     "sku": sku,
     "stock_count": stockCount,
     "sold_count": soldCount,
-  };
-}
-
-class InventoryDetail {
-  InventoryDetail({
-    required this.id,
-    required this.productInventoryId,
-    required this.productId,
-    required this.color,
-    required this.size,
-    required this.hash,
-    required this.additionalPrice,
-    required this.addCost,
-    this.image,
-    required this.stockCount,
-    required this.soldCount,
-    required this.attribute,
-    this.attrImage,
-    this.productColor,
-    required this.productSize,
-  });
-
-  dynamic id;
-  dynamic productInventoryId;
-  dynamic productId;
-  String color;
-  String size;
-  String hash;
-  dynamic additionalPrice;
-  dynamic addCost;
-  dynamic image;
-  dynamic stockCount;
-  dynamic soldCount;
-  List<Attribute> attribute;
-  dynamic attrImage;
-  ProductColor? productColor;
-  ProductColor productSize;
-
-  factory InventoryDetail.fromJson(Map<String, dynamic> json) =>
-      InventoryDetail(
-        id: json["id"],
-        productInventoryId: json["product_inventory_id"],
-        productId: json["product_id"],
-        color: json["color"],
-        size: json["size"],
-        hash: json["hash"],
-        additionalPrice: json["additional_price"],
-        addCost: json["add_cost"],
-        image: json["image"],
-        stockCount: json["stock_count"],
-        soldCount: json["sold_count"],
-        attribute: List<Attribute>.from(
-            json["attribute"].map((x) => Attribute.fromJson(x))),
-        attrImage: json["attr_image"],
-        productColor: json["product_color"] == null
-            ? null
-            : ProductColor.fromJson(json["product_color"]),
-        productSize: ProductColor.fromJson(json["product_size"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "product_inventory_id": productInventoryId,
-    "product_id": productId,
-    "color": color,
-    "size": size,
-    "hash": hash,
-    "additional_price": additionalPrice,
-    "add_cost": addCost,
-    "image": image,
-    "stock_count": stockCount,
-    "sold_count": soldCount,
-    "attribute": List<dynamic>.from(attribute.map((x) => x.toJson())),
-    "attr_image": attrImage?.toJson(),
-    "product_color": productColor?.toJson(),
-    "product_size": productSize.toJson(),
   };
 }
 

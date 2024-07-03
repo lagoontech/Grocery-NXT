@@ -42,11 +42,11 @@ class ChooseAddressController extends GetxController{
   //
   getShippingCharge() async {
 
+    CartController cc = Get.find<CartController>();
     String products_ids = "";
     fetchingShippingCharge = true;
     update();
     try{
-      CartController cc = Get.find<CartController>();
       for (var element in cc.products) {
         products_ids = "$products_ids${element.prdId},";
       }
@@ -59,10 +59,14 @@ class ChooseAddressController extends GetxController{
         body: map,
       );
       if(result is http.Response){
+        print(result.statusCode);
         if(result.statusCode == 200){
           shippingCharge = jsonDecode(result.body)["finalcost"];
           showCOD = jsonDecode(result.body)["exclude"]=='0'?false:true;
           finalTotal = double.parse(shippingCharge) + cc.total;
+          print(finalTotal);
+        }else{
+          finalTotal = cc.total;
         }
       }
     }catch(e){

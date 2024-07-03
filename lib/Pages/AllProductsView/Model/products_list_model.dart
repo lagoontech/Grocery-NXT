@@ -60,6 +60,8 @@ class Product {
   AdditionalInfoStore ?variantInfo;
   ProductColor ?productColor;
   Color ?color;
+  String? inventoryattribute;
+  String? postInventoryId;
 
   Product({
     this.prdId,
@@ -85,11 +87,15 @@ class Product {
     this.cartQuantity=0,
     this.variantInfo,
     this.productColor,
-    this.color
+    this.color,
+    this.inventoryattribute,
+    this.postInventoryId
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
     prdId: json["prd_id"],
+    inventoryattribute: json["inventoryattribute"],
+    postInventoryId: json["postInventoryId"],
     title: json["title"],
     imgUrl: json["img_url"],
     campaignPercentage: json["campaign_percentage"],
@@ -117,6 +123,8 @@ class Product {
   Map<String, dynamic> toJson() => {
     "prd_id": prdId,
     "title": title,
+    "inventoryattribute": inventoryattribute,
+    "postInventoryId": postInventoryId,
     "cart_qty": cartQuantity,
     "qty": cartQuantity,
     "img_url": imgUrl,
@@ -150,7 +158,7 @@ class Product {
       "price": /*randomSecret.toString().length > 23
           ? randomSecret.toString().substring(15, 17)
           : "0"*/"0",
-      "variant_id": productColor==null?"":productColor!.id!,
+      "variant_id": postInventoryId,//productColor==null?"":productColor!.id!,
       "attributes": {},
       "used_categories": categoryId,
       //"vendor_id": vendorId ?? 'admin',

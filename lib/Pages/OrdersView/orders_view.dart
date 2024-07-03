@@ -82,22 +82,48 @@ class OrdersView extends StatelessWidget {
                                   ]),
                             ),
                           ),
-                          SliverToBoxAdapter(
-                            child: ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: vc.tabController!.index == 0
-                                    ? vc.pendingOrders.length
-                                    : vc.completedOrders.length,
-                                itemBuilder: (context, index) {
-                                  return vc.tabController!.index==0
-                                      ? OrderPendingListItem(
-                                    order: vc.pendingOrders[index],
-                                  ):OrderListItem(
-                                    order: vc.completedOrders[index],
-                                  );
-                                }),
+                          vc.tabController!.index == 0 &&
+                                  vc.pendingOrders.isEmpty
+                              ? SliverToBoxAdapter(
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Lottie.asset(
+                                          "assets/animations/empty_orders.json"),
+                                      const Text("No pending orders")
+                                    ],
+                                  ),
+                              ) :vc.tabController!.index == 1 &&
+                              vc.completedOrders.isEmpty
+                              ? SliverToBoxAdapter(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Lottie.asset(
+                                    "assets/animations/empty_orders.json"),
+                                const Text("No completed orders")
+                              ],
+                            ),
                           )
+                              : SliverToBoxAdapter(
+                                  child: ListView.builder(
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: vc.tabController!.index == 0
+                                          ? vc.pendingOrders.length
+                                          : vc.completedOrders.length,
+                                      itemBuilder: (context, index) {
+                                        return vc.tabController!.index == 0
+                                            ? OrderPendingListItem(
+                                                order: vc.pendingOrders[index],
+                                              )
+                                            : OrderListItem(
+                                                order:
+                                                    vc.completedOrders[index],
+                                              );
+                                      }),
+                                )
                         ],
                       ),
                     ),

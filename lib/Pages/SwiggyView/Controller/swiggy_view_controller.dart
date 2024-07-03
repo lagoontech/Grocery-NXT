@@ -217,7 +217,7 @@ class SwiggyViewController extends GetxController with GetTickerProviderStateMix
           pageScrollTimer!.cancel();
         }
         pageScrollTimer = Timer(const Duration(milliseconds: 10),(){
-          if(isLastPage && (pos-max)>70.h && !isAnimatingToNext){
+          if(isLastPage && (pos-max)>70.h && !isAnimatingToNext&&subIndex!=subCategories.length-1){
             isAnimatingToNext = true;
             selectedSubCategory = subCategories[subIndex+1];
             findCategoryIndicatorOffset();

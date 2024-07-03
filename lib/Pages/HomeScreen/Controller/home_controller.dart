@@ -36,6 +36,7 @@ class HomeController extends GetxController{
   List<Subcategory> subcategories2 = [];
   List<Subcategory> subcategories3 = [];
   List<Carousel> carousels = [];
+  List<Carousel> carousels2 = [];
   bool loadingCarousel     = false;
   HomeCampaignsModel ?campaign;
 
@@ -211,6 +212,27 @@ class HomeController extends GetxController{
     }
     loadingCarousel = false;
     update(["carousel"]);
+  }
+
+  //
+  fetchCarousel2() async {
+
+    loadingCarousel = true;
+    update(["carousel2"]);
+    try {
+      var result = await HttpService.getRequest("mobile-slider/2");
+      if(result is http.Response){
+        if(result.statusCode == 200 || result.statusCode == 201){
+          carousels2 = carouselModelFromJson(result.body).data!;
+        }
+      }
+    }catch(e){
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+    loadingCarousel = false;
+    update(["carousel2"]);
   }
 
   //

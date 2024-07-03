@@ -64,11 +64,18 @@ class CategoryItem extends StatelessWidget {
                     ),
                   ),
                 ),
-                Text(category!.name??"",
-                  style: TextStyle(
-                      fontSize: 10.sp,
-                      fontWeight: FontWeight.w600,
-                  ),)
+                SizedBox(
+                  width: MediaQuery.of(context).size.width*0.20,
+                  child: Center(
+                    child: Text(category!.name??"",
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      style: TextStyle(
+                          fontSize: 10.sp,
+                          fontWeight: FontWeight.w600,
+                      ),),
+                  ),
+                )
               ],
             ),
           ),

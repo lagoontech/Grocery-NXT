@@ -37,7 +37,7 @@ class ProductDetailsController extends GetxController
           if (productDetails!.additionalInfoStore != null) {
             for (var element in productDetails!.additionalInfoStore!.keys) {
               additionalInfos
-                  .add(productDetails!.additionalInfoStore![element]);
+                  .add(productDetails!.additionalInfoStore![element]!);
             }
           }
           checkVariant();
@@ -77,6 +77,8 @@ class ProductDetailsController extends GetxController
     product!.variantInfo = additionalInfos[index];
     product!.cartQuantity = quantity!;
     product!.stockCount = additionalInfos[index].stockCount;
+    product!.postInventoryId = productDetails!.product!.inventoryDetails!.firstWhere((element) =>
+    element.size==product!.productColor!.id.toString()).id.toString();
     update();
   }
 

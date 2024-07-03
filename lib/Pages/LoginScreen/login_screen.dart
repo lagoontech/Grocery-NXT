@@ -15,7 +15,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      lc.getPhoneNumber();
+      //lc.getPhoneNumber();
     });
     return Scaffold(
       body: Column(
@@ -100,7 +100,6 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ],
               ),
-
 
               SizedBox(height: 24.h),
 

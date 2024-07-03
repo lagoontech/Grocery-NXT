@@ -72,6 +72,7 @@ class CartView extends StatelessWidget {
           return cc.products.isNotEmpty?Container(
             color: Colors.white,
             child: SingleChildScrollView(
+              physics: NeverScrollableScrollPhysics(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -80,7 +81,7 @@ class CartView extends StatelessWidget {
                     builder: (cc) {
                       return ConstrainedBox(
                         constraints: BoxConstraints(
-                          maxHeight: MediaQuery.of(context).size.height*0.4
+                          maxHeight: MediaQuery.of(context).size.height*0.32
                         ),
                         child: AnimationLimiter(
                           child: ListView.builder(

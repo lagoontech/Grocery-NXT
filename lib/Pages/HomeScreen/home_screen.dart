@@ -108,7 +108,7 @@ class HomeScreen extends StatelessWidget {
                           FeaturedCategory3(),
 
                           SizedBox(height: 24.h),
-
+                          
                           //AutoSlideProductsView()
 
                         ],

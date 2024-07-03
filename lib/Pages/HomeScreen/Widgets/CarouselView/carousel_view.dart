@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -11,13 +10,15 @@ import 'package:grocery_nxt/Pages/SwiggyView/swiggy_view.dart';
 class CarouselView extends StatelessWidget {
    CarouselView({super.key});
 
-   List<Color> colors = [const Color(0xffFEE6B4),Color(0xffFFBFBF)];
+   List<Color> colors = [const Color(0xffFEE6B4), const Color(0xffFFBFBF)];
 
    HomeController hc = Get.find<HomeController>();
 
   @override
   Widget build(BuildContext context) {
+
     var size = MediaQuery.of(context).size;
+
     return Column(
       children: [
 
@@ -38,7 +39,7 @@ class CarouselView extends StatelessWidget {
                     ));
                   },
                   child: Stack(
-                                children: [
+                    children: [
                   Container(
                     width: size.width,
                     margin: EdgeInsets.only(right: 16.w,left: 16.w),

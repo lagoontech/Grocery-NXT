@@ -129,7 +129,7 @@ class ProductListItem extends StatelessWidget {
                             curvePercent: 1, hasProduct: hasProductInCart),
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 6.w),
-                          child: Row(
+                          child: product!.inventoryattribute!="Yes"?Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               hasProductInCart
@@ -190,6 +190,14 @@ class ProductListItem extends StatelessWidget {
                                     ])
                                   : const SizedBox(),
                             ],
+                          ) : GestureDetector(
+                              onTap: (){
+                                Get.to(()=> ProductDetailsView(product: product,productId: product!.prdId));
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 4.h),
+                                child: Icon(Icons.remove_red_eye,color: AppColors.primaryColor),
+                              )
                           ),
                         ),
                       ),
