@@ -12,7 +12,7 @@ class ToastUtil{
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 1,
-        backgroundColor: noInternet?Colors.black:color,
+        backgroundColor: noInternet?Colors.black:color ?? Colors.red,
         textColor: Colors.white,
         fontSize: 14
     );

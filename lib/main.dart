@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
           defaultTransition: Transition.native,
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xff23aa49)),
-            fontFamily: GoogleFonts.ibmPlexSans().fontFamily,
+            fontFamily: GoogleFonts.lato().fontFamily,
             applyElevationOverlayColor: false,
             useMaterial3: true,
           ),

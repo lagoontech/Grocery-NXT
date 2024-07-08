@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Services/http_services.dart';
@@ -44,16 +45,25 @@ class ChooseAddressController extends GetxController{
 
     CartController cc = Get.find<CartController>();
     String products_ids = "";
+    String size_ids     = "";
+    String quantity_ids = "";
     fetchingShippingCharge = true;
     update();
     try{
       for (var element in cc.products) {
         products_ids = "$products_ids${element.prdId},";
+        if(element.variantInfo!=null){
+          size_ids = "$size_ids${element.prdId}_${element.productColor!.name},";
+        }
+        quantity_ids = "$quantity_ids${element.prdId},";
       }
       final Uri uri = Uri.parse('http://grocerynxt.lagoontechcloud.com/api/shippingaddresszipcode.php');
       final map = <String, dynamic>{};
       map['zipcode']    = selectedAddress!.zipCode;
       map['productids'] = products_ids;
+      map['sizeid']     = size_ids;
+      map['qtyvid']     = quantity_ids;
+      log(map.toString());
       http.Response result = await http.post(
         uri,
         body: map,

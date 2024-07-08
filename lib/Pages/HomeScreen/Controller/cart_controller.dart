@@ -14,6 +14,7 @@ class CartController extends GetxController{
 
   GlobalKey<CartIconKey> cartIconKey = GlobalKey<CartIconKey>();
   late Function(GlobalKey) runAddToCartAnimation;
+  ScrollController scrollController = ScrollController();
 
   List<Product> products = [];
   double totalCost    = 0.0;
@@ -180,11 +181,22 @@ class CartController extends GetxController{
       );
       if(result is http.Response){
         if(result.statusCode==200){
+          if(jsonDecode(result.body)["type"]=="error"){
+            ToastUtil().showToast(
+                message: jsonDecode(result.body)["msg"],
+                color: AppColors.primaryColor);
+            applyingCoupon = false;
+            update(["coupon"]);
+            update();
+            return;
+          }
           couponAmount = double.parse(jsonDecode(result.body)["coupon_amount"]);
           calculateTotal();
           ToastUtil().showToast(
               message: "Coupon Applied!",
               color: AppColors.primaryColor);
+        }else{
+
         }
       }
     }catch(e){

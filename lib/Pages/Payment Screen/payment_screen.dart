@@ -102,86 +102,85 @@ class PaymentScreen extends StatelessWidget {
                     ),
                     GetBuilder<PaymentController>(builder: (vc) {
                       return vc.loadingPaymentOptions
-                          ? Padding(
-                              padding: EdgeInsets.only(top: 16.h),
-                              child: GridView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: 4,
-                                  gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2,
-                                      mainAxisExtent: 40.h,
-                                      mainAxisSpacing: 16.h,
-                                      crossAxisSpacing: 12.w),
-                                  itemBuilder: (context, index) {
-                                    return Skeletonizer(
-                                      child: Container(
-                                            padding: EdgeInsets.all(2.w),
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.circular(2.r),
-                                              child: CachedNetworkImage(
-                                                imageUrl: "",
-                                                errorWidget: (b,s,o){
-                                                  return Image.asset("assets/images/gnxt_logo.png");
-                                                },
-                                                fit: BoxFit.fitWidth,
-                                              ),
-                                            ),
-                                          ),
-                                    );
-                                  })
-                            )
+                          ? SizedBox(
+                        height: 50.h,
+                        child: Padding(
+                            padding: EdgeInsets.only(top: 16.h),
+                            child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                shrinkWrap: true,
+                                itemCount: 4,
+                                itemBuilder: (context, index) {
+                                  return Skeletonizer(
+                                    child: Container(
+                                      padding: EdgeInsets.all(2.w),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(2.r),
+                                        child: CachedNetworkImage(
+                                          imageUrl: "",
+                                          errorWidget: (b,s,o){
+                                            return Image.asset("assets/images/gnxt_logo.png");
+                                          },
+                                          fit: BoxFit.fitWidth,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                })
+                        ),
+                      )
                           : Column(
-                              children: [
-                                SizedBox(height: 16.h),
-                                GridView.builder(
-                                    shrinkWrap: true,
-                                    itemCount: vc.options.length,
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 2,
-                                            mainAxisExtent: 40.h,
-                                            mainAxisSpacing: 16.h,
-                                            crossAxisSpacing: 12.w),
-                                    itemBuilder: (context, index) {
-                                      var option = vc.options[index];
-                                      return option.status == 1
-                                          ? GestureDetector(
-                                              onTap: () {
-                                                vc.selectedOption = option;
-                                                vc.update();
-                                              },
-                                              child: Container(
-                                                padding: EdgeInsets.all(2.w),
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(2.r),
-                                                    border: Border.all(
-                                                        color:
-                                                            vc.selectedOption == option
-                                                                ? AppColors.primaryColor
-                                                                : Colors.transparent,
-                                                        width: 0.8)),
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(2.r),
-                                                  child: CachedNetworkImage(
-                                                    imageUrl: option.image!,
-                                                    fit: BoxFit.fitWidth,
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                          : SizedBox();
-                                    }),
-                              ],
-                            );
+                        children: [
+                          SizedBox(height: 16.h),
+                          SizedBox(
+                            height: 32.h,
+                            child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                shrinkWrap: true,
+                                itemCount: vc.options.length,
+                                itemBuilder: (context, index) {
+                                  var option = vc.options[index];
+                                  return option.status == 1
+                                      ? GestureDetector(
+                                    onTap: () {
+                                      vc.selectedOption = option;
+                                      vc.update();
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.all(2.w),
+                                      margin: EdgeInsets.symmetric(horizontal: 10.w),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                          BorderRadius.circular(8.r),
+                                          border: Border.all(
+                                              color:
+                                              vc.selectedOption == option
+                                                  ? AppColors.primaryColor
+                                                  : Colors.transparent,
+                                              width: 0.8)),
+                                      child: ClipRRect(
+                                        borderRadius:
+                                        BorderRadius.circular(2.r),
+                                        child: CachedNetworkImage(
+                                          imageUrl: option.image!,
+                                          fit: BoxFit.fitWidth,
+                                          width: 64.w,
+                                          height: 28.h,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                      : SizedBox();
+                                }),
+                          ),
+                        ],
+                      );
                     })
                   ],
                 ),
               ),
               bottomNavigationBar: Padding(
-                padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: 16.h),
+                padding: EdgeInsets.only(left: 40.w, right: 40.w, bottom: 16.h),
                 child: GetBuilder<PaymentController>(builder: (vc) {
                   return CustomButton(
                     child: !vc.isPlacingOrder

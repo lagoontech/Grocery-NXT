@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/HomeProductsView/discount_wavy_bottom_container.dart';
+import 'package:grocery_nxt/Pages/ProductDetailsView/Controller/product_details_controller.dart';
 import 'package:grocery_nxt/Pages/ProductDetailsView/product_details_view.dart';
 import 'package:grocery_nxt/Pages/ProfileView/Views/WishlistView/Controller/wishlist_controller.dart';
 import 'package:grocery_nxt/Services/network_util.dart';
@@ -46,12 +47,11 @@ class ProductListItem extends StatelessWidget {
                         return;
                       }
                       Product copyProduct = Product.fromJson(product!.toJson());
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context){
-                        return ProductDetailsView(
+                      Get.delete<ProductDetailsController>();
+                      Get.to(()=> new ProductDetailsView(
                           productId: product!.prdId,
                           product: copyProduct
-                        );
-                      }));
+                      ),preventDuplicates: false);
                       print("product tapped");
                     },
                     child: Column(

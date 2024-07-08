@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grocery_nxt/Pages/OrderDetailsView/Model/order_details_model.dart';
@@ -41,6 +42,27 @@ class OrderProducts extends StatelessWidget {
                             fontSize: 13.sp
                           ),
                       ),
+                      trailing: product.price!=null?Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+
+                          DefaultTextStyle(
+                            style: TextStyle(color: Colors.grey.shade500,fontSize: 12.sp),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(product.quantity.toString()+" * "),
+                                Text(double.parse(product.price!).toStringAsFixed(0)!),
+                              ],
+                            ),
+                          ),
+
+                          SizedBox(height: 4.h),
+
+                          Text("\u{20B9}"+(product.quantity!*double.parse(product.price.toString())).toStringAsFixed(0))
+
+                        ],
+                      ):SizedBox(),
                     ),
 
                     Divider()

@@ -58,13 +58,14 @@ class OrderDetailsController extends GetxController{
     razorpay.open(options);
   }
 
-
   //
   updatePaymentStatus()async{
 
     successResponse!.type = "success";
     successResponse!.transactionId = transactionId;
     successResponse!.orderId = orderId;
+    successResponse!.invoiceNumber = orderDetails!.order![0].order!.invoiceNumber;
+    print(successResponse!.toJson());
     try{
       var result = await HttpService.postRequest(
           "update-payment",

@@ -70,6 +70,13 @@ class OrdersView extends StatelessWidget {
                               child: TabBar(
                                   controller: vc.tabController,
                                   dividerColor: Colors.transparent,
+                                  onTap: (v){
+                                    if(vc.tabController!.index==0) {
+                                      vc.getPendingOrders();
+                                    } else {
+                                      vc.getOrders();
+                                    }
+                                  },
                                   labelStyle: const TextStyle(
                                       fontWeight: FontWeight.w600),
                                   tabs: const [

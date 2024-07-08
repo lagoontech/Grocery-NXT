@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:grocery_nxt/Widgets/custom_circular_loader.dart';
 import '../Constants/app_colors.dart';
 
@@ -75,31 +76,34 @@ class _CustomButtonState extends State<CustomButton>
       onTapCancel: () {
         _controller.reverse();
       },*/
-      child: AnimatedBuilder(
-        animation: _animation,
-        builder: (context, child) {
-          return Transform.scale(
-            scale: _animation.value,
-            child: Container(
-              width: widget.width ?? MediaQuery.of(context).size.width * 0.5,
-              height: widget.height ?? 40.h,
-              decoration: BoxDecoration(
-                color: widget.color ?? AppColors.primaryColor,
-                borderRadius: BorderRadius.circular(30.r),
+      child: DefaultTextStyle(
+        style: TextStyle(fontWeight: FontWeight.w600,fontFamily: GoogleFonts.ibmPlexSans().fontFamily),
+        child: AnimatedBuilder(
+          animation: _animation,
+          builder: (context, child) {
+            return Transform.scale(
+              scale: _animation.value,
+              child: Container(
+                width: widget.width ?? MediaQuery.of(context).size.width * 0.5,
+                height: widget.height ?? 40.h,
+                decoration: BoxDecoration(
+                  color: widget.color ?? AppColors.primaryColor,
+                  borderRadius: BorderRadius.circular(30.r),
+                ),
+                child: Center(
+                  child: widget.isLoading
+                      ? CustomCircularLoader()
+                      : widget.child ??
+                      Text(
+                        widget.text!,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 14.sp, color: Colors.white),
+                      ),
+                ),
               ),
-              child: Center(
-                child: widget.isLoading
-                    ? CustomCircularLoader()
-                    : widget.child ??
-                    Text(
-                      widget.text!,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 14.sp, color: Colors.white),
-                    ),
-              ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

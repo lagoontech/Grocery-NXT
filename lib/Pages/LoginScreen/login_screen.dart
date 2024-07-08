@@ -27,11 +27,11 @@ class LoginScreen extends StatelessWidget {
               child: Column(
             children: [
 
-              SizedBox(
+               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.1,
-              ),
+               ),
 
-              Center(
+               Center(
                 child: Image.asset(
                   "assets/images/gnxt_logo.png",
                   width: MediaQuery.of(context).size.width * 0.6,

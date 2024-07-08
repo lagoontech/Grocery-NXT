@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -69,56 +70,116 @@ class CartView extends StatelessWidget {
       ),
       body: GetBuilder<CartController>(
         builder: (cc){
-          return cc.products.isNotEmpty?Container(
-            color: Colors.white,
-            child: SingleChildScrollView(
-              physics: NeverScrollableScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-
-                  GetBuilder<CartController>(
-                    builder: (cc) {
-                      return ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxHeight: MediaQuery.of(context).size.height*0.32
-                        ),
-                        child: AnimationLimiter(
-                          child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: cc.products.length,
-                              itemBuilder: (context,index){
-                                var product = cc.products[index];
-                            return AnimationConfiguration.staggeredList(
-                                position: index,
-                                duration: const Duration(milliseconds: 750),
-                                child: SlideAnimation(
-                                  verticalOffset: 50.h,
-                                  curve: Curves.bounceOut,
-                                  child: CartItem(
-                                    product: product,
-                                    isLast: index==cc.products.length-1,
-                                    index: index,
-                                  )
-                                ));
-                          }),
-                        ),
-                      );
-                    }
-                  ),
-
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 32.w,vertical: 24.h),
-                    child: TextFormField(
-                      controller: cc.couponController,
-                      decoration: decoration(),
-                      onChanged: (v){},
-                    ),
-                  ),
-
-                ],
+          return cc.products.isNotEmpty?Column(
+            children: [
+              Expanded(
+                flex: 4,
+                child: GetBuilder<CartController>(
+                  builder: (cc) {
+                    return Scrollbar(
+                      controller: cc.scrollController,
+                      trackVisibility: true,
+                      thumbVisibility: true,
+                      thickness: 3,
+                      radius: Radius.circular(30.r),
+                      child: AnimationLimiter(
+                        child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: cc.products.length,
+                            itemBuilder: (context,index){
+                              var product = cc.products[index];
+                          return AnimationConfiguration.staggeredList(
+                              position: index,
+                              duration: const Duration(milliseconds: 750),
+                              child: SlideAnimation(
+                                verticalOffset: 50.h,
+                                curve: Curves.bounceOut,
+                                child: CartItem(
+                                  product: product,
+                                  isLast: index==cc.products.length-1,
+                                  index: index,
+                                )
+                              ));
+                        }),
+                      ),
+                    );
+                  }
+                ),
               ),
-            ),
+
+              Expanded(
+                flex: 4,
+                child: SingleChildScrollView(
+                  child: Column(
+                  children: [
+                  
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 32.w,vertical: 24.h),
+                      child: TextFormField(
+                        controller: cc.couponController,
+                        decoration: decoration(),
+                        onChanged: (v){},
+                      ),
+                    ),
+                  
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 8.h),
+                      child: Text(
+                        "Order Summary",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16.sp
+                        ),
+                      ),
+                    ),
+                  
+                    GetBuilder<CartController>(
+                        builder: (cc) {
+                          return Column(
+                            children: [
+                  
+                              SummaryItem(
+                                  title: "Items Total",
+                                  value: "\u{20B9} ${cc.subTotal}"
+                              ),
+                              SummaryItem(
+                                  title: "Coupon Discount",
+                                  value: "\u{20B9} ${cc.couponAmount.toString()}"
+                              ),
+                              SummaryItem(
+                                  title: "Tax",
+                                  value: "0"
+                              ),
+                  
+                              const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Divider(
+                                  thickness: 0.4,
+                                  height: 0.1,
+                                ),
+                              ),
+                  
+                              SummaryItem(
+                                  title: "Total",
+                                  value: "\u{20B9} ${cc.total}"
+                              ),
+                  
+                              SizedBox(
+                                  height: 12.h
+                              )
+                  
+                            ],
+                          );
+                        }
+                    ),
+                  
+                  ],
+                                ),
+                ),),
+
+
+
+            ],
           ):SizedBox(
               height: MediaQuery.of(context).size.height,
               child: Column(
@@ -144,61 +205,6 @@ class CartView extends StatelessWidget {
           return cc.products.isNotEmpty?Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-
-              SizedBox(
-                height: 24.h,
-              ),
-
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 8.h),
-                child: Text(
-                  "Order Summary",
-                  style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16.sp
-                  ),
-                ),
-              ),
-
-              GetBuilder<CartController>(
-                  builder: (cc) {
-                    return Column(
-                      children: [
-
-                        SummaryItem(
-                            title: "Items Total",
-                            value: "\u{20B9} ${cc.subTotal}"
-                        ),
-                        SummaryItem(
-                            title: "Coupon Discount",
-                            value: "\u{20B9} ${cc.couponAmount.toString()}"
-                        ),
-                        SummaryItem(
-                            title: "Tax",
-                            value: "0"
-                        ),
-
-                        const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Divider(
-                            thickness: 0.4,
-                            height: 0.1,
-                          ),
-                        ),
-
-                        SummaryItem(
-                            title: "Total",
-                            value: "\u{20B9} ${cc.total}"
-                        ),
-
-                        SizedBox(
-                            height: 12.h
-                        )
-
-                      ],
-                    );
-                  }
-              ),
 
               GetBuilder<CartController>(
                 builder: (cc) {

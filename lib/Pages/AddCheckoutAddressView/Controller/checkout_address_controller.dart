@@ -101,6 +101,14 @@ class AddCheckoutAddressController extends GetxController{
       ToastUtil().showToast(message: "Please select a state");
       return;
     }
+    if(zipcodeTEC.text.isEmpty || zipcodeTEC.text.length!=6){
+      ToastUtil().showToast(message: "Please enter a valid zipcode");
+      return;
+    }
+    if(titleTEC.text.isEmpty){
+      ToastUtil().showToast(message: "Please enter title");
+      return;
+    }
     creatingAddress = true;
     update();
     try{
@@ -110,7 +118,7 @@ class AddCheckoutAddressController extends GetxController{
         "phone": phoneTEC.text,
         "country": "70",
         "address": addressTEC.text,
-        "zip_code": zipcodeTEC.text,
+        "zip_code": "",
         "user_id": profileController.profile!.userDetails.id,
         "city": "1",
         "state": selectedState!.id,

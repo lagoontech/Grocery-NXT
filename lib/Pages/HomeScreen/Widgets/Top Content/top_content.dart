@@ -68,9 +68,9 @@ class TopContent extends StatelessWidget {
                                 position: index,
                                 child: SlideAnimation(
                                   horizontalOffset: 200.w,
-                                  duration: const Duration(milliseconds: 1200),
+                                  duration: const Duration(milliseconds: 600),
                                   child: FadeInAnimation(
-                                    duration: const Duration(milliseconds: 1200),
+                                    duration: const Duration(milliseconds: 600),
                                     child: CategoryItem(
                                         index:index,
                                         category: category

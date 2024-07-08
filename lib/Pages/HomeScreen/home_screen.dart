@@ -37,7 +37,7 @@ class HomeScreen extends StatelessWidget {
     if(hc.sc.hasClients){
       hc.sc.animateTo(
           -20,
-          duration: const Duration(milliseconds: 1000),
+          duration: const Duration(milliseconds: 500),
           curve: Curves.easeIn);
     }
 

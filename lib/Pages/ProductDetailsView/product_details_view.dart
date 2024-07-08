@@ -388,6 +388,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                       }
                                   ),
                                 )
+
                               ],
                             ):const SizedBox(),
 

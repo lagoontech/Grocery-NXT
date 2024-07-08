@@ -202,7 +202,6 @@ class OrderTrack {
     orderId: json["order_id"],
     //name: orderTrackNameValues.map[json["name"]]!,
     updatedBy: json["updated_by"],
-    table: tableValues.map[json["table"]]!,
     createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
   );
 
@@ -665,11 +664,9 @@ class Badge {
 
   factory Badge.fromJson(Map<String, dynamic> json) => Badge(
     id: json["id"],
-    name: badgeNameValues.map[json["name"]]!,
     image: json["image"],
     badgeFor: forValues.map[json["for"]]!,
     saleCount: json["sale_count"],
-    type: badgeTypeValues.map[json["type"]]!,
     status: statusEnumValues.map[json["status"]]!,
     createdAt: json["created_at"],
     updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
@@ -731,7 +728,6 @@ class Image {
     path: json["path"],
     alt: json["alt"],
     size: json["size"],
-    dimensions: dimensionsValues.map[json["dimensions"]]!,
     userId: json["user_id"],
     createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
     updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),

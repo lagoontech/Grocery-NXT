@@ -22,7 +22,9 @@ class CartItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: ValueKey(product!.variantInfo!=null?product!.productColor!.id:product!.prdId),
+      key: ValueKey(product!.variantInfo!=null
+          ? product!.productColor!.id
+          : product!.prdId),
       onDismissed: (v){
         if(product!.variantInfo!=null){
           cc.products.removeWhere(
@@ -91,6 +93,9 @@ class CartItem extends StatelessWidget {
                                 children: [
                   GestureDetector(
                     onTap: () {
+                      if(product!.cartQuantity==1){
+                        return;
+                      }
                       cc.addToCart(product: product, isSub: true);
                     },
                     child: Container(

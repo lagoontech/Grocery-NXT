@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -82,13 +83,16 @@ class OrderDetailsView extends StatelessWidget {
                                       ),
                                   ) : const SizedBox(),
 
-                                  TextButton(
-                                      onPressed: (){
+                                  GestureDetector(
+                                      onTap: (){
                                         Get.to(()=> OrderProducts(details: orderDetailsController.orderDetails));
                                       },
-                                      child: const Text(
+                                      child: Text(
                                           "View",
-                                          style: TextStyle(fontWeight: FontWeight.w600)))
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              color: AppColors.primaryColor,
+                                          )))
 
                                 ],
                               ),
@@ -108,13 +112,23 @@ class OrderDetailsView extends StatelessWidget {
                                   scrollDirection: Axis.horizontal,
                                   itemBuilder: (context, index) {
                                     var product = vc.orderDetails!.order![0].orderItem![index];
-                                    return SizedBox(
-                                      width: 75.w,
-                                      height: 50.h,
-                                      child: FittedBox(
-                                        child: CachedNetworkImage(
-                                            imageUrl: product.product!.image!,
-                                            fit: BoxFit.fitHeight,
+                                    return Container(
+                                      padding: EdgeInsets.all(4.w),
+                                      child: Container(
+                                        width: 75.w,
+                                        height: 75.w,
+                                        clipBehavior: Clip.hardEdge,
+                                        padding: EdgeInsets.all(2.w),
+                                        decoration: BoxDecoration(
+                                          //shape: BoxShape.circle,
+                                          //border: Border.all(color: AppColors.primaryColor)
+                                        ),
+                                        child: Transform.scale(
+                                          scale: 1.5,
+                                          child: CachedNetworkImage(
+                                              imageUrl: product.product!.image!,
+                                              fit: BoxFit.contain,
+                                          ),
                                         ),
                                       ),
                                     );

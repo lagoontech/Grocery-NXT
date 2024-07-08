@@ -23,6 +23,7 @@ class OrderController extends GetxController with GetTickerProviderStateMixin{
 
     if(!isLoading){
       loadingOrders = true;
+      completedOrdersPage = 1;
     }else{
       completedOrdersPage++;
     }
@@ -57,11 +58,11 @@ class OrderController extends GetxController with GetTickerProviderStateMixin{
 
     if(!isLoading){
       loadingOrders = true;
+      pendingOrdersPage = 1;
     }else{
       pendingOrdersPage++;
     }
     update();
-    try{
       var result = await HttpService.getRequest("user/orderpending-list?page=${pendingOrdersPage}");
       if(result is http.Response){
         if(result.statusCode==200){
@@ -74,9 +75,6 @@ class OrderController extends GetxController with GetTickerProviderStateMixin{
           print("pending orders -->${pendingOrders.length}");
         }
       }
-    }catch(e){
-      print(e);
-    }
     if(isLoading){
       refreshController.loadComplete();
     }
