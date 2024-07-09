@@ -67,7 +67,7 @@ class AllProductsListItem extends StatelessWidget {
                       SizedBox(height: 4.h),
                       SizedBox(
                           width: MediaQuery.of(context).size.width * 0.4,
-                          height: MediaQuery.of(context).size.height*0.28*0.2,
+                          height: MediaQuery.of(context).size.height * 0.28 * 0.2,
                           child: AutoSizeText(
                             product!.title!,
                             maxLines: 2,
@@ -90,6 +90,7 @@ class AllProductsListItem extends StatelessWidget {
                                 style: TextStyle(
                                   decoration: TextDecoration.lineThrough,
                                   fontSize: 14.sp,
+                                  color: Colors.black.withOpacity(0.7),
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -232,7 +233,8 @@ class AllProductsListItem extends StatelessWidget {
           }),
         ),
 
-        CustomPaint(
+        (((product!.price-product!.discountPrice)/product!.price)*100).toStringAsFixed(0)!="0"
+            && !(((product!.price-product!.discountPrice)/product!.price)*100).toStringAsFixed(0).contains("-") ? CustomPaint(
           painter: WavyPainter(),
           child: Container(
             width: 32.w,
@@ -243,7 +245,7 @@ class AllProductsListItem extends StatelessWidget {
               //color: AppColors.primaryColor.withOpacity(0.8)
             ),
             child: DefaultTextStyle(
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -257,7 +259,7 @@ class AllProductsListItem extends StatelessWidget {
               ),
             ),
           ),
-        )
+        ):const SizedBox()
       ],
     );
   }

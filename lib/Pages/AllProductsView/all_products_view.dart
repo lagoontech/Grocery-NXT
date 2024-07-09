@@ -1,12 +1,10 @@
 import 'package:add_to_cart_animation/add_to_cart_animation.dart';
 import 'package:animated_search_bar/animated_search_bar.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/AllProductsView/Controller/all_products_controller.dart';
 import 'package:grocery_nxt/Pages/AllProductsView/Widgets/all_products_list_item.dart';
@@ -98,7 +96,7 @@ class AllProductsView extends StatelessWidget {
         ),
         body: GetBuilder<AllProductsController>(builder: (vc) {
           return Container(
-            color: Colors.grey.shade50,
+            color: Colors.white,
             child: NestedScrollView(
               physics: const NeverScrollableScrollPhysics(),
               body: CustomScrollView(

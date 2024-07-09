@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/OrderDetailsView/order_details_view.dart';
 import 'package:grocery_nxt/Pages/OrdersView/Controller/order_controller.dart';
-import 'package:grocery_nxt/Widgets/custom_button.dart';
 import '../Model/order_pending_list_model.dart';
 
 class OrderPendingListItem extends StatelessWidget {
@@ -18,43 +17,62 @@ class OrderPendingListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () async {
+        var result =
+        await Get.to(() => OrderDetailsView(orderId: order!.orderId));
+        if (result == 1) {
+          vc.getOrders();
+        }
+      },
       child: Container(
         width: MediaQuery.of(context).size.width,
         height: 88.h,
         padding: EdgeInsets.all(10.w),
         decoration: BoxDecoration(
-          color: AppColors.primaryColor.withOpacity(0.05),
+          color: AppColors.primaryColor.withOpacity(0.1),
           borderRadius: BorderRadius.circular(6.r),
         ),
         margin: EdgeInsets.symmetric(horizontal: 24.w, vertical: 10.h),
         child: Row(
           children: [
             Container(
-              width: 85.w,
-              height: 85.w,
+              width: 70.w,
+              height: 70.w,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12.r),
               ),
-              child: order!.orderItem!.length > 1
-                  ? GridView.builder(
-                      itemCount: order!.orderItem!.length,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 1,
-                      ),
-                      itemBuilder: (context, index) {
-                        var image = order!.orderItem![index].product!.image;
-                        return CachedNetworkImage(
-                            imageUrl:
-                                "https://grocerynxt.ltcloud247.com/assets/uploads/media-uploader/${image!.path}");
-                      })
-                  : CachedNetworkImage(
+              child: order!.orderItem!.length == 2
+                  ? ListView.builder(
+                  itemCount: order!.orderItem!.length,
+                  scrollDirection: Axis.horizontal,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    var image = order!.orderItem![index].product!.image;
+                    return CachedNetworkImage(
                       imageUrl:
-                          "https://grocerynxt.ltcloud247.com/assets/uploads/media-uploader/${order!.orderItem![0].product!.image!.path}"),
+                      "https://grocerynxt.ltcloud247.com/assets/uploads/media-uploader/${image!.path}",
+                      width: 35.w,
+                    );
+                  })
+                  : order!.orderItem!.length > 1
+                  ? GridView.builder(
+                  itemCount: order!.orderItem!.length,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate:
+                  const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 1,
+                  ),
+                  itemBuilder: (context, index) {
+                    var image = order!.orderItem![index].product!.image;
+                    return CachedNetworkImage(
+                        imageUrl:
+                        "https://grocerynxt.ltcloud247.com/assets/uploads/media-uploader/${image!.path}");
+                  })
+                  : CachedNetworkImage(
+                  imageUrl:
+                  "https://grocerynxt.ltcloud247.com/assets/uploads/media-uploader/${order!.orderItem![0].product!.image!.path}"),
             ),
             SizedBox(
               width: 16.w,
@@ -64,40 +82,47 @@ class OrderPendingListItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  Text("#${order!.order!.invoiceNumber}"),
                   Text(
-                    "# ${order!.order!.invoiceNumber!.toString()}",
-                    style: const TextStyle(fontWeight: FontWeight.w600),
+                    order!.orderItem![0].product!.name.toString(),
+                    maxLines: 1,
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 10.sp,
+                        color: Colors.grey.shade500,
+                        overflow: TextOverflow.ellipsis),
                   ),
-                  order!.order!.paymentMeta != null
+                  order!.orderItem!.length > 1
                       ? Text(
-                          "\u{20B9} ${order!.order!.paymentMeta!.subTotal!}",
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        )
-                      : const SizedBox()
+                    order!.orderItem![0].product!.name.toString(),
+                    maxLines: 1,
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 10.sp,
+                        color: Colors.grey.shade500,
+                        overflow: TextOverflow.ellipsis),
+                  )
+                      : const SizedBox(),
+                  Text(
+                    "\u{20B9} ${double.parse(order!.totalAmount!).toStringAsFixed(0)}",
+                  )
                 ],
               ),
             ),
-            Align(
+            /*Align(
               alignment: Alignment.bottomRight,
               child: Padding(
                 padding: EdgeInsets.only(bottom: 4.h),
                 child: CustomButton(
                   width: 80.w,
                   height: 24.h,
-                  onTap: () async {
-                    var result = await Get.to(
-                        () => OrderDetailsView(orderId: order!.orderId));
-                    if (result == 1) {
-                      vc.getOrders();
-                    }
-                  },
                   child: const Text(
                     "Details",
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
               ),
-            )
+            )*/
           ],
         ),
       ),

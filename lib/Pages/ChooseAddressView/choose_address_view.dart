@@ -50,6 +50,7 @@ class ChooseAddressView extends StatelessWidget {
                               radius: Radius.circular(30.r),
                               child: ListView.builder(
                                   controller: vc.scrollController,
+                                  reverse: true,
                                   shrinkWrap: true,
                                   itemCount: vc.addresses.length,
                                   itemBuilder: (context, index) {

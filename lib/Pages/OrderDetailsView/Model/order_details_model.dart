@@ -12,17 +12,20 @@ class OrderDetailsModel {
   List<Order>? order;
   PaymentDetails? paymentDetails;
   OrderTrack? orderTrack;
+  String ?secretKey;
 
   OrderDetailsModel({
     this.order,
     this.paymentDetails,
     this.orderTrack,
+    this.secretKey
   });
 
   factory OrderDetailsModel.fromJson(Map<String, dynamic> json) => OrderDetailsModel(
     order: json["order"] == null ? [] : List<Order>.from(json["order"]!.map((x) => Order.fromJson(x))),
     paymentDetails: json["payment_details"] == null ? null : PaymentDetails.fromJson(json["payment_details"]),
     orderTrack: json["order_track"] == null ? null : OrderTrack.fromJson(json["order_track"]),
+    secretKey: json["secret_key"],
   );
 
   Map<String, dynamic> toJson() => {

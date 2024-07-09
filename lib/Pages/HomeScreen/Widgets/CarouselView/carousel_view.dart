@@ -128,7 +128,7 @@ class CarouselView extends StatelessWidget {
                 viewportFraction: 1.0,
                 autoPlay: true,
                 onPageChanged: (i,r){
-                  vc.carouselIndex = i;
+                  vc.currentCarouselIndex = i;
                   vc.update(["carouselIndicator"]);
                 }
               ),),
@@ -141,41 +141,46 @@ class CarouselView extends StatelessWidget {
         GetBuilder<HomeController>(
             id: "carouselIndicator",
             builder: (vc){
-          return Align(
-            alignment: Alignment.center,
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: 20.h,
-              child: Center(
-                child: ListView.builder(
-                    padding: EdgeInsets.only(
-                        left: MediaQuery.of(context).size.width*0.5-20.w),
-                    itemCount: vc.carousels.length,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context,index){
-
-                  return  AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    margin: EdgeInsets.symmetric(horizontal: 2.w),
-                    width: index==vc.carouselIndex
-                        ? 16.w
-                        : vc.carouselIndex<index
-                        ? index==1
-                        ? 8.w*0.6
-                        : (index-vc.carouselIndex)*8.w*0.6
-                        : (index+1)*8.w*0.6,
-                    height: index==vc.carouselIndex?16.h:8.h,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.primaryColor.withOpacity((1.0-index*0.2))
-                    ),
-                  );
-                }),
-              ),
+          return Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 32.w,
+                  width: 32.w,
+                  child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: vc.carousels.length,
+                      itemBuilder: (context,index){
+                        return IndicatorItem(current: vc.currentCarouselIndex==index);
+                      }
+                  ),
+                ),
+              ],
             ),
           );
         })
       ],
     );
   }
+
+  //
+   Widget IndicatorItem({bool current= false}){
+
+     return AnimatedContainer(
+       margin: EdgeInsets.symmetric(horizontal: 2.w),
+       duration: const Duration(milliseconds: 500),
+       width: current
+           ? 10.w
+           : 6.w,
+       height: current
+           ? 10.w
+           : 6.w,
+       decoration: BoxDecoration(
+           color: AppColors.primaryColor,
+           shape: BoxShape.circle
+       ),
+     );
+
+   }
 }

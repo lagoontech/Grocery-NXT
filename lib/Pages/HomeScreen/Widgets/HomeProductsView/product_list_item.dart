@@ -78,28 +78,31 @@ class ProductListItem extends StatelessWidget {
                               style: TextStyle(fontSize: 12.sp,fontWeight: FontWeight.w600),
                               textAlign: TextAlign.center,
                             )),
-                        Row(
-                          children: [
-                            Text(
-                              "\u{20B9}${product!.price.toString()}",
-                              style: TextStyle(
-                                  decoration: TextDecoration.lineThrough,
-                                  fontSize: 12.sp),
-                            ),
-                            SizedBox(width: 2.w),
-                            Expanded(
-                                child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Text(
-                                "\u{20B9}${product!.discountPrice.toString()}",
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 4.w),
+                          child: Row(
+                            children: [
+                              Text(
+                                "\u{20B9}${product!.price.toString()}",
                                 style: TextStyle(
-                                    color: AppColors.secondaryColor,
-                                    fontWeight: FontWeight.w600,
-
-                                ),
+                                    decoration: TextDecoration.lineThrough,
+                                    fontSize: 12.sp),
                               ),
-                            ))
-                          ],
+                              SizedBox(width: 2.w),
+                              Expanded(
+                                  child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  "\u{20B9}${product!.discountPrice.toString()}",
+                                  style: TextStyle(
+                                      color: AppColors.secondaryColor,
+                                      fontWeight: FontWeight.w600,
+
+                                  ),
+                                ),
+                              ))
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -209,7 +212,8 @@ class ProductListItem extends StatelessWidget {
           ),
         ),
 
-        Padding(
+        (((product!.price-product!.discountPrice)/product!.price)*100).toStringAsFixed(0)!="0"
+            && !(((product!.price-product!.discountPrice)/product!.price)*100).toStringAsFixed(0).contains("-") ?Padding(
           padding: EdgeInsets.only(left: 8.w),
           child: CustomPaint(
             painter: WavyPainter(),
@@ -237,7 +241,7 @@ class ProductListItem extends StatelessWidget {
               ),
             ),
           ),
-        ),
+        ): const SizedBox(),
 
         Positioned(
           right: 16.w,

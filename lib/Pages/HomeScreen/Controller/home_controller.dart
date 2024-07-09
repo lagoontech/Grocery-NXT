@@ -39,6 +39,7 @@ class HomeController extends GetxController{
   List<Carousel> carousels2 = [];
   bool loadingCarousel     = false;
   HomeCampaignsModel ?campaign;
+  int currentCarouselIndex = 0;
 
   //
   fetchCategories()async{

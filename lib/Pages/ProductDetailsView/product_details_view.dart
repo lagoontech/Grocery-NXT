@@ -11,6 +11,7 @@ import 'package:grocery_nxt/Pages/HomeScreen/Widgets/HomeProductsView/product_li
 import 'package:grocery_nxt/Pages/ProductDetailsView/Controller/product_details_controller.dart';
 import 'package:grocery_nxt/Pages/ProductDetailsView/Widgets/animated_bottom_curved_container.dart';
 import 'package:grocery_nxt/Pages/ProductDetailsView/product_image_screen.dart';
+import 'package:grocery_nxt/Utils/toast_util.dart';
 import 'package:grocery_nxt/Widgets/custom_button.dart';
 import 'package:grocery_nxt/Widgets/custom_textfield.dart';
 import 'package:grocery_nxt/Widgets/internet_checker.dart';
@@ -274,17 +275,23 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                     ),
                                   ): const SizedBox(),
 
-                                  SizedBox(height: 8.h),
+                                  SizedBox(height: 4.h),
 
                                   Row(
                                     children: [
 
-                                      Text(
+                                      vc.product!.stockCount!=0?Text(
                                           "In Stock",
                                           style: TextStyle(
                                             color: AppColors.primaryColor,
                                             fontWeight: FontWeight.w600
                                           ),
+                                      ):const Text(
+                                        "Out of stock",
+                                        style: TextStyle(
+                                            color: Colors.red,
+                                            fontWeight: FontWeight.w600
+                                        ),
                                       ),
 
                                       //Text(vc.product!.stockCount.toString()),
@@ -476,6 +483,10 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
             "Add to cart",
             style: TextStyle(color: Colors.white)),
           onTap: (){
+            if(vc.product!.stockCount!<vc.quantity!){
+              ToastUtil().showToast(color: AppColors.primaryColor,message: "Availabe stock: ${vc.product!.stockCount}");
+              return;
+            }
             vc.product!.cartQuantity = vc.quantity!;
             cc.addToCartFromDetailsPage(product: vc.product);
           },

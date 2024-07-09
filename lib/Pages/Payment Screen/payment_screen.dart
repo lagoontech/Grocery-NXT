@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,7 +16,7 @@ class PaymentScreen extends StatelessWidget {
   PaymentScreen({super.key});
 
   PaymentController vc = Get.put(PaymentController());
-  CartController cc = Get.find<CartController>();
+  CartController    cc = Get.find<CartController>();
   ChooseAddressController addressController =
       Get.find<ChooseAddressController>();
 
@@ -53,7 +54,7 @@ class PaymentScreen extends StatelessWidget {
                             BoxShadow(
                                 color: Colors.black.withOpacity(0.2),
                                 blurRadius: 2,
-                                offset: Offset(0, 1))
+                                offset: const Offset(0, 1))
                           ]),
                       child: ListTile(
                         leading: Container(
@@ -78,7 +79,7 @@ class PaymentScreen extends StatelessWidget {
                                   height: 30.w,
                                   decoration: const BoxDecoration(
                                       color: Colors.white, shape: BoxShape.circle),
-                                  child: Icon(Icons.location_on),
+                                  child: const Icon(Icons.location_on),
                                 ),
                               )
                             ],
@@ -170,7 +171,7 @@ class PaymentScreen extends StatelessWidget {
                                       ),
                                     ),
                                   )
-                                      : SizedBox();
+                                      : const SizedBox();
                                 }),
                           ),
                         ],
@@ -182,7 +183,7 @@ class PaymentScreen extends StatelessWidget {
               bottomNavigationBar: Padding(
                 padding: EdgeInsets.only(left: 40.w, right: 40.w, bottom: 16.h),
                 child: GetBuilder<PaymentController>(builder: (vc) {
-                  return CustomButton(
+                  return !vc.confirmingPayment?CustomButton(
                     child: !vc.isPlacingOrder
                         ? const Text("Place Order",
                             style: TextStyle(color: Colors.white))
@@ -193,17 +194,60 @@ class PaymentScreen extends StatelessWidget {
                       }
                       //Get.to(() => const OrderSuccessScreen());
                     },
-                  );
+                  ):const SizedBox();
                 }),
               ),
             ),
 
-          vc.confirmingPayment?Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              color: Colors.black.withOpacity(0.1),
-              child: Center(child: CustomCircularLoader())):SizedBox()
+            vc.confirmingPayment
+              ? Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                color: Colors.black.withOpacity(0.05),
+                child: Material(
+                  color: Colors.transparent,
+                  child: Center(
+                        child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 90.h,
+                            margin: EdgeInsets.symmetric(horizontal: 32.w),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12.r),
+                              border: Border.all(color: AppColors.primaryColor)
+                            ),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
 
+                                vc.successResponse!=null
+                                    ? Text("Order Id: ${vc.successResponse!.orderId}")
+                                    : const SizedBox(),
+
+                                AnimatedTextKit(
+                                  animatedTexts: [
+                                    TypewriterAnimatedText(
+                                      'Confirming Payment',
+                                      textStyle: TextStyle(
+                                        fontSize: 16.sp,
+                                        color: AppColors.primaryColor,
+                                      ),
+                                      speed: const Duration(milliseconds: 50),
+                                    ),
+                                  ],
+                                  totalRepeatCount: 8,
+                                  pause: const Duration(milliseconds: 10),
+                                  displayFullTextOnTap: true,
+                                  stopPauseOnTap: true,
+                                ),
+                              ],
+                            ),
+                          ),
+                    )),
+                ),
+              )
+              : const SizedBox()
         ],
         );
       }

@@ -143,17 +143,25 @@ class AddCheckoutAddressController extends GetxController{
   getShippingCharge() async {
 
     String products_ids = "";
+    String size_ids     = "";
+    String quantity_ids = "";
     fetchingShippingCharge = true;
     update();
     try{
       CartController cc = Get.find<CartController>();
       for (var element in cc.products) {
         products_ids = "$products_ids${element.prdId},";
+        if(element.variantInfo!=null){
+          size_ids = "$size_ids${element.prdId}_${element.productColor!.name},";
+        }
+        quantity_ids = "$quantity_ids${element.prdId},";
       }
       final Uri uri = Uri.parse('http://grocerynxt.lagoontechcloud.com/api/shippingaddresszipcode.php');
       final map = <String, dynamic>{};
-      map['zipcode'] = '629157';
+      map['zipcode']    = zipcodeTEC.text;
       map['productids'] = products_ids;
+      map['sizeid']     = size_ids;
+      map['qtyvid']     = quantity_ids;
       http.Response result = await http.post(
         uri,
         body: map,

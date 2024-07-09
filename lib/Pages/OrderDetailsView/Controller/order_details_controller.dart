@@ -17,7 +17,8 @@ class OrderDetailsController extends GetxController{
   var razorpay = Razorpay();
   String ?transactionId;
   OrderSuccessResponse? successResponse = OrderSuccessResponse();
-  bool statusChanged = false;
+  bool statusChanged   = false;
+  bool updatingPayment = false;
 
   //
   getOrderDetails() async {
@@ -61,11 +62,13 @@ class OrderDetailsController extends GetxController{
   //
   updatePaymentStatus()async{
 
-    successResponse!.type = "success";
+    updatingPayment = true;
+    update();
+    successResponse!.type          = "success";
     successResponse!.transactionId = transactionId;
-    successResponse!.orderId = orderId;
+    successResponse!.orderId       = orderId;
     successResponse!.invoiceNumber = orderDetails!.order![0].order!.invoiceNumber;
-    print(successResponse!.toJson());
+    successResponse!.secreteKey    = orderDetails!.secretKey;
     try{
       var result = await HttpService.postRequest(
           "update-payment",
@@ -81,6 +84,8 @@ class OrderDetailsController extends GetxController{
     }catch(e){
       print(e);
     }
+    updatingPayment = false;
+    update();
   }
 
   //

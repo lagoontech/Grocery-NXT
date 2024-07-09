@@ -64,6 +64,7 @@ class PaymentController extends GetxController {
   //
   placeOrder() async {
 
+    print(addressController!.selectedAddress!.zipCode);
     if(selectedOption==null){
       ToastUtil().showToast(message: "Select a payment method");
       return;
@@ -97,6 +98,7 @@ class PaymentController extends GetxController {
         'agree': 'on',
         'coupon': ''
       });
+      print(request.fields);
       request.headers.addAll(headers);
       print(request.fields);
       log(request.fields.toString());
