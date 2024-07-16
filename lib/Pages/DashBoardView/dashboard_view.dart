@@ -38,7 +38,7 @@ class DashboardView extends StatelessWidget {
             CategoriesView().animate(effects: [const FadeEffect(duration: Duration(milliseconds: 480),
                 begin: 0.4)]),
       
-            CartView().animate(effects: [const FadeEffect(duration: Duration(milliseconds: 480),
+            CartView(showBack: false).animate(effects: [const FadeEffect(duration: Duration(milliseconds: 480),
                 begin: 0.4)]),
       
             OrdersView().animate(effects: [const FadeEffect(duration: Duration(milliseconds: 480),

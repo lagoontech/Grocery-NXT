@@ -1,5 +1,4 @@
 import 'package:animated_search_bar/animated_search_bar.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,7 +9,6 @@ import 'package:grocery_nxt/Pages/CategoriesView/Controller/categories_view_cont
 import 'package:grocery_nxt/Pages/CategoriesView/Widgets/top_curve.dart';
 import 'package:grocery_nxt/Widgets/custom_button.dart';
 import 'package:grocery_nxt/Widgets/custom_circular_loader.dart';
-
 import '../../Constants/app_colors.dart';
 
 class CategoriesView extends StatelessWidget {
@@ -24,9 +22,9 @@ class CategoriesView extends StatelessWidget {
       children: [
 
         Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.transparent,
           appBar: AppBar(
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.transparent,
             scrolledUnderElevation: 0,
             title: SizedBox(
               height: 40.h,
@@ -36,7 +34,7 @@ class CategoriesView extends StatelessWidget {
                   labelAlignment: Alignment.center,
                   animationDuration: const Duration(milliseconds: 3000),
                   duration: const Duration(milliseconds: 3000),
-                  labelStyle: TextStyle(fontSize: 16.sp),
+                  labelStyle: TextStyle(fontSize: 16.sp,color: Colors.white),
                   searchStyle: TextStyle(color: Colors.black.withOpacity(0.7)),
                   cursorColor: Colors.black,
                   textInputAction: TextInputAction.done,
@@ -86,7 +84,7 @@ class CategoriesView extends StatelessWidget {
                         child: Column(
                           children: [
 
-                            SizedBox(height: 28.h),
+                            SizedBox(height: 24.h),
 
                             AnimationLimiter(
                               child: GridView.builder(
@@ -99,9 +97,9 @@ class CategoriesView extends StatelessWidget {
                                   physics: const NeverScrollableScrollPhysics(),
                                   gridDelegate:
                                       SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 3,
-                                          crossAxisSpacing: 16.w,
-                                          mainAxisSpacing: 16.h,
+                                          crossAxisCount: 2,
+                                          crossAxisSpacing: 8.w,
+                                          mainAxisSpacing: 8.h,
                                           mainAxisExtent:
                                               MediaQuery.of(context).size.height *
                                                   0.20),
@@ -116,47 +114,69 @@ class CategoriesView extends StatelessWidget {
                                       position: index,
                                       columnCount: 2,
                                       duration: const Duration(milliseconds: 500),
-                                      child: SlideAnimation(
-                                        verticalOffset: 50.h,
-                                        child: FadeInAnimation(
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              Get.to(() => AllProductsView(
-                                                    category: category,
-                                                  ));
-                                            },
-                                            child: Container(
-                                              padding: EdgeInsets.only(
-                                                  top: 20.h, left: 2.w, right: 2.w),
-                                              decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius: BorderRadius.circular(8.r),
-                                                  border: Border.all(
-                                                    color: AppColors.primaryColor.withOpacity(0.4),
-                                                    width: 0.5,
-                                                  )
-                                              ),
-                                              child: Column(
-                                                children: [
-                                                  CachedNetworkImage(
-                                                    imageUrl: category!.imageUrl ?? "",
-                                                    fit: BoxFit.fill,
-                                                    height: MediaQuery.of(context).size.height * 0.20 * 0.3,
-                                                    errorWidget: (c, w, o) {
-                                                      return Image.asset(
-                                                          "assets/images/gnxt_logo.png");
-                                                    },
-                                                  ),
-                                                  SizedBox(height: 32.h),
-                                                  Expanded(
-                                                    child: AutoSizeText(
-                                                      category.name!.toUpperCase(),
-                                                      textAlign: TextAlign.center,
-                                                      maxLines: 2,
-                                                      style: TextStyle(fontSize: 9.sp),
+                                      child: DefaultTextStyle(
+                                        style: TextStyle(fontSize: 10.sp),
+                                        child: SlideAnimation(
+                                          verticalOffset: 50.h,
+                                          child: FadeInAnimation(
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                Get.to(() => AllProductsView(
+                                                      category: category,
+                                                    ));
+                                              },
+                                              child: Container(
+                                                padding: EdgeInsets.only(
+                                                    top: 0.h, left: 0.w, right: 0.w),
+                                                decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius: BorderRadius.circular(12.r),
+                                                ),
+                                                clipBehavior: Clip.antiAlias,
+                                                child: Stack(
+                                                  children: [
+                                                    CachedNetworkImage(
+                                                      imageUrl: category!.imageUrl ?? "",
+                                                      fit: BoxFit.fitHeight,
+                                                      height: MediaQuery.of(context).size.height * 0.20,
+                                                      errorWidget: (c, w, o) {
+                                                        return Image.asset(
+                                                            "assets/images/gnxt_logo.png");
+                                                      },
                                                     ),
-                                                  )
-                                                ],
+                                                    SizedBox(height: 16.h),
+                                                    Align(
+                                                      alignment: Alignment.bottomCenter,
+                                                      child: Container(
+                                                        width: double.infinity,
+                                                        height: MediaQuery.of(context).size.height * 0.04,
+                                                        decoration: BoxDecoration(
+                                                          gradient: LinearGradient(
+                                                              begin: Alignment.bottomCenter,
+                                                              end: Alignment.topCenter,
+                                                              colors: [
+                                                            //AppColors.primaryColor.withOpacity(0.9),
+                                                            //AppColors.primaryColor.withOpacity(0.2)
+                                                                Colors.black.withOpacity(0.8),
+                                                                Colors.black.withOpacity(0.01)
+                                                          ])
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Align(
+                                                      alignment: Alignment.bottomCenter,
+                                                      child: Padding(
+                                                        padding: EdgeInsets.only(bottom: 6.h),
+                                                        child: Text(
+                                                          category.name!.toUpperCase(),
+                                                          textAlign: TextAlign.center,
+                                                          maxLines: 2,
+                                                          style: TextStyle(fontSize: 11.sp,color: Colors.white),
+                                                        ),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),

@@ -366,7 +366,8 @@ class ProductDetailsModelProduct {
     this.vendor,
     this.randomKey,
     this.randomSecret,
-    this.inventoryDetails
+    this.inventoryDetails,
+    this.enablePrebook
   });
 
   dynamic id;
@@ -414,6 +415,7 @@ class ProductDetailsModelProduct {
   List<ProductDeliveryOption>? productDeliveryOption;
   CampaignSoldProduct? campaignSoldProduct;
   Vendor? vendor;
+  bool ?enablePrebook;
 
   factory ProductDetailsModelProduct.fromJson(Map<String, dynamic> json) =>
       ProductDetailsModelProduct(
@@ -495,6 +497,7 @@ class ProductDetailsModelProduct {
             ? null
             : CampaignSoldProduct.fromJson(json["campaign_sold_product"]),
         vendor: json["vendor"] == null ? null : Vendor.fromJson(json["vendor"]),
+        enablePrebook: json["is_prebook"] == 1 ? true : false
       );
 }
 

@@ -162,9 +162,9 @@ class AllProductsView extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
 
-                        Lottie.asset("assets/animations/not_found.json"),
-                        SizedBox(height: 20.h),
-                          Text(
+                         Lottie.asset("assets/animations/not_found.json"),
+                         SizedBox(height: 20.h),
+                         Text(
                             "No Products Found",
                             textAlign: TextAlign.center,
                             style: TextStyle(

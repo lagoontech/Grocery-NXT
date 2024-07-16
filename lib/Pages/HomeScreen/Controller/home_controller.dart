@@ -283,6 +283,7 @@ class HomeController extends GetxController{
       calculateCurrentScrollPosition();
       update();
     });
+
   }
 
   @override

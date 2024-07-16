@@ -12,7 +12,9 @@ import 'package:lottie/lottie.dart';
 import '../../Widgets/custom_button.dart';
 
 class CartView extends StatelessWidget {
-   CartView({super.key});
+   CartView({super.key,this.showBack = true});
+
+   bool showBack;
 
    CartController cc = Get.find<CartController>();
 
@@ -24,46 +26,51 @@ class CartView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         centerTitle: true,
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: showBack,
         title: GetBuilder<CartController>(
           builder: (cc) {
-            return cc.products.isNotEmpty?Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Total Products (",
-                  style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600
-                  )),
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
-                  transitionBuilder:
-                      (Widget child, Animation<double> animation) {
-                    return FadeTransition(
-                      opacity: animation,
-                      child: SlideTransition(
-                        position: Tween<Offset>(
-                            begin: const Offset(0.0, 1),
-                            end: const Offset(0.0, 0.0))
-                            .animate(animation),
-                        child: child,
-                      ),
-                    );
-                  },
-                  child: Text(
-                    cc.totalProducts.toString(),
-                    key: ValueKey<String>(cc.totalProducts.toString()),
-                    style: TextStyle(fontSize: 16.sp, color: Colors.black),
+            return cc.products.isNotEmpty?Padding(
+              padding: showBack
+                  ? EdgeInsets.only(right: 48.w)
+                  : EdgeInsets.zero,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Total Products (",
+                    style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600
+                    )),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    transitionBuilder:
+                        (Widget child, Animation<double> animation) {
+                      return FadeTransition(
+                        opacity: animation,
+                        child: SlideTransition(
+                          position: Tween<Offset>(
+                              begin: const Offset(0.0, 1),
+                              end: const Offset(0.0, 0.0))
+                              .animate(animation),
+                          child: child,
+                        ),
+                      );
+                    },
+                    child: Text(
+                      cc.totalProducts.toString(),
+                      key: ValueKey<String>(cc.totalProducts.toString()),
+                      style: TextStyle(fontSize: 16.sp, color: Colors.black),
+                    ),
                   ),
-                ),
-                Text(
-                  ")",
-                  style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600
-                  )),
-              ],
+                  Text(
+                    ")",
+                    style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600
+                    )),
+                ],
+              ),
             ):const SizedBox();
           }
         ),

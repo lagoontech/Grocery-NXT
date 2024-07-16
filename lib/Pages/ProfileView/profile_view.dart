@@ -6,12 +6,15 @@ import 'package:grocery_nxt/Pages/ChooseAddressView/choose_address_view.dart';
 import 'package:grocery_nxt/Pages/Help_center/HelpCenter_view.dart';
 import 'package:grocery_nxt/Pages/LoginScreen/login_screen.dart';
 import 'package:grocery_nxt/Pages/ProfileView/Controller/profile_controller.dart';
+import 'package:grocery_nxt/Pages/ProfileView/Views/Chatbot/chat_screen.dart';
 import 'package:grocery_nxt/Pages/ProfileView/Views/WishlistView/wishlist_view.dart';
 import 'package:grocery_nxt/Pages/ProfileView/Widgets/profile_item.dart';
 import 'package:grocery_nxt/Utils/shared_pref_utils.dart';
 import 'package:grocery_nxt/Widgets/custom_button.dart';
 import 'package:grocery_nxt/Widgets/custom_circular_loader.dart';
 import 'package:lottie/lottie.dart';
+
+import 'EditProfile/edit_profile.dart';
 
 class ProfileView extends StatelessWidget {
   ProfileView({super.key});
@@ -120,6 +123,14 @@ class ProfileView extends StatelessWidget {
 
                     ProfileItem(
                       iconAsset: "profile",
+                      title: "Edit Profile",
+                      onTap: () {
+                        Get.to(() => EditProfile());
+                      },
+                    ),
+
+                    ProfileItem(
+                      iconAsset: "profile",
                       title: "Help Center",
                       onTap: () {
                         Get.to(()=> const HelpCenterView());
@@ -200,6 +211,20 @@ class ProfileView extends StatelessWidget {
           );
         }
       ),
+     floatingActionButton: FloatingActionButton(onPressed: (){
+       Get.to(() => ChatScreen());
+     },
+     child: Column(
+         mainAxisAlignment: MainAxisAlignment.center,
+         children: [
+
+           Icon(Icons.chat),
+
+           Text("Help")
+
+       ],
+     ),
+     ),
     );
   }
 }

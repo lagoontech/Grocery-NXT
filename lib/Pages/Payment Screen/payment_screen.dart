@@ -180,23 +180,64 @@ class PaymentScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              bottomNavigationBar: Padding(
-                padding: EdgeInsets.only(left: 40.w, right: 40.w, bottom: 16.h),
-                child: GetBuilder<PaymentController>(builder: (vc) {
-                  return !vc.confirmingPayment?CustomButton(
-                    child: !vc.isPlacingOrder
-                        ? const Text("Place Order",
-                            style: TextStyle(color: Colors.white))
-                        : CustomCircularLoader(),
-                    onTap: () {
-                      if (!vc.isPlacingOrder && !vc.confirmingPayment) {
-                        vc.placeOrder();
-                      }
-                      //Get.to(() => const OrderSuccessScreen());
-                    },
-                  ):const SizedBox();
-                }),
-              ),
+              bottomNavigationBar: GetBuilder<PaymentController>(builder: (vc) {
+                return !vc.confirmingPayment?Container(
+                  width: MediaQuery.of(context).size.width,
+                  color: Colors.white,
+                  margin: EdgeInsets.only(bottom: 12.h),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(height: 12.h),
+                      GetBuilder<ChooseAddressController>(builder: (ac) {
+                        return Padding(
+                          padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: 16.h),
+                          child: Column(
+                            children: [
+                              SummaryItem(
+                                  title: "Items Total",
+                                  value: "\u{20B9} ${cc.total}"),
+                              SummaryItem(title: "Coupon Discount", value: "0"),
+                              SummaryItem(title: "Tax", value: "0"),
+                              SummaryItem(
+                                  title: "Shipping Charge",
+                                  value: ac.shippingCharge,
+                                  load: ac.fetchingShippingCharge
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Divider(
+                                  thickness: 0.4,
+                                  height: 0.1,
+                                ),
+                              ),
+                              SummaryItem(
+                                  title: "Total",
+                                  value: "\u{20B9} ${ac.finalTotal}"),
+                            ],
+                          ),
+                        );
+                      }),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width*0.8,
+                        child: CustomButton(
+                          child: !vc.isPlacingOrder
+                              ? const Text("Place Order",
+                                  style: TextStyle(color: Colors.white))
+                              : CustomCircularLoader(),
+                          onTap: () {
+                            if (!vc.isPlacingOrder && !vc.confirmingPayment) {
+                              vc.placeOrder();
+                            }
+                            //Get.to(() => const OrderSuccessScreen());
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ):const SizedBox();
+              }),
             ),
 
             vc.confirmingPayment
@@ -253,4 +294,30 @@ class PaymentScreen extends StatelessWidget {
       }
     );
   }
+
+  //
+  Widget SummaryItem({String title = "", String value = "",bool load = false}) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(title),
+          load
+              ? Skeletonizer(child: Text(value))
+              : Text(
+              value,
+              style: TextStyle(
+                  color: title == "Total"
+                      ? AppColors.primaryColor
+                      : Colors.black,
+                  fontWeight: title == "Total"
+                      ? FontWeight.w600
+                      : FontWeight.w500
+              ))
+        ],
+      ),
+    );
+  }
+
 }

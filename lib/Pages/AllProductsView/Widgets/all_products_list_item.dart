@@ -59,8 +59,8 @@ class AllProductsListItem extends StatelessWidget {
                         key: cartKey,
                         color: Colors.transparent,
                         child: CachedNetworkImage(
-                          width: MediaQuery.of(context).size.width * 0.38 * 0.6,
-                          height: MediaQuery.of(context).size.height * 0.28*0.3,
+                          width: MediaQuery.of(context).size.width * 0.38 * 0.8,
+                          height: MediaQuery.of(context).size.height * 0.28*0.4,
                           imageUrl: product!.imgUrl!,
                         ),
                       ),
@@ -68,19 +68,21 @@ class AllProductsListItem extends StatelessWidget {
                       SizedBox(
                           width: MediaQuery.of(context).size.width * 0.4,
                           height: MediaQuery.of(context).size.height * 0.28 * 0.2,
-                          child: AutoSizeText(
-                            product!.title!,
-                            maxLines: 2,
-                            style: TextStyle(
-                                fontSize: 10.sp,
-                                fontWeight: FontWeight.w500,
-                                color: const Color(0xff222222),
-                                fontFamily: ""
+                          child: Center(
+                            child: Text(
+                              product!.title!,
+                              maxLines: 2,
+                              style: TextStyle(
+                                  fontSize: 10.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: const Color(0xff222222),
+                                  fontFamily: ""
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                            textAlign: TextAlign.center,
                           )),
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.28*0.2,
+                        height: MediaQuery.of(context).size.height * 0.28*0.1,
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8.w),
                           child: Row(

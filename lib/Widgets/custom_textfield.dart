@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 Widget customTextField(BuildContext context,
     {TextInputType? textInputType,
     Widget? prefix,
-    String hint = "",
+    String hint = "", String label = "",
     double? borderRadius=8,
     Color? borderColor,
     Color? fillColor,
@@ -43,6 +43,8 @@ Widget customTextField(BuildContext context,
     textCapitalization: textCapitalization ?? TextCapitalization.words,
     onSaved: onSaved,
     decoration: InputDecoration(
+      label: Text(label),
+      floatingLabelBehavior: FloatingLabelBehavior.always,
       disabledBorder: InputBorder.none,
       //errorStyle: GoogleFonts.jost(),
       focusedErrorBorder: const OutlineInputBorder(

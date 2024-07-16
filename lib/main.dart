@@ -7,6 +7,7 @@ import 'package:grocery_nxt/Pages/SplashScreen/splash_screen.dart';
 import 'package:grocery_nxt/Services/binding_service.dart';
 import 'package:grocery_nxt/Services/network_util.dart';
 import 'package:grocery_nxt/Utils/shared_pref_utils.dart';
+import 'package:upgrader/upgrader.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 Future<void> main() async {
@@ -29,17 +30,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       builder: (context,w) {
-        return GetMaterialApp(
-          debugShowCheckedModeBanner: false,
-          defaultTransition: Transition.native,
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xff23aa49)),
-            fontFamily: GoogleFonts.lato().fontFamily,
-            applyElevationOverlayColor: false,
-            useMaterial3: true,
+        return UpgradeAlert(
+          child: GetMaterialApp(
+            debugShowCheckedModeBanner: false,
+            defaultTransition: Transition.native,
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xff23aa49)),
+              fontFamily: GoogleFonts.lato().fontFamily,
+              applyElevationOverlayColor: false,
+              useMaterial3: true,
+            ),
+            initialBinding: RootBinding(),
+            home: SplashScreen(),
           ),
-          initialBinding: RootBinding(),
-          home: SplashScreen(),
         );
       }
     );

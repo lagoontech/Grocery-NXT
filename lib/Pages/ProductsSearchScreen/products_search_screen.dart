@@ -49,7 +49,7 @@ class ProductsSearchScreen extends StatelessWidget {
               pinned: true,
               floating: true,
               automaticallyImplyLeading: false,
-              toolbarHeight: kToolbarHeight * 1.4,
+              toolbarHeight: kToolbarHeight*1.4,
               flexibleSpace: Column(
                 children: [
                   SizedBox(
@@ -59,12 +59,19 @@ class ProductsSearchScreen extends StatelessWidget {
                     child: TextFormField(
                       controller: vc.searchTEC,
                       decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 4.w,vertical: 4.h),
                         hintText: "Search Products",
+                        isDense: true,
                         prefixIcon: Icon(
                           Icons.search,
                           color: AppColors.primaryColor,
                         ),
                         enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: AppColors.primaryColor,
+                            ),
+                            borderRadius: BorderRadius.circular(12.r)),
+                        focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                               color: AppColors.primaryColor,
                             ),

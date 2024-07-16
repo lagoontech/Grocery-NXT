@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -10,9 +11,11 @@ import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/HomeProductsView/product_list_item.dart';
 import 'package:grocery_nxt/Pages/ProductDetailsView/Controller/product_details_controller.dart';
 import 'package:grocery_nxt/Pages/ProductDetailsView/Widgets/animated_bottom_curved_container.dart';
+import 'package:grocery_nxt/Pages/ProductDetailsView/Widgets/animated_bottom_curved_painter.dart';
 import 'package:grocery_nxt/Pages/ProductDetailsView/product_image_screen.dart';
 import 'package:grocery_nxt/Utils/toast_util.dart';
 import 'package:grocery_nxt/Widgets/custom_button.dart';
+import 'package:grocery_nxt/Widgets/custom_circular_loader.dart';
 import 'package:grocery_nxt/Widgets/custom_textfield.dart';
 import 'package:grocery_nxt/Widgets/internet_checker.dart';
 import 'package:readmore/readmore.dart';
@@ -64,32 +67,78 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                               children: [
                                 Container(
                                   width: MediaQuery.of(context).size.width,
-                                  height: MediaQuery.of(context).size.height * 0.01 +
+                                  height: MediaQuery.of(context).size.height *
+                                      0.01+
                                       MediaQuery.of(context).size.height *
                                           0.45 *
                                           vc.animation.value,
                                   child: CustomPaint(
-                                    painter: AnimatedBottomCurvedContainer(vc.animation.value),
-                                    child: Center(
-                                      child: GestureDetector(
-                                        onTap: (){
-                                          Get.to(()=> ProductImageScreen(imgUrl: vc.selectedImage));
-                                        },
-                                        child: SizedBox(
-                                          width: MediaQuery.of(context).size.width / 2,
-                                          height: MediaQuery.of(context).size.height * 0.20,
-                                          child: FittedBox(
-                                            child: CachedNetworkImage(
-                                                imageUrl: vc.selectedImage,
+                                    painter: AnimatedBottomCurvedPainter(vc.animation.value),
+                                    child: ClipPath(
+                                      clipper: AnimatedBottomCurvedContainer(vc.animation.value),
+                                      child: Stack(
+                                        children: [
+                                          Center(
+                                            child: GestureDetector(
+                                              onTap: (){
+                                                Get.to(()=> ProductImageScreen(imgUrl: vc.selectedImage));
+                                              },
+                                              child: SizedBox(
+                                                width: MediaQuery.of(context).size.width,
+                                                height: MediaQuery.of(context).size.height,
+                                                child: Transform.scale(
+                                                  scale: 1.1,
+                                                  child: CachedNetworkImage(
+                                                      imageUrl: vc.selectedImage,
+                                                      fit: BoxFit.fill,
+                                                  ),
+                                                ),
+                                              ),
                                             ),
                                           ),
-                                        ),
+                                          IgnorePointer(
+                                            child: Container(
+                                                width: MediaQuery.of(context).size.width,
+                                                height: MediaQuery.of(context).size.height*0.46,
+                                                decoration: BoxDecoration(
+                                                    gradient: LinearGradient(
+                                                        colors: [
+                                                          Colors.black.withOpacity(0.05),
+                                                          Colors.black.withOpacity(0.001),
+                                                        ],
+                                                        begin: Alignment.topCenter,
+                                                        end: Alignment.bottomCenter
+                                                    )
+                                                )
+                                            ),
+                                          ),
+                                          /*Positioned(
+                                            bottom: -20.h,
+                                            child: Transform.translate(
+                                              offset: Offset(0,-20.h),
+                                              child: Container(
+                                                  width: MediaQuery.of(context).size.width,
+                                                  height: kToolbarHeight*2,
+                                                  decoration: BoxDecoration(
+                                                      gradient: LinearGradient(
+                                                          colors: [
+                                                            Colors.black.withOpacity(0.4),
+                                                            Colors.black.withOpacity(0.05),
+                                                          ],
+                                                          begin: Alignment.bottomCenter,
+                                                          end: Alignment.topCenter
+                                                      )
+                                                  )
+                                              ),
+                                            ),
+                                          ),*/
+                                        ],
                                       ),
                                     ),
                                   ),
                                 ),
                                 Positioned(
-                                  bottom: MediaQuery.of(context).size.height * 0.02,
+                                  bottom: MediaQuery.of(context).size.height * 0.01,
                                   left: MediaQuery.of(context).size.width * 0.12,
                                   right: MediaQuery.of(context).size.width * 0.12,
                                   child: Container(
@@ -115,8 +164,9 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                                     padding: EdgeInsets.symmetric(horizontal: 4.w),
                                                     margin: EdgeInsets.symmetric(horizontal: 4.w),
                                                     decoration: BoxDecoration(
+                                                        color: Colors.white,
                                                         border: Border.all(
-                                                            color: Colors.black,
+                                                            color: Colors.white,
                                                             width: 0.4)),
                                                     child: CachedNetworkImage(
                                                       imageUrl: image,
@@ -127,7 +177,8 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                                 );
                                               })
                                           : const SizedBox()),
-                                )
+                                ),
+
                               ],
                             ),
 
@@ -300,24 +351,34 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
 
                                   SizedBox(height: 8.h),
 
-                                  customTextField(
-                                      context,
-                                      textInputType: TextInputType.text,
-                                      borderColor: AppColors.primaryColor,
-                                      hint: "Eg: 5Kg,20Kg",
-                                      onChanged: (v){
-                                        vc.preBook = v!;
-                                      }
-                                  ),
+                                  vc.productDetails!.product!.enablePrebook!?Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
 
-                                  SizedBox(height: 8.h),
+                                      customTextField(
+                                          context,
+                                          textInputType: TextInputType.text,
+                                          borderColor: AppColors.primaryColor,
+                                          hint: "Eg: 5Kg,20Kg",
+                                          onChanged: (v){
+                                            vc.preBook = v!;
+                                          }
+                                      ),
 
-                                  CustomButton(
-                                    height: 36.h,
-                                    child: const Text(
-                                        "Pre-Book",
-                                        style: TextStyle(color: Colors.white)),
-                                  ),
+                                      SizedBox(height: 8.h),
+
+                                      CustomButton(
+                                        height: 36.h,
+                                        onTap: (){
+                                          vc.preBookAPI();
+                                        },
+                                        child: !vc.booking?const Text(
+                                            "Pre-Book",
+                                            style: TextStyle(color: Colors.white)):CustomCircularLoader(),
+                                      ),
+
+                                    ],
+                                  ):SizedBox(),
 
                                   SizedBox(height: 12.h),
 
@@ -422,11 +483,12 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                           },
                           child: Container(
                             width: 50.w,
+                            height: 28.w,
+                            padding: EdgeInsets.only(left: 6.w),
                             decoration: const BoxDecoration(
                                 color: Colors.white,
                                 shape: BoxShape.circle
                             ),
-                            padding: EdgeInsets.all(4.w),
                             child: Center(
                                 child: Icon(
                                   Icons.arrow_back_ios,

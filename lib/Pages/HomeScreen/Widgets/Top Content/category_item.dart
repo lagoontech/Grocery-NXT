@@ -15,7 +15,7 @@ class CategoryItem extends StatelessWidget {
   CategoryItem({Key? key, this.index,this.category}) : super(key: key);
 
   GlobalKey positionKey = GlobalKey();
-  HomeController hc = Get.find<HomeController>();
+  HomeController hc     = Get.find<HomeController>();
 
   @override
   Widget build(BuildContext context) {
@@ -52,13 +52,17 @@ class CategoryItem extends StatelessWidget {
                        shape: BoxShape.circle,
                         color: Color(0xffE9F5FA)
                         ),
-                      child: FractionallySizedBox(
-                        widthFactor: 0.6,
-                        heightFactor: 0.6,
-                        child: CachedNetworkImage(
-                            imageUrl: category!.imageUrl??"",
-                            width: 30,
-                            height: 30,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                        ),
+                        padding: EdgeInsets.all(4.w),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(60.r),
+                          child: CachedNetworkImage(
+                              imageUrl: category!.imageUrl??"",
+                              fit: BoxFit.fill,
+                          ),
                         ),
                       ),
                     ),

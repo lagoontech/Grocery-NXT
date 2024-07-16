@@ -66,7 +66,10 @@ class AllProductsController extends GetxController with GetTickerProviderStateMi
     update();
     try{
       var result = await HttpService.getRequest(
-          "${ApiConstants().allProducts}?name=${searchTEC.text}&page=$page&category=${selectedCategory!.name=="All Products"?"":selectedCategory!.name}");
+          selectedCategory!.name!="All Products"?
+          "${ApiConstants().allProducts}?name=${searchTEC.text}&page=$page&category=${selectedCategory!.name=="All Products"?"":selectedCategory!.name}":
+          "${ApiConstants().allProducts}?name=${searchTEC.text}&page=$page")
+    ;
       if(result is http.Response){
         if(result.statusCode==200){
           if(isRefresh) {

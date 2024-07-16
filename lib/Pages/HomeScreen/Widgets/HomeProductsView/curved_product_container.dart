@@ -34,7 +34,7 @@ class CurvedProductContainer extends CustomPainter {
 
     // Define a Paint object for drawing the border
     var borderPaint = Paint()
-      ..color = AppColors.secondaryColor.withOpacity(0.2) // Set the border color
+      ..color = AppColors.primaryColor.withOpacity(0.6) // Set the border color
       ..style = PaintingStyle.stroke // Set the painting style to stroke
       ..strokeWidth = 0.6; // Set the border width
 

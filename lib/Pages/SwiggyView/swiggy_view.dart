@@ -141,7 +141,7 @@ class SwiggyView extends StatelessWidget {
 
                 GetBuilder<SwiggyViewController>(
                   builder: (vc) {
-                    return vc.subCategories.isNotEmpty?Expanded(
+                    return Expanded(
                         flex: 3,
                         child: Container(
                           height: MediaQuery.of(context).size.height-(kToolbarHeight+MediaQuery.of(context).viewPadding.top),
@@ -192,7 +192,7 @@ class SwiggyView extends StatelessWidget {
                               }
                           ),
                         )
-                    ):SizedBox();
+                    );
                   }
                 ),
 
@@ -269,7 +269,7 @@ class SwiggyView extends StatelessWidget {
                                         ),
                                       )):SizedBox(),
 
-                                  vc.products.length>10 && vc.isLastPage?Padding(
+                                  vc.products.length>5 && vc.isLastPage?Padding(
                                     padding: EdgeInsets.only(bottom: 12.h),
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.end,
@@ -283,12 +283,26 @@ class SwiggyView extends StatelessWidget {
                                             v.repeat(reverse: true);
                                           },
                                           effects: [
-                                            SlideEffect()
+                                            const SlideEffect()
                                           ]
-                                        )
+                                        ),
+                                        Transform.translate(
+                                          offset: Offset(0,-4.h),
+                                          child: Icon(
+                                            Icons.keyboard_arrow_up_outlined,
+                                            color: AppColors.secondaryColor,
+                                          ).animate(
+                                              onPlay: (v){
+                                                v.repeat(reverse: true);
+                                              },
+                                              effects: [
+                                                const SlideEffect()
+                                              ]
+                                          ),
+                                        ),
                                       ],
                                     ),
-                                  ):SizedBox(),
+                                  ):const SizedBox(),
 
                                   SingleChildScrollView(
                                     physics: const BouncingScrollPhysics(),
@@ -723,7 +737,7 @@ class SwiggyView extends StatelessWidget {
             insetPadding: EdgeInsets.zero,
             contentPadding: EdgeInsets.all(1.w),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20.r)),
+              borderRadius: BorderRadius.all(Radius.circular(4.r)),
             ),
             content: GetBuilder<SwiggyViewController>(builder: (vc){
               return Stack(
@@ -731,7 +745,7 @@ class SwiggyView extends StatelessWidget {
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(12.r)
+                      borderRadius: BorderRadius.circular(4.r)
                     ),
                     width: MediaQuery.of(context).size.width*0.9,
                     padding: EdgeInsets.only(bottom: 12.h),
@@ -777,8 +791,8 @@ class SwiggyView extends StatelessWidget {
                               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 3,
                                   mainAxisExtent: 90.h,
-                                  crossAxisSpacing: 1.w,
-                                  mainAxisSpacing: 10.w
+                                  crossAxisSpacing: 4.w,
+                                  mainAxisSpacing: 4.h
                               ), itemBuilder: (BuildContext context, int index) {
                               var category = svc.categories[index];
                               return GestureDetector(
@@ -790,27 +804,62 @@ class SwiggyView extends StatelessWidget {
                                   vc.fetchCategoryProducts();
                                   Get.back();
                                 },
-                                child: Column(
-                                  children: [
-
-                                    category!.imageUrl!=null? CachedNetworkImage(
-                                        imageUrl: category.imageUrl ?? "",
-                                        width: double.infinity,
-                                        fit: BoxFit.fill,
-                                    ): Expanded(child: SizedBox()),
-
-                                    Text(
-                                      category.name!,
-                                      textAlign: TextAlign.center,
-                                      maxLines: 2,
-                                      style: TextStyle(
-                                          fontSize: 10.sp,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w600
+                                child: Container(
+                                  padding: EdgeInsets.only(
+                                      top: 0.h, left: 0.w, right: 0.w),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(4.r),
+                                      border: Border.all(
+                                        color: AppColors.primaryColor.withOpacity(0.4),
+                                        width: 0.5,
+                                      )
+                                  ),
+                                  clipBehavior: Clip.antiAlias,
+                                  child: Stack(
+                                    children: [
+                                      CachedNetworkImage(
+                                        imageUrl: category!.imageUrl ?? "",
+                                        fit: BoxFit.fitHeight,
+                                        height: MediaQuery.of(context).size.height * 0.20,
+                                        errorWidget: (c, w, o) {
+                                          return Image.asset(
+                                              "assets/images/gnxt_logo.png");
+                                        },
                                       ),
-                                    ),
-
-                                  ],
+                                      SizedBox(height: 16.h),
+                                      Align(
+                                        alignment: Alignment.bottomCenter,
+                                        child: Container(
+                                          width: double.infinity,
+                                          height: MediaQuery.of(context).size.height * 0.04,
+                                          decoration: BoxDecoration(
+                                              gradient: LinearGradient(
+                                                  begin: Alignment.bottomCenter,
+                                                  end: Alignment.topCenter,
+                                                  colors: [
+                                                    //AppColors.primaryColor.withOpacity(0.9),
+                                                    //AppColors.primaryColor.withOpacity(0.2)
+                                                    Colors.black.withOpacity(0.9),
+                                                    Colors.black.withOpacity(0.01)
+                                                  ])
+                                          ),
+                                        ),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.bottomCenter,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(bottom: 6.h,left: 2.w,right: 2.w),
+                                          child: Text(
+                                            category.name!.toUpperCase(),
+                                            textAlign: TextAlign.center,
+                                            maxLines: 2,
+                                            style: TextStyle(fontSize: 10.sp,color: Colors.white),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               );
                             },

@@ -74,17 +74,19 @@ class _SubCategoryItemState extends State<SubCategoryItem> {
               }
             ),
 
-            SizedBox(height: 4.h),
+            SizedBox(height: 8.h),
 
             Expanded(
-              child: Text(
-                  widget.subcategory!.name!,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: AppColors.secondaryColor.withOpacity(0.8),
-                      fontSize: 10.sp,
-                      fontWeight: FontWeight.w600
-                  ),
+              child: Padding(
+                padding: EdgeInsets.only(left: 2.w),
+                child: Text(
+                    widget.subcategory!.name!,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.w600
+                    ),
+                ),
               ),
             )
 

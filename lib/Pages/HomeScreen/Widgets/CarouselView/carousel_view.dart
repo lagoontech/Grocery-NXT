@@ -33,10 +33,12 @@ class CarouselView extends StatelessWidget {
                 carouselController: hc.carouselController,
                 items: vc.carousels.map((carousel) => GestureDetector(
                   onTap: (){
-                    Get.to(()=>SwiggyView(
+                    if(carousel.category!=null) {
+                      Get.to(()=>SwiggyView(
                       categoryId: vc.categories.firstWhere((element) => element!.name==carousel.category)!.id,
                       categoryName: carousel.category,
                     ));
+                    }
                   },
                   child: Stack(
                     children: [
@@ -83,23 +85,26 @@ class CarouselView extends StatelessWidget {
                                 ),
                               ),
 
-                              SizedBox(
-                                height: 44.h,
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Container(
-                                    padding: EdgeInsets.all(8.w),
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(20.r)
+                              Padding(
+                                padding: EdgeInsets.only(top: 4.h,left: 4.w),
+                                child: SizedBox(
+                                  height: 44.h,
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Container(
+                                      padding: EdgeInsets.all(8.w),
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(8.r)
+                                      ),
+                                      child: Text(
+                                        carousel.buttonText!,
+                                        style: TextStyle(
+                                            color: Colors.red,
+                                            fontSize: 10.sp,
+                                            fontWeight: FontWeight.w600
+                                        ),),
                                     ),
-                                    child: Text(
-                                      carousel.buttonText!,
-                                      style: TextStyle(
-                                          color: Colors.red,
-                                          fontSize: 10.sp,
-                                          fontWeight: FontWeight.w600
-                                      ),),
                                   ),
                                 ),
                               ),
@@ -119,10 +124,7 @@ class CarouselView extends StatelessWidget {
 
                       ],
                     ),
-                  ),
-
-                                ],
-                              ),
+                  ),],),
                 ) ).toList(), options: CarouselOptions(
                 height: MediaQuery.of(context).size.height*0.24,
                 viewportFraction: 1.0,

@@ -11,8 +11,13 @@ import 'package:mobile_number/mobile_number.dart';
 
 class LoginController extends GetxController{
 
-  TextEditingController phoneTEC = TextEditingController();
+  TextEditingController phoneTEC   = TextEditingController(text: "9080761312");
+  TextEditingController gstTEC     = TextEditingController();
+  TextEditingController fssaiTEC   = TextEditingController();
+  TextEditingController companyTEC = TextEditingController();
   bool loggingIn                 = false;
+  bool isVendor                  = false;
+  PageController pageController = PageController();
 
   //
   processLogin() async {
@@ -23,6 +28,7 @@ class LoginController extends GetxController{
       var result = await HttpService.postRequest("loginotp",{
         "mobile": phoneTEC.text,
       });
+      print(result);
       if(result is http.Response){
         if(result.statusCode==200){
           Get.to(()=>OtpScreen());

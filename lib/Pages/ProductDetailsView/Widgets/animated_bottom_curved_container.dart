@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 
-class AnimatedBottomCurvedContainer extends CustomPainter{
+class AnimatedBottomCurvedContainer extends CustomClipper<Path>{
 
   AnimatedBottomCurvedContainer(this.curveFactor);
   var curveFactor;
@@ -28,6 +28,24 @@ class AnimatedBottomCurvedContainer extends CustomPainter{
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+
+  @override
+  getClip(Size size) {
+    // TODO: implement getClip
+    var height = size.height;
+    var width  = size.width;
+    var path = Path()
+      ..moveTo(0, height - height * 0.1)
+      ..quadraticBezierTo(width/2,height+(height*0.2*curveFactor),width,height-height*0.1)
+      ..lineTo(width,0)
+      ..lineTo(0,0);
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper oldClipper) {
     return true;
   }
 

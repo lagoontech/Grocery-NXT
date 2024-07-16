@@ -16,83 +16,94 @@ class OrdersView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: CustomAppBar(title: "Orders"),
       body: GetBuilder<OrderController>(builder: (vc) {
-        return vc.loadingOrders
-            ? Center(child: CustomCircularLoader(color: AppColors.primaryColor))
-            : vc.pendingOrders.isEmpty && vc.completedOrders.isEmpty
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Lottie.asset("assets/animations/empty_orders.json"),
-                      const Text("You have not ordered yet")
-                    ],
-                  )
-                : Container(
-                    color: Colors.white,
-                    height: MediaQuery.of(context).size.height,
-                    child: SmartRefresher(
-                      controller: vc.refreshController,
-                      enablePullUp: true,
-                      onRefresh: (){
-                        if(vc.tabController!.index==0)
-                          vc.getPendingOrders();
-                        else{
-                          vc.getOrders();
-                        }
-                        vc.refreshController.refreshCompleted();
-                      },
-                      onLoading: (){
-                        if(vc.tabController!.index==0) {
-                          vc.getPendingOrders(isLoading: true);
-                        } else{
-                          vc.getOrders(isLoading: true);
-                        }
-                      },
-                      child: CustomScrollView(
-                        slivers: [
-                          SliverAppBar(
-                            backgroundColor: Colors.white,
-                            scrolledUnderElevation: 0,
-                            titleSpacing: 0,
-                            pinned: true,
-                            title: Container(
-                              decoration:
-                                  BoxDecoration(color: Colors.white, boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.2),
-                                  blurRadius: 1,
-                                  offset: const Offset(0, 2), // changes position of shadow
-                                )
+        return vc.pendingOrders.isEmpty && vc.completedOrders.isEmpty
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Lottie.asset("assets/animations/empty_orders.json"),
+                  const Text("You have not ordered yet")
+                ],
+              )
+            : Container(
+                color: Colors.white,
+                height: MediaQuery.of(context).size.height,
+                child: SmartRefresher(
+                  controller: vc.refreshController,
+                  enablePullUp: true,
+                  onRefresh: () {
+                    if (vc.tabController!.index == 0)
+                      vc.getPendingOrders();
+                    else {
+                      vc.getOrders();
+                    }
+                    vc.refreshController.refreshCompleted();
+                  },
+                  onLoading: () {
+                    if (vc.tabController!.index == 0) {
+                      vc.getPendingOrders(isLoading: true);
+                    } else {
+                      vc.getOrders(isLoading: true);
+                    }
+                  },
+                  child: CustomScrollView(
+                    slivers: [
+                      SliverAppBar(
+                        backgroundColor: Colors.white,
+                        scrolledUnderElevation: 0,
+                        titleSpacing: 0,
+                        pinned: true,
+                        title: Container(
+                          decoration:
+                              BoxDecoration(color: Colors.white, boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.2),
+                              blurRadius: 1,
+                              offset: const Offset(
+                                  0, 2), // changes position of shadow
+                            )
+                          ]),
+                          child: TabBar(
+                              controller: vc.tabController,
+                              dividerColor: Colors.transparent,
+                              onTap: (v) {
+                                if (vc.tabController!.index == 0) {
+                                  vc.getPendingOrders();
+                                } else {
+                                  vc.getOrders();
+                                }
+                              },
+                              labelStyle:
+                                  const TextStyle(fontWeight: FontWeight.w600),
+                              tabs: const [
+                                Tab(
+                                  text: "Pending",
+                                ),
+                                Tab(
+                                  text: "Delivered",
+                                ),
                               ]),
-                              child: TabBar(
-                                  controller: vc.tabController,
-                                  dividerColor: Colors.transparent,
-                                  onTap: (v){
-                                    if(vc.tabController!.index==0) {
-                                      vc.getPendingOrders();
-                                    } else {
-                                      vc.getOrders();
-                                    }
-                                  },
-                                  labelStyle: const TextStyle(
-                                      fontWeight: FontWeight.w600),
-                                  tabs: const [
-                                    Tab(
-                                      text: "Pending",
-                                    ),
-                                    Tab(
-                                      text: "Delivered",
-                                    ),
-                                  ]),
-                            ),
-                          ),
-                          vc.tabController!.index == 0 &&
+                        ),
+                      ),
+                      vc.loadingOrders
+                          ? SliverToBoxAdapter(
+                              child: Padding(
+                              padding: EdgeInsets.only(
+                                  top: MediaQuery.of(context).size.height / 2 -
+                                      (kToolbarHeight +
+                                          MediaQuery.of(context)
+                                              .viewPadding
+                                              .top)),
+                              child: Center(
+                                  child: CustomCircularLoader(
+                                      color: AppColors.primaryColor)),
+                            ))
+                          : vc.tabController!.index == 0 &&
                                   vc.pendingOrders.isEmpty
                               ? SliverToBoxAdapter(
-                                child: Column(
+                                  child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Lottie.asset(
@@ -100,41 +111,45 @@ class OrdersView extends StatelessWidget {
                                       const Text("No pending orders")
                                     ],
                                   ),
-                              ) :vc.tabController!.index == 1 &&
-                              vc.completedOrders.isEmpty
-                              ? SliverToBoxAdapter(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Lottie.asset(
-                                    "assets/animations/empty_orders.json"),
-                                const Text("No completed orders")
-                              ],
-                            ),
-                          )
-                              : SliverToBoxAdapter(
-                                  child: ListView.builder(
-                                      shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      itemCount: vc.tabController!.index == 0
-                                          ? vc.pendingOrders.length
-                                          : vc.completedOrders.length,
-                                      itemBuilder: (context, index) {
-                                        return vc.tabController!.index == 0
-                                            ? OrderPendingListItem(
-                                                order: vc.pendingOrders[index],
-                                              )
-                                            : OrderListItem(
-                                                order:
-                                                    vc.completedOrders[index],
-                                              );
-                                      }),
                                 )
-                        ],
-                      ),
-                    ),
-                  );
+                              : vc.tabController!.index == 1 &&
+                                      vc.completedOrders.isEmpty
+                                  ? SliverToBoxAdapter(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Lottie.asset(
+                                              "assets/animations/empty_orders.json"),
+                                          const Text("No completed orders")
+                                        ],
+                                      ),
+                                    )
+                                  : SliverToBoxAdapter(
+                                      child: ListView.builder(
+                                          shrinkWrap: true,
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          itemCount:
+                                              vc.tabController!.index == 0
+                                                  ? vc.pendingOrders.length
+                                                  : vc.completedOrders.length,
+                                          itemBuilder: (context, index) {
+                                            return vc.tabController!.index == 0
+                                                ? OrderPendingListItem(
+                                                    order:
+                                                        vc.pendingOrders[index],
+                                                  )
+                                                : OrderListItem(
+                                                    order: vc
+                                                        .completedOrders[index],
+                                                  );
+                                          }),
+                                    )
+                    ],
+                  ),
+                ),
+              );
       }),
     );
   }

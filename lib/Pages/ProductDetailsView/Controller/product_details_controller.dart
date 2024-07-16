@@ -1,9 +1,11 @@
 import 'package:flutter/animation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:grocery_nxt/Constants/api_constants.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
 import 'package:grocery_nxt/Pages/ProductDetailsView/Model/product_details_model.dart';
 import 'package:grocery_nxt/Services/http_services.dart';
+import 'package:grocery_nxt/Utils/toast_util.dart';
 import 'package:http/http.dart' as http;
 import '../../AllProductsView/Model/products_list_model.dart';
 
@@ -21,9 +23,11 @@ class ProductDetailsController extends GetxController
   Product? product;
   int? quantity = 1;
   String preBook = "";
+  bool booking = false;
 
   //
   getProductDetails() async {
+
     try {
       var result = await HttpService.getRequest("product/$productId");
       if (result is http.Response) {
@@ -41,6 +45,7 @@ class ProductDetailsController extends GetxController
             }
           }
           checkVariant();
+          productDetails!.product!.galleryImages!.add(productDetails!.product!.image!);
         }
       }
     } catch (e) {
@@ -129,6 +134,28 @@ class ProductDetailsController extends GetxController
       selectedVariant = productDetails!.productSizes![0];
       changeVariant();
     }
+  }
+  
+  //
+  preBookAPI() async {
+
+    booking = true;
+    update();
+    try{
+      var result = await HttpService.postRequest("addToprebookAjax",{
+        "pid": product!.prdId,
+        "preqty": quantity
+      },insertHeader: true);
+      if(result is http.Response){
+        if(result.statusCode==200){
+          ToastUtil().showToast(message: "Successfully booked");
+        }
+      }
+    }catch(e){
+      print(e);
+    }
+    booking = false;
+    update();
   }
 
   //

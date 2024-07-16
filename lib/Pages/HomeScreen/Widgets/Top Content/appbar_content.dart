@@ -13,7 +13,7 @@ class AppBarContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height * 0.14,
+      height: MediaQuery.of(context).size.height * 0.16,
       color: AppColors.primaryColor,
       padding: EdgeInsets.only(
         top: MediaQuery.of(context).viewPadding.top + 2.h,
@@ -36,21 +36,25 @@ class AppBarContent extends StatelessWidget {
 
                   Image.asset(
                     'assets/images/gnxt_logo.png',
-                    width: MediaQuery.of(context).size.width*0.5,
+                    width: MediaQuery.of(context).size.width*0.6,
                     color: Colors.white,
                   ),
 
                   Expanded(
                     child: Align(
                       alignment: Alignment.centerRight,
-                      child: SizedBox(
-                        width: 48.w,
-                        child: TextFormField(
-                          decoration: decoration(),
-                          readOnly: true,
-                          onTap: (){
-                            Get.to(()=> ProductsSearchScreen());
-                          },
+                      child: GestureDetector(
+                        onTap: (){
+                          Get.to(()=> ProductsSearchScreen());
+                        },
+                        child: Container(
+                          width: 40.w,
+                          height: 40.w,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white
+                          ),
+                          child: Icon(Icons.search,color: AppColors.primaryColor),
                         ),
                       ),
                     ),

@@ -15,6 +15,7 @@ import 'package:grocery_nxt/Pages/HomeScreen/Widgets/ScrollIndicator/scroll_indi
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/Top%20Content/appbar_content.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/Top%20Content/top_content.dart';
 import 'package:lottie/lottie.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'Widgets/FeaturedCategory1/featured_category_2.dart';
 import 'Widgets/FeaturedCategory1/featured_category_3.dart';
 
@@ -108,7 +109,7 @@ class HomeScreen extends StatelessWidget {
                           FeaturedCategory3(),
 
                           SizedBox(height: 24.h),
-                          
+
                           //AutoSlideProductsView()
 
                         ],

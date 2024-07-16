@@ -118,7 +118,7 @@ class AddCheckoutAddressController extends GetxController{
         "phone": phoneTEC.text,
         "country": "70",
         "address": addressTEC.text,
-        "zip_code": "",
+        "zip_code": zipcodeTEC.text,
         "user_id": profileController.profile!.userDetails.id,
         "city": "1",
         "state": selectedState!.id,
@@ -154,7 +154,7 @@ class AddCheckoutAddressController extends GetxController{
         if(element.variantInfo!=null){
           size_ids = "$size_ids${element.prdId}_${element.productColor!.name},";
         }
-        quantity_ids = "$quantity_ids${element.prdId},";
+        quantity_ids = "$quantity_ids${element.cartQuantity},";
       }
       final Uri uri = Uri.parse('http://grocerynxt.lagoontechcloud.com/api/shippingaddresszipcode.php');
       final map = <String, dynamic>{};
@@ -166,9 +166,10 @@ class AddCheckoutAddressController extends GetxController{
         uri,
         body: map,
       );
+      print(map);
       if(result is http.Response){
         if(result.statusCode == 200){
-          shippingCost = jsonDecode(result.body)["finalcost"];
+          shippingCost = jsonDecode(result.body)["finalcost"].toString();
           print(shippingCost);
         }
       }

@@ -27,10 +27,11 @@ class ChooseAddressController extends GetxController{
     try{
       var result = await HttpService.getRequest("user/all-shipping-address");
       if(result is http.Response){
-        print(result.body);
         if(result.statusCode == 200){
           addresses = shippingAddressListModelFromJson(result.body).data;
-          print(addresses.length);
+          addresses.forEach((element) {
+            print(element.zipCode);
+          });
         }
       }
     }catch(e){
@@ -55,7 +56,7 @@ class ChooseAddressController extends GetxController{
         if(element.variantInfo!=null){
           size_ids = "$size_ids${element.prdId}_${element.productColor!.name},";
         }
-        quantity_ids = "$quantity_ids${element.prdId},";
+        quantity_ids = "$quantity_ids${element.cartQuantity},";
       }
       final Uri uri = Uri.parse('http://grocerynxt.lagoontechcloud.com/api/shippingaddresszipcode.php');
       final map = <String, dynamic>{};
@@ -71,7 +72,8 @@ class ChooseAddressController extends GetxController{
       if(result is http.Response){
         print(result.statusCode);
         if(result.statusCode == 200){
-          shippingCharge = jsonDecode(result.body)["finalcost"];
+          print(result.body);
+          shippingCharge = jsonDecode(result.body)["finalcost"].toString();
           showCOD = jsonDecode(result.body)["exclude"]=='0'?false:true;
           finalTotal = double.parse(shippingCharge) + cc.total;
           print(finalTotal);

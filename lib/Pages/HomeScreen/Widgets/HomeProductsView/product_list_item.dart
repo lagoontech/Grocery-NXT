@@ -61,22 +61,24 @@ class ProductListItem extends StatelessWidget {
                           child: CachedNetworkImage(
                             imageUrl: product!.imgUrl!,
                             width: MediaQuery.of(context).size.width *
-                                0.38 *
-                                0.6,
+                                0.38 ,
                             height: MediaQuery.of(context).size.height *
                                 0.3 *
-                                0.3,
+                                0.4,
+                            fit: BoxFit.fitWidth,
                           ),
                         ),
                         SizedBox(height: 8.h),
                         SizedBox(
                             width: MediaQuery.of(context).size.width * 0.3,
-                            height: MediaQuery.of(context).size.height * 0.3 * 0.2,
-                            child: Text(
-                              product!.title!,
-                              maxLines: 2,
-                              style: TextStyle(fontSize: 12.sp,fontWeight: FontWeight.w600),
-                              textAlign: TextAlign.center,
+                            height: MediaQuery.of(context).size.height * 0.3 * 0.16,
+                            child: Center(
+                              child: Text(
+                                product!.title!,
+                                maxLines: 2,
+                                style: TextStyle(fontSize: 9.sp,fontWeight: FontWeight.w600),
+                                textAlign: TextAlign.center,
+                              ),
                             )),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 4.w),
@@ -107,7 +109,7 @@ class ProductListItem extends StatelessWidget {
                       ],
                     ),
                   ),
-                  SizedBox(height: 20.h),
+                  SizedBox(height: 8.h),
                   GetBuilder<CartController>(builder: (cc) {
                     bool hasProductInCart = cc.products
                             .firstWhere(
