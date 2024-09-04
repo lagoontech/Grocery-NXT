@@ -64,7 +64,6 @@ class PaymentController extends GetxController {
   //
   placeOrder() async {
 
-    print(addressController!.selectedAddress!.zipCode);
     if(selectedOption==null){
       ToastUtil().showToast(message: "Select a payment method");
       return;
@@ -93,15 +92,12 @@ class PaymentController extends GetxController {
         'state_id': addressController.selectedAddress!.stateId.toString(),
         'zip_code': addressController.selectedAddress!.zipCode!,
         'email': addressController.selectedAddress!.email,
-        'shipping_cost': addressController.shippingCharge.toString(),//jsonEncode([{"shipping_cost":addressController.shippingCharge}]),
+        'shipping_cost': addressController.shippingCharge.toString(),
         'address': addressController.selectedAddress!.address!,
         'agree': 'on',
         'coupon': ''
       });
-      print(request.fields);
       request.headers.addAll(headers);
-      print(request.fields);
-      log(request.fields.toString());
       http.StreamedResponse response = await request.send();
        await response.stream.bytesToString().then((value) async {
          if(response.statusCode==200) {
@@ -109,7 +105,7 @@ class PaymentController extends GetxController {
            totalAmount = jsonDecode(value)["total_amount"];
            successResponse = OrderSuccessResponse.fromJson(jsonDecode(value));
            if(selectedOption!.name!.contains("razorpay")){
-             Future.delayed(const Duration(milliseconds: 1000),(){
+             Future.delayed(const Duration(milliseconds: 10),(){
                var options = {
                  'key': 'rzp_live_RKDSnxuUFaUL7h',
                  'amount': 100,//totalAmount*100,
@@ -122,12 +118,14 @@ class PaymentController extends GetxController {
                  }
                };
                razorpay.open(options);
+               cartController.loadProducts();
+               orderController.getPendingOrders();
              });
            }
            else {
              SharedPrefUtils().clearCart().then((value) {
              cartController.loadProducts();
-             orderController.getOrders();
+             orderController.getPendingOrders();
              Get.back();
              Get.back();
              Get.to(()=>const OrderSuccessScreen());
@@ -149,7 +147,6 @@ class PaymentController extends GetxController {
     update();
     successResponse!.type = "success";
     successResponse!.transactionId = transactionId;
-    print(successResponse!.toJson());
     try{
       var result = await HttpService.postRequest(
           "update-payment",
@@ -166,12 +163,64 @@ class PaymentController extends GetxController {
             Get.back();
             Get.back();
             Get.back();
-            Get.to(()=>const PaymentSuccess());
+            Get.to(()=> PaymentSuccess());
+          });
+        }else {
+          print(result.body);
+        }
+      }
+    }catch(e){
+      confirmingPayment = false;
+    }
+    confirmingPayment = false;
+    update();
+  }
+
+  //
+  updatePaymentFailed()async{
+
+    confirmingPayment = true;
+    update();
+    successResponse!.type = "failure";
+    successResponse!.transactionId = "";
+    try{
+      var result = await HttpService.postRequest(
+          "update-payment",
+          successResponse!.toJson()..["success"] = "rejected"..["status"] = "cancelled",
+          insertHeader: true
+      );
+      if(result is http.Response){
+        if(result.statusCode==200){
+          confirmingPayment = false;
+          update();
+          SharedPrefUtils().clearCart().then((value) {
+            cartController.loadProducts();
+            orderController.getPendingOrders();
+            Get.back();
+            Get.back();
+            Get.back();
+            Get.to(()=> PaymentFailed());
+          });
+        }else {
+          SharedPrefUtils().clearCart().then((value) {
+            cartController.loadProducts();
+            orderController.getPendingOrders();
+            Get.back();
+            Get.back();
+            Get.back();
+            Get.to(()=> PaymentFailed(
+              successResponse: successResponse,
+              orderId: orderId,
+              amount: totalAmount,
+              subTotal: cartController.subTotal.toInt(),
+            ));
           });
         }
       }
     }catch(e){
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
       confirmingPayment = false;
     }
     confirmingPayment = false;
@@ -190,14 +239,9 @@ class PaymentController extends GetxController {
     });
     razorpay.on(Razorpay.EVENT_PAYMENT_ERROR,(v){
       SharedPrefUtils().clearCart().then((value) {
+        updatePaymentFailed();
         cartController.loadProducts();
-        orderController.getOrders();
-        Get.back();
-        Get.back();
-        Get.back();
-        Get.to(()=>const PaymentSuccess());
       });
-      Get.to(()=>const PaymentFailed());
     });
   }
 

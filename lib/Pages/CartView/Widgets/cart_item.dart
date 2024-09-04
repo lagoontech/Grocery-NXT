@@ -1,11 +1,8 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
 import 'package:grocery_nxt/Utils/toast_util.dart';
 import '../../../Constants/app_colors.dart';
@@ -21,6 +18,7 @@ class CartItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Dismissible(
       key: ValueKey(product!.variantInfo!=null
           ? product!.productColor!.id
@@ -75,12 +73,23 @@ class CartItem extends StatelessWidget {
                         children: [
                           Text(product!.productColor != null
                               ? product!.productColor!.name
-                              : ""),
+                              : "",style: TextStyle(
+                              color: AppColors.primaryColor,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12.sp
+                          ),),
                           product!.productColor != null
                               ?SizedBox(width: 4.w,):const SizedBox(),
-                          Text("\u{20B9}${product!.discountPrice!}",
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold, color: Colors.red)),
+                          DefaultTextStyle(
+                            style: TextStyle(color: Colors.grey.shade600,fontSize: 12.sp),
+                            child: Row(
+                              children: [
+                                Text("\u{20B9}${product!.discountPrice!}",),
+                                Text(" x ${product!.cartQuantity} = \u{20B9}"),
+                                Text((product!.cartQuantity * product!.discountPrice).toStringAsFixed(0)),
+                              ],
+                            ),
+                          )
                         ],
                       ),
 

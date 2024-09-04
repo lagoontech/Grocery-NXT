@@ -23,27 +23,32 @@ class HomeController extends GetxController{
   ScrollController autoScroll1          = ScrollController();
   ScrollController autoScroll2          = ScrollController();
   CarouselController carouselController = CarouselController();
-  int carouselIndex = 0;
-  int bottomIndex   = 0;
-  double categoryScrollProgress        = 0.0;
-  double currentCategoryScrollProgress = 0.0;
+  int carouselIndex                     = 0;
+  int bottomIndex                       = 0;
+  double categoryScrollProgress         = 0.0;
+  double currentCategoryScrollProgress  = 0.0;
   Timer ?autoScrollTimer;
-  bool reverseScroll     = false;
-  List<Product> products = [];
+  bool reverseScroll               = false;
+  List<Product> products           = [];
+  List<Product> offerProducts      = [];
   List<Product> featuredProducts   = [];
   List<CategoryModel?> categories  = [];
   List<Subcategory> subcategories1 = [];
   List<Subcategory> subcategories2 = [];
   List<Subcategory> subcategories3 = [];
-  List<Carousel> carousels = [];
-  List<Carousel> carousels2 = [];
-  bool loadingCarousel     = false;
+  List<Carousel>         carousels = [];
+  List<Carousel>        carousels2 = [];
+  bool loadingCarousel             = false;
+  bool loadingCategories           = false;
   HomeCampaignsModel ?campaign;
   int currentCarouselIndex = 0;
+  bool shrinkAppbar = false;
 
   //
   fetchCategories()async{
 
+    loadingCategories = true;
+    update();
     try{
       var result = await HttpService.getRequest(ApiConstants().categories);
       if(result is http.Response){
@@ -56,7 +61,24 @@ class HomeController extends GetxController{
         print("Home Categories Error-->$e");
       }
     }
+    loadingCategories = false;
     update(["categories"]);
+  }
+
+  //
+  fetchOfferProducts() async {
+
+    try{
+      var result = await HttpService.getRequest("product?name=&page=1&category=OFFERS");
+      if(result is http.Response){
+        if(result.statusCode==200){
+          offerProducts = productsListFromJson(result.body)!.products!;
+        }
+      }
+    }catch(e){
+      print(e);
+    }
+    update(["offerProducts"]);
   }
 
   //
@@ -173,6 +195,7 @@ class HomeController extends GetxController{
           }else{
             featuredProducts.addAll(productsListFromJson(result.body).products!);
           }
+          fetchOfferProducts();
         }
       }
     }catch(e){
@@ -263,6 +286,21 @@ class HomeController extends GetxController{
   }
 
   //
+  calculateMainScroll(){
+
+    homeSc.addListener(() {
+      print(homeSc.position.pixels);
+      if(homeSc.position.pixels>150){
+        shrinkAppbar = true;
+        update(["appbar"]);
+      }else{
+        shrinkAppbar = false;
+        update(["appbar"]);
+      }
+    });
+  }
+
+  //
   carouselChange(){
 
   }
@@ -283,6 +321,7 @@ class HomeController extends GetxController{
       calculateCurrentScrollPosition();
       update();
     });
+    calculateMainScroll();
 
   }
 

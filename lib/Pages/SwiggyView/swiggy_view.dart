@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -9,6 +11,7 @@ import 'package:grocery_nxt/Pages/SwiggyView/Controller/swiggy_view_controller.d
 import 'package:grocery_nxt/Pages/SwiggyView/Widgets/sub_category_item.dart';
 import 'package:grocery_nxt/Pages/SwiggyView/Widgets/swiggy_view_product.dart';
 import 'package:grocery_nxt/Widgets/custom_button.dart';
+import 'package:grocery_nxt/Widgets/custom_textfield.dart';
 import 'package:lottie/lottie.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../Constants/app_colors.dart';
@@ -70,7 +73,7 @@ class SwiggyView extends StatelessWidget {
                     imageUrl: imageUrl ?? "",
                     width: 40.w,
                     errorWidget: (b,s,o){
-                      return Image(image: AssetImage("assets/images/gnxt_logo.png"));
+                      return const Image(image: AssetImage("assets/images/gnxt_logo.png"));
                     },
                     height: 40.h,
                   ),
@@ -141,7 +144,7 @@ class SwiggyView extends StatelessWidget {
 
                 GetBuilder<SwiggyViewController>(
                   builder: (vc) {
-                    return Expanded(
+                    return !vc.isLoadingSubCategories && vc.subCategories.isEmpty?SizedBox():Expanded(
                         flex: 3,
                         child: Container(
                           height: MediaQuery.of(context).size.height-(kToolbarHeight+MediaQuery.of(context).viewPadding.top),
@@ -205,6 +208,7 @@ class SwiggyView extends StatelessWidget {
                         return !vc.isLoadingSubCategories&&vc.subCategories.isNotEmpty?PageView(
                           scrollDirection: Axis.vertical,
                           controller: svc.pageController,
+                          clipBehavior: Clip.antiAlias,
                           physics: const NeverScrollableScrollPhysics(),
                           children: svc.subCategories.map((e){
                             String previousSub = "";
@@ -267,7 +271,7 @@ class SwiggyView extends StatelessWidget {
                                             Text(previousSub),
                                           ],
                                         ),
-                                      )):SizedBox(),
+                                      )):const SizedBox(),
 
                                   vc.products.length>5 && vc.isLastPage?Padding(
                                     padding: EdgeInsets.only(bottom: 12.h),
@@ -305,91 +309,140 @@ class SwiggyView extends StatelessWidget {
                                   ):const SizedBox(),
 
                                   SingleChildScrollView(
-                                    physics: const BouncingScrollPhysics(),
-                                    controller: e.scrollController,
                                     child: Column(
                                       children: [
 
-                                        Container(
-                                          height: kToolbarHeight*0.9,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(12.r),
-                                                bottomLeft: Radius.circular(12.r)
-                                            )
-                                          ),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
+                                        SizedBox(
+                                          height: vc.isLoadingNextPage
+                                              ? MediaQuery.of(context).size.height * 0.84
+                                              : MediaQuery.of(context).size.height * 0.9,
+                                          child: CustomScrollView(
+                                            physics: const BouncingScrollPhysics(),
+                                            controller: e.scrollController,
+                                            slivers: [
 
-                                              Padding(
-                                                padding: const EdgeInsets.all(12),
-                                                child: GetBuilder<SwiggyViewController>(
-                                                    builder: (vc) {
-                                                      return !vc.isLoading?Row(
-                                                        children: [
+                                              SliverToBoxAdapter(
+                                                child: Container(
+                                                  height: kToolbarHeight * 1.3,
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius: BorderRadius.only(
+                                                          topLeft: Radius.circular(12.r),
+                                                          bottomLeft: Radius.circular(12.r)
+                                                      )
+                                                  ),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
 
-                                                          Text(
-                                                              "${svc.totalProducts} items",
-                                                              style: const TextStyle(fontWeight: FontWeight.w600)),
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(12),
+                                                        child: GetBuilder<SwiggyViewController>(
+                                                            builder: (vc) {
+                                                              return !vc.isLoading
+                                                                  ? Row(
+                                                                children: [
 
-                                                          Text(" in ${svc.selectedSubCategory!=null
-                                                              ? svc.selectedSubCategory!.name!
-                                                              : ""}")
+                                                                  Text(
+                                                                      "${svc.totalProducts} items",
+                                                                      style: const TextStyle(fontWeight: FontWeight.w600)),
 
-                                                        ],
-                                                      ): Container(
-                                                        width: MediaQuery.of(context).size.width * 0.20,
-                                                        height: MediaQuery.of(context).size.height*0.32*0.08,
-                                                        decoration: BoxDecoration(
-                                                          color: Colors.grey.shade100,
+                                                                  Text(" in ${svc.selectedSubCategory!=null && svc.selectedSubCategory!.name!.isNotEmpty
+                                                                      ? svc.selectedSubCategory!.name!
+                                                                      : categoryName}")
+
+                                                                ],
+                                                              ): Container(
+                                                                width: MediaQuery.of(context).size.width * 0.20,
+                                                                height: MediaQuery.of(context).size.height * 0.32 * 0.08,
+                                                                decoration: BoxDecoration(
+                                                                  color: Colors.grey.shade100,
+                                                                ),
+                                                              );
+                                                            }
                                                         ),
-                                                      );
-                                                    }
+                                                      ),
+
+                                                      Padding(
+                                                        padding: EdgeInsets.only(left: 12.w,bottom: 4.h),
+                                                        child: SizedBox(
+                                                          child: Text(
+                                                              "\u{20B9} ${vc.filterPriceRange!.start.toStringAsFixed(0)} - ${vc.filterPriceRange!.end.toStringAsFixed(0)}"
+                                                          ),
+                                                        ),
+                                                      ),
+
+                                                      Expanded(
+                                                          child: Align(
+                                                              alignment: Alignment.bottomCenter,
+                                                              child: Divider(
+                                                                  color: Colors.grey.shade300,
+                                                                  thickness: 0.6,
+                                                                  height: 0))),
+
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
 
-                                              Expanded(
-                                                  child: Align(
-                                                      alignment: Alignment.bottomCenter,
-                                                      child: Divider(color: Colors.grey.shade300,thickness: 0.6,height: 0)))
+                                              SliverAppBar(
+                                                pinned: true,
+                                                backgroundColor: Colors.white,
+                                                foregroundColor: Colors.white,
+                                                automaticallyImplyLeading: false,
+                                                scrolledUnderElevation: 0,
+                                                flexibleSpace: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: customTextField(
+                                                      context,
+                                                      controller: vc.searchTEC,
+                                                      onChanged: (v){
+                                                        vc.debounceSearch();
+                                                      },
+                                                      borderColor: Colors.grey,
+                                                      prefix: Icon(Icons.search),
+                                                      hint: "Search in ${vc.selectedSubCategory!.name ?? categoryName}"
+                                                  ),
+                                                ),
+                                              ),
+
+                                              SliverToBoxAdapter(
+                                                child: GetBuilder<SwiggyViewController>(
+                                                    builder: (vc) {
+                                                      return !vc.isLoading?GridView.builder(
+                                                          padding: EdgeInsets.zero,
+                                                          shrinkWrap: true,
+                                                          itemCount: svc.products.length,
+                                                          physics: const NeverScrollableScrollPhysics(),
+                                                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                            crossAxisCount: 2,
+                                                            mainAxisExtent: MediaQuery.of(context).size.height*0.34,
+                                                          ),
+                                                          itemBuilder: (context,index){
+                                                            var product = svc.products[index];
+                                                            return SwiggyViewProduct(
+                                                              product: product,
+                                                              index: index,
+                                                            );
+                                                          }
+                                                      ):GridView.builder(
+                                                          padding: EdgeInsets.zero,
+                                                          shrinkWrap: true,
+                                                          itemCount: 6,
+                                                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                            crossAxisCount: 2,
+                                                            mainAxisExtent: MediaQuery.of(context).size.height*0.34,
+                                                          ),
+                                                          itemBuilder: (context,index){
+                                                            return loader(context,index);
+                                                          }
+                                                      );
+                                                    }
+                                                ),
+                                              )
 
                                             ],
                                           ),
-                                        ),
-
-                                        GetBuilder<SwiggyViewController>(
-                                            builder: (vc) {
-                                              return !vc.isLoading?GridView.builder(
-                                                  padding: EdgeInsets.zero,
-                                                  shrinkWrap: true,
-                                                  itemCount: svc.products.length,
-                                                  physics: const NeverScrollableScrollPhysics(),
-                                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                                    crossAxisCount: 2,
-                                                    mainAxisExtent: MediaQuery.of(context).size.height*0.34,
-                                                  ),
-                                                  itemBuilder: (context,index){
-                                                    var product = svc.products[index];
-                                                    return SwiggyViewProduct(
-                                                      product: product,
-                                                      index: index,
-                                                    );
-                                                  }
-                                              ):GridView.builder(
-                                                  padding: EdgeInsets.zero,
-                                                  shrinkWrap: true,
-                                                  itemCount: 6,
-                                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                                    crossAxisCount: 2,
-                                                    mainAxisExtent: MediaQuery.of(context).size.height*0.34,
-                                                  ),
-                                                  itemBuilder: (context,index){
-                                                    return loader(context,index);
-                                                  }
-                                              );
-                                            }
                                         ),
 
                                         GetBuilder<SwiggyViewController>(
@@ -446,28 +499,16 @@ class SwiggyView extends StatelessWidget {
                                                           Text(
                                                               "${svc.totalProducts} items",
                                                               style: const TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600)),
+                                                                  fontWeight: FontWeight.w600)),
                                                           Text(
-                                                              " in ${svc.selectedSubCategory != null ? svc.selectedSubCategory!.name! : ""}")
+                                                              " in ${svc.selectedSubCategory != null ? svc.selectedSubCategory!.name! : categoryName}")
                                                         ],
                                                       )
                                                     : Container(
-                                                        width:
-                                                            MediaQuery.of(context)
-                                                                    .size
-                                                                    .width *
-                                                                0.20,
-                                                        height:
-                                                            MediaQuery.of(context)
-                                                                    .size
-                                                                    .height *
-                                                                0.32 *
-                                                                0.08,
+                                                        width: MediaQuery.of(context).size.width * 0.20,
+                                                        height: MediaQuery.of(context).size.height * 0.32 * 0.08,
                                                         decoration: BoxDecoration(
-                                                          color:
-                                                              Colors.grey.shade100,
+                                                          color: Colors.grey.shade100,
                                                         ),
                                                       );
                                               }),
@@ -483,6 +524,9 @@ class SwiggyView extends StatelessWidget {
                                           ],
                                         ),
                                       ),
+
+                                      customTextField(context,hint: "Search"),
+                                      
                                       GetBuilder<SwiggyViewController>(
                                           builder: (vc) {
                                         return !vc.isLoading

@@ -14,6 +14,7 @@ class CustomButton extends StatefulWidget {
     this.width,
     this.height,
     this.color,
+    this.borderRadius,
   }) : super(key: key);
 
   final bool isLoading;
@@ -23,6 +24,7 @@ class CustomButton extends StatefulWidget {
   final double? width;
   final double? height;
   Color ?color;
+  double ?borderRadius;
 
   @override
   _CustomButtonState createState() => _CustomButtonState();
@@ -88,7 +90,7 @@ class _CustomButtonState extends State<CustomButton>
                 height: widget.height ?? 40.h,
                 decoration: BoxDecoration(
                   color: widget.color ?? AppColors.primaryColor,
-                  borderRadius: BorderRadius.circular(30.r),
+                  borderRadius: BorderRadius.circular(widget.borderRadius ??  30.r),
                 ),
                 child: Center(
                   child: widget.isLoading

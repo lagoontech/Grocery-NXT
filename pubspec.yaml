@@ -53,7 +53,6 @@ dependencies:
   readmore: ^3.0.0
   skeletonizer:
   pull_to_refresh:
-  zoom_widget:
   dotted_border: ^2.1.0
   double_back_to_close:
   connectivity_plus:
@@ -71,6 +70,10 @@ dependencies:
   intl:
   upgrader: ^10.3.0
   ikchatbot: ^1.0.5
+  url_launcher:
+  custom_rating_bar: ^3.0.0
+  widget_zoom: ^0.0.4
+  bounce: ^1.0.2
 
 dev_dependencies:
   flutter_test:

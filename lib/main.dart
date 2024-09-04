@@ -15,6 +15,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SharedPrefUtils().getPrefs();
   NetworkUtil().listenForConnectionChanges();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp
+  ]);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,               // Only honored in Android M and above
     statusBarIconBrightness: Brightness.dark,   // Only honored in Android M and above

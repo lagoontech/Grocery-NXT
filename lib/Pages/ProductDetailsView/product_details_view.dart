@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:custom_rating_bar/custom_rating_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,7 +36,7 @@ class ProductDetailsView extends StatefulWidget {
 class _ProductDetailsViewState extends State<ProductDetailsView> {
 
   ProductDetailsController vc = Get.put(ProductDetailsController());
-  CartController cc = Get.find<CartController>();
+  CartController           cc = Get.find<CartController>();
 
   @override
   void initState() {
@@ -44,9 +46,13 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
   @override
   Widget build(BuildContext context) {
 
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      systemNavigationBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+    ));
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if(vc.productId==null){
-        print(vc.productId);
         vc.productId = widget.productId;
         vc.product = widget.product;
         vc.getProductDetails();
@@ -61,407 +67,467 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                     child: GetBuilder<ProductDetailsController>(builder: (vc) {
                       return Padding(
                         padding: EdgeInsets.only(bottom: 12.h),
-                        child: Column(
-                          children: [
-                            Stack(
-                              children: [
-                                Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: MediaQuery.of(context).size.height *
-                                      0.01+
-                                      MediaQuery.of(context).size.height *
-                                          0.45 *
-                                          vc.animation.value,
-                                  child: CustomPaint(
-                                    painter: AnimatedBottomCurvedPainter(vc.animation.value),
-                                    child: ClipPath(
-                                      clipper: AnimatedBottomCurvedContainer(vc.animation.value),
-                                      child: Stack(
-                                        children: [
-                                          Center(
-                                            child: GestureDetector(
-                                              onTap: (){
-                                                Get.to(()=> ProductImageScreen(imgUrl: vc.selectedImage));
-                                              },
-                                              child: SizedBox(
-                                                width: MediaQuery.of(context).size.width,
-                                                height: MediaQuery.of(context).size.height,
-                                                child: Transform.scale(
-                                                  scale: 1.1,
-                                                  child: CachedNetworkImage(
-                                                      imageUrl: vc.selectedImage,
-                                                      fit: BoxFit.fill,
+                        child: Container(
+                          color: AppColors.primaryColor.withOpacity(0.03),
+                          child: Column(
+                            children: [
+                              Stack(
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.01 +
+                                        MediaQuery.of(context).size.height *
+                                            0.45 *
+                                            vc.animation.value,
+                                    child: CustomPaint(
+                                      painter: AnimatedBottomCurvedPainter(vc.animation.value),
+                                      child: ClipPath(
+                                        clipper: AnimatedBottomCurvedContainer(vc.animation.value),
+                                        child: Stack(
+                                          children: [
+                                            Center(
+                                              child: GestureDetector(
+                                                onTap: (){
+                                                  Get.to(()=> ProductImageScreen(imgUrl: vc.selectedImage));
+                                                },
+                                                child: SizedBox(
+                                                  width: MediaQuery.of(context).size.width,
+                                                  height: MediaQuery.of(context).size.height,
+                                                  child: Transform.scale(
+                                                    scale: 1.1,
+                                                    child: CachedNetworkImage(
+                                                        imageUrl: vc.selectedImage,
+                                                        fit: BoxFit.fill,
+                                                    ),
                                                   ),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                          IgnorePointer(
-                                            child: Container(
-                                                width: MediaQuery.of(context).size.width,
-                                                height: MediaQuery.of(context).size.height*0.46,
-                                                decoration: BoxDecoration(
-                                                    gradient: LinearGradient(
-                                                        colors: [
-                                                          Colors.black.withOpacity(0.05),
-                                                          Colors.black.withOpacity(0.001),
-                                                        ],
-                                                        begin: Alignment.topCenter,
-                                                        end: Alignment.bottomCenter
-                                                    )
-                                                )
-                                            ),
-                                          ),
-                                          /*Positioned(
-                                            bottom: -20.h,
-                                            child: Transform.translate(
-                                              offset: Offset(0,-20.h),
+                                            IgnorePointer(
                                               child: Container(
                                                   width: MediaQuery.of(context).size.width,
-                                                  height: kToolbarHeight*2,
+                                                  height: MediaQuery.of(context).size.height*0.46,
                                                   decoration: BoxDecoration(
                                                       gradient: LinearGradient(
                                                           colors: [
-                                                            Colors.black.withOpacity(0.4),
                                                             Colors.black.withOpacity(0.05),
+                                                            Colors.black.withOpacity(0.001),
                                                           ],
-                                                          begin: Alignment.bottomCenter,
-                                                          end: Alignment.topCenter
+                                                          begin: Alignment.topCenter,
+                                                          end: Alignment.bottomCenter
                                                       )
                                                   )
                                               ),
                                             ),
-                                          ),*/
-                                        ],
+                                            /*Positioned(
+                                              bottom: -20.h,
+                                              child: Transform.translate(
+                                                offset: Offset(0,-20.h),
+                                                child: Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: kToolbarHeight*2,
+                                                    decoration: BoxDecoration(
+                                                        gradient: LinearGradient(
+                                                            colors: [
+                                                              Colors.black.withOpacity(0.4),
+                                                              Colors.black.withOpacity(0.05),
+                                                            ],
+                                                            begin: Alignment.bottomCenter,
+                                                            end: Alignment.topCenter
+                                                        )
+                                                    )
+                                                ),
+                                              ),
+                                            ),*/
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                Positioned(
-                                  bottom: MediaQuery.of(context).size.height * 0.01,
-                                  left: MediaQuery.of(context).size.width * 0.12,
-                                  right: MediaQuery.of(context).size.width * 0.12,
-                                  child: Container(
-                                      width: MediaQuery.of(context).size.width * 0.75,
-                                      height: 32.h,
-                                      margin: EdgeInsets.only(top: 24.h),
-                                      child: vc.productDetails!.product!.galleryImages!
-                                              .isNotEmpty
-                                          ? ListView.builder(
-                                              padding: EdgeInsets.only(left: 12.w),
-                                              scrollDirection: Axis.horizontal,
-                                              itemCount: vc.productDetails!.product!
-                                                  .galleryImages!.length,
-                                              itemBuilder: (context, index) {
-                                                var image = vc.productDetails!.product!
-                                                    .galleryImages![index];
-                                                return GestureDetector(
-                                                  onTap: (){
-                                                    vc.selectedImage = image;
+                                  Positioned(
+                                    bottom: MediaQuery.of(context).size.height * 0.01,
+                                    left: MediaQuery.of(context).size.width * 0.12,
+                                    right: MediaQuery.of(context).size.width * 0.12,
+                                    child: Container(
+                                        width: MediaQuery.of(context).size.width * 0.75,
+                                        height: 32.h,
+                                        margin: EdgeInsets.only(top: 24.h),
+                                        child: vc.productDetails!.product!.galleryImages!
+                                                .isNotEmpty
+                                            ? ListView.builder(
+                                                padding: EdgeInsets.only(left: 12.w),
+                                                scrollDirection: Axis.horizontal,
+                                                itemCount: vc.productDetails!.product!
+                                                    .galleryImages!.length,
+                                                itemBuilder: (context, index) {
+                                                  var image = vc.productDetails!.product!
+                                                      .galleryImages![index];
+                                                  return GestureDetector(
+                                                    onTap: (){
+                                                      vc.selectedImage = image;
+                                                      vc.update();
+                                                    },
+                                                    child: Container(
+                                                      padding: EdgeInsets.symmetric(horizontal: 4.w),
+                                                      margin: EdgeInsets.symmetric(horizontal: 4.w),
+                                                      decoration: BoxDecoration(
+                                                          color: Colors.white,
+                                                          border: Border.all(
+                                                              color: Colors.white,
+                                                              width: 0.4)),
+                                                      child: CachedNetworkImage(
+                                                        imageUrl: image,
+                                                        width: 30.w,
+                                                        height: 24.h,
+                                                      ),
+                                                    ),
+                                                  );
+                                                })
+                                            : const SizedBox()),
+                                  ),
+                          
+                                ],
+                              ),
+                          
+                              SizedBox(height: MediaQuery.of(context).size.height*0.06),
+                          
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 24.w),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                          
+                                    Row(
+                                      children: [
+                          
+                                        Expanded(
+                                            child: Text(
+                                                vc.productDetails!.product!.name!,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 14.sp
+                                                ),
+                                            )
+                                        ),
+                          
+                                        SizedBox(width: 8.w),
+                          
+                                        GetBuilder<CartController>(
+                                          builder: (cc) {
+                                            return Row(
+                                              children: [
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    if(vc.quantity!-1!=0) {
+                                                      vc.quantity = vc.quantity!-1;
+                                                    }
                                                     vc.update();
                                                   },
                                                   child: Container(
-                                                    padding: EdgeInsets.symmetric(horizontal: 4.w),
-                                                    margin: EdgeInsets.symmetric(horizontal: 4.w),
+                                                    width: 40.w,
+                                                    padding: EdgeInsets.all(2.w),
                                                     decoration: BoxDecoration(
-                                                        color: Colors.white,
-                                                        border: Border.all(
-                                                            color: Colors.white,
-                                                            width: 0.4)),
-                                                    child: CachedNetworkImage(
-                                                      imageUrl: image,
-                                                      width: 30.w,
-                                                      height: 24.h,
+                                                        color: Colors.grey.shade200, shape: BoxShape.circle),
+                                                    child: const Icon(
+                                                      Icons.remove,
+                                                      color: Colors.grey,
                                                     ),
                                                   ),
-                                                );
-                                              })
-                                          : const SizedBox()),
-                                ),
-
-                              ],
-                            ),
-
-                            SizedBox(height: MediaQuery.of(context).size.height*0.06),
-
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 24.w),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-
-                                  Row(
-                                    children: [
-
-                                      Expanded(
-                                          child: Text(
-                                              vc.productDetails!.product!.name!,
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 14.sp
-                                              ),
-                                          )
-                                      ),
-
-                                      SizedBox(width: 8.w),
-
-                                      GetBuilder<CartController>(
-                                        builder: (cc) {
-                                          return Row(
-                                            children: [
-                                              GestureDetector(
-                                                onTap: () {
-                                                  if(vc.quantity!-1!=0) {
-                                                    vc.quantity = vc.quantity!-1;
-                                                  }
-                                                  vc.update();
-                                                },
-                                                child: Container(
-                                                  width: 40.w,
-                                                  padding: EdgeInsets.all(2.w),
-                                                  decoration: BoxDecoration(
-                                                      color: Colors.grey.shade200, shape: BoxShape.circle),
-                                                  child: const Icon(
-                                                    Icons.remove,
-                                                    color: Colors.grey,
+                                                ),
+                                                SizedBox(
+                                                  width: 30.w,
+                                                  child: Center(
+                                                      child: Text(
+                                                        vc.quantity.toString(),
+                                                        style: const TextStyle(fontWeight: FontWeight.w600),
+                                                      )),
+                                                ),
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    vc.quantity = vc.quantity!+1;
+                                                    vc.update();
+                                                  },
+                                                  child: Container(
+                                                    width: 40.w,
+                                                    padding: EdgeInsets.all(2.w),
+                                                    decoration: BoxDecoration(
+                                                        color: AppColors.primaryColor.withOpacity(0.8),
+                                                        shape: BoxShape.circle),
+                                                    child: const Icon(
+                                                      Icons.add,
+                                                      color: Colors.white,
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                width: 30.w,
+                                              ],
+                                            );
+                                          }
+                                        )
+                          
+                                      ],
+                                    ),
+                          
+                                    SizedBox(height: 4.h),
+                          
+                                    Row(
+                                      children: [
+                                        Text(
+                                            "\u{20B9} ${vc.productDetails!.product!.price!.toString()}",
+                                          style: TextStyle(
+                                              fontSize: 15.sp,
+                                            decoration: TextDecoration.lineThrough
+                                          ),
+                                        ),
+                                        SizedBox(width: 8.w),
+                                        Text(
+                                          "\u{20B9}${vc.productDetails!.product!.salePrice!.toString()}",
+                                          style: TextStyle(
+                                              color: Colors.red,
+                                              fontSize: 15.sp,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ],
+                                    ),
+                          
+                                    SizedBox(height: 8.h),
+                          
+                                    vc.productDetails!.productSizes!.isNotEmpty?
+                                    SizedBox(
+                                      height: 35.h,
+                                      child: ListView.builder(
+                                          itemCount: vc.productDetails!.productSizes!.length,
+                                          shrinkWrap: true,
+                                          scrollDirection: Axis.horizontal,
+                                          itemBuilder: (context,index){
+                                            var unit = vc.productDetails!.productSizes![index];
+                                            bool isSelected = vc.selectedVariant==unit;
+                                            return GestureDetector(
+                                              onTap: (){
+                                                vc.selectedVariant = unit;
+                                                vc.changeVariant();
+                                              },
+                                              child: Container(
+                                                padding: EdgeInsets.symmetric(horizontal: 4.w),
+                                                margin: EdgeInsets.only(right: 4.w),
+                                                decoration: BoxDecoration(
+                                                  color: isSelected
+                                                      ? AppColors.primaryColor
+                                                      : Colors.transparent,
+                                                  border: Border.all(color: AppColors.primaryColor),
+                                                  borderRadius: BorderRadius.circular(4.w),
+                                                ),
                                                 child: Center(
                                                     child: Text(
-                                                      vc.quantity.toString(),
-                                                      style: const TextStyle(fontWeight: FontWeight.w600),
-                                                    )),
-                                              ),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  vc.quantity = vc.quantity!+1;
-                                                  vc.update();
-                                                },
-                                                child: Container(
-                                                  width: 40.w,
-                                                  padding: EdgeInsets.all(2.w),
-                                                  decoration: BoxDecoration(
-                                                      color: AppColors.primaryColor.withOpacity(0.8),
-                                                      shape: BoxShape.circle),
-                                                  child: const Icon(
-                                                    Icons.add,
-                                                    color: Colors.white,
-                                                  ),
+                                                        unit.name,
+                                                        style: TextStyle(
+                                                          color: isSelected
+                                                             ? Colors.white
+                                                              : Colors.black,
+                                                          fontSize: 12.sp,
+                                                        ),
+                                                    )
                                                 ),
                                               ),
-                                            ],
-                                          );
-                                        }
-                                      )
-
-                                    ],
-                                  ),
-
-                                  SizedBox(height: 4.h),
-
-                                  Row(
-                                    children: [
-                                      /*Text(
-                                          "\u{20B9} ${vc.productDetails!.product!.price!.toString()}",
-                                        style: TextStyle(
-                                            fontSize: 15.sp,
-                                          decoration: TextDecoration.lineThrough
+                                            );
+                                          }
+                                      ),
+                                    ): const SizedBox(),
+                          
+                                    SizedBox(height: 4.h),
+                          
+                                    Row(
+                                      children: [
+                          
+                                        vc.product!.stockCount!=0?Text(
+                                            "In Stock",
+                                            style: TextStyle(
+                                              color: AppColors.primaryColor,
+                                              fontWeight: FontWeight.w600
+                                            ),
+                                        ):const Text(
+                                          "Out of stock",
+                                          style: TextStyle(
+                                              color: Colors.red,
+                                              fontWeight: FontWeight.w600
+                                          ),
                                         ),
-                                      ),
-                                      SizedBox(width: 2.w),*/
-                                      Text(
-                                        "\u{20B9} ${vc.productDetails!.product!.salePrice!.toString()}",
-                                        style: TextStyle(
-                                            color: Colors.red,
-                                            fontSize: 15.sp,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    ],
-                                  ),
-
-                                  SizedBox(height: 8.h),
-
-                                  vc.productDetails!.productSizes!.isNotEmpty?
-                                  SizedBox(
-                                    height: 35.h,
-                                    child: ListView.builder(
-                                        itemCount: vc.productDetails!.productSizes!.length,
-                                        shrinkWrap: true,
+                          
+                                        //Text(vc.product!.stockCount.toString()),
+                                      ],
+                                    ),
+                          
+                                    vc.productDetails!.avgRating!=null?Column(
+                                      children: [
+                          
+                                        SizedBox(height: 8.h),
+                          
+                                        RatingBar.readOnly(
+                                            filledIcon: Icons.star,
+                                            emptyIcon: Icons.star_border,
+                                            initialRating: double.parse(vc.productDetails!.avgRating.toString()),
+                                            size: 20.sp,
+                                        ),
+                                      ],
+                                    ): const SizedBox(),
+                          
+                                    SizedBox(height: 8.h),
+                          
+                                    vc.productDetails!.product!.enablePrebook!?Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                          
+                                        customTextField(
+                                            context,
+                                            textInputType: TextInputType.text,
+                                            borderColor: AppColors.primaryColor,
+                                            hint: "Eg: 5Kg,20Kg",
+                                            onChanged: (v){
+                                              vc.preBook = v!;
+                                            }
+                                        ),
+                          
+                                        SizedBox(height: 8.h),
+                          
+                                        CustomButton(
+                                          height: 36.h,
+                                          onTap: (){
+                                            vc.preBookAPI();
+                                          },
+                                          child: !vc.booking?const Text(
+                                              "Pre-Book",
+                                              style: TextStyle(color: Colors.white)):CustomCircularLoader(),
+                                        ),
+                          
+                                      ],
+                                    ):SizedBox(),
+                          
+                                    SizedBox(height: 12.h),
+                          
+                                    vc.productDetails!.allUnits!=null
+                                        && vc.productDetails!.allUnits!.isNotEmpty?
+                                    ListView.builder(
+                                        itemCount: vc.productDetails!.allUnits!.length,
                                         scrollDirection: Axis.horizontal,
                                         itemBuilder: (context,index){
-                                          var unit = vc.productDetails!.productSizes![index];
-                                          bool isSelected = vc.selectedVariant==unit;
+                                          var unit = vc.productDetails!.allUnits![index];
                                           return GestureDetector(
-                                            onTap: (){
-                                              vc.selectedVariant = unit;
-                                              vc.changeVariant();
-                                            },
+                                            onTap: (){},
                                             child: Container(
-                                              padding: EdgeInsets.symmetric(horizontal: 4.w),
-                                              margin: EdgeInsets.only(right: 4.w),
+                                              padding: EdgeInsets.all(2.w),
                                               decoration: BoxDecoration(
-                                                color: isSelected
-                                                    ? AppColors.primaryColor
-                                                    : Colors.transparent,
                                                 border: Border.all(color: AppColors.primaryColor),
                                                 borderRadius: BorderRadius.circular(4.w),
                                               ),
-                                              child: Center(
-                                                  child: Text(
-                                                      unit.name,
-                                                      style: TextStyle(
-                                                        color: isSelected
-                                                           ? Colors.white
-                                                            : Colors.black,
-                                                        fontSize: 12.sp,
-                                                      ),
-                                                  )
-                                              ),
+                                              child: Text(unit),
                                             ),
                                           );
                                         }
-                                    ),
-                                  ): const SizedBox(),
+                                    ): const SizedBox(),
 
-                                  SizedBox(height: 4.h),
-
-                                  Row(
-                                    children: [
-
-                                      vc.product!.stockCount!=0?Text(
-                                          "In Stock",
-                                          style: TextStyle(
-                                            color: AppColors.primaryColor,
-                                            fontWeight: FontWeight.w600
-                                          ),
-                                      ):const Text(
-                                        "Out of stock",
-                                        style: TextStyle(
-                                            color: Colors.red,
-                                            fontWeight: FontWeight.w600
-                                        ),
+                                    Container(
+                                      height: 24.h,
+                                      width: 200.w,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(4.w),
+                                        color: Colors.white
                                       ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
 
-                                      //Text(vc.product!.stockCount.toString()),
-                                    ],
-                                  ),
-
-                                  SizedBox(height: 8.h),
-
-                                  vc.productDetails!.product!.enablePrebook!?Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-
-                                      customTextField(
-                                          context,
-                                          textInputType: TextInputType.text,
-                                          borderColor: AppColors.primaryColor,
-                                          hint: "Eg: 5Kg,20Kg",
-                                          onChanged: (v){
-                                            vc.preBook = v!;
-                                          }
-                                      ),
-
-                                      SizedBox(height: 8.h),
-
-                                      CustomButton(
-                                        height: 36.h,
-                                        onTap: (){
-                                          vc.preBookAPI();
-                                        },
-                                        child: !vc.booking?const Text(
-                                            "Pre-Book",
-                                            style: TextStyle(color: Colors.white)):CustomCircularLoader(),
-                                      ),
-
-                                    ],
-                                  ):SizedBox(),
-
-                                  SizedBox(height: 12.h),
-
-                                  vc.productDetails!.allUnits!=null
-                                      && vc.productDetails!.allUnits!.isNotEmpty?
-                                  ListView.builder(
-                                      itemCount: vc.productDetails!.allUnits!.length,
-                                      scrollDirection: Axis.horizontal,
-                                      itemBuilder: (context,index){
-                                        var unit = vc.productDetails!.allUnits![index];
-                                        return GestureDetector(
-                                          onTap: (){},
-                                          child: Container(
-                                            padding: EdgeInsets.all(2.w),
+                                          Container(
+                                            width: 100.w,
+                                            height: 24.h,
                                             decoration: BoxDecoration(
-                                              border: Border.all(color: AppColors.primaryColor),
-                                              borderRadius: BorderRadius.circular(4.w),
+                                              color: AppColors.primaryColor
                                             ),
-                                            child: Text(unit),
+                                            child: Center(
+                                              child: Text("COUPON",style: TextStyle(
+                                                color: Colors.white
+                                              ),),
+                                            ),
                                           ),
-                                        );
-                                      }
-                                  ): const SizedBox(),
 
-                                  ReadMoreText(
-                                    HtmlParser.parseHTML(
-                                            vc.productDetails!.product!.description!)
-                                        .text,
-                                    trimMode: TrimMode.Line,
-                                    trimLines: 4,
-                                    colorClickableText: Colors.pink,
-                                    trimCollapsedText: 'Show more',
-                                    trimExpandedText: 'Show less',
-                                    moreStyle: const TextStyle(
-                                        fontSize: 14, fontWeight: FontWeight.bold),
-                                  ),
+                                          Container(
+                                            width: 100.w,
+                                            height: 24.h,
+                                            decoration: BoxDecoration(
+                                                color: Colors.white
+                                            ),
+                                            child: Center(
+                                              child: Text(vc.productDetails!.coupons!.allcouponcode!,style: TextStyle(
+                                                  color: Colors.black
+                                              ),)
+                                            )
+                                          ),
 
-                                  SizedBox(height: 12.h),
-
-                                ],
-                              ),
-                            ),
-
-                            vc.productDetails!.relatedProducts.isNotEmpty?Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 24.w),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        "Related Products",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 20.sp
-                                        ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
+                                    ),
+
+                                    SizedBox(height: 4.h),
+                          
+                                    ReadMoreText(
+                                      HtmlParser.parseHTML(
+                                              vc.productDetails!.product!.description!)
+                                          .text,
+                                      trimMode: TrimMode.Line,
+                                      trimLines: 4,
+                                      colorClickableText: Colors.pink,
+                                      trimCollapsedText: 'Show more',
+                                      trimExpandedText: 'Show less',
+                                      moreStyle: const TextStyle(
+                                          fontSize: 14, fontWeight: FontWeight.bold),
+                                    ),
+                          
+                                    SizedBox(height: 12.h),
+                          
+                                  ],
                                 ),
-                                SizedBox(height: 12.h),
-
-                                SizedBox(
-                                  height: MediaQuery.of(context).size.height*0.3,
-                                  child: ListView.builder(
-                                      itemCount: vc.productDetails!.relatedProducts.length,
-                                      padding: EdgeInsets.symmetric(horizontal: 24.w),
-                                      scrollDirection: Axis.horizontal,
-                                      itemBuilder: (context,index){
-                                        var product = Product.fromJson(vc.productDetails!.relatedProducts[index]!.toJson());
-                                        return ProductListItem(
-                                          product: product,
-                                          fromDetailsPage: true,
-                                        );
-                                      }
+                              ),
+                          
+                              vc.productDetails!.relatedProducts.isNotEmpty?Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 24.w),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          "Related Products",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 20.sp
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                )
-
-                              ],
-                            ):const SizedBox(),
-
-
-                          ],
+                                  SizedBox(height: 12.h),
+                          
+                                  SizedBox(
+                                    height: MediaQuery.of(context).size.height*0.3,
+                                    child: ListView.builder(
+                                        itemCount: vc.productDetails!.relatedProducts.length,
+                                        padding: EdgeInsets.symmetric(horizontal: 24.w),
+                                        scrollDirection: Axis.horizontal,
+                                        itemBuilder: (context,index){
+                                          var product = Product.fromJson(vc.productDetails!.relatedProducts[index]!.toJson());
+                                          return ProductListItem(
+                                            product: product,
+                                            fromDetailsPage: true,
+                                          );
+                                        }
+                                    ),
+                                  )
+                          
+                                ],
+                              ):const SizedBox(),
+                          
+                          
+                            ],
+                          ),
                         ),
                       );
                     }),

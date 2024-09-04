@@ -2,6 +2,7 @@ import 'package:double_back_to_close/toast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Pages/OrderDetailsView/Model/order_details_model.dart';
+import 'package:grocery_nxt/Pages/ProfileView/Controller/profile_controller.dart';
 import 'package:grocery_nxt/Services/http_services.dart';
 import 'package:grocery_nxt/Utils/toast_util.dart';
 import 'package:http/http.dart' as http;
@@ -12,6 +13,7 @@ import '../../Payment Screen/payment_failed.dart';
 class OrderDetailsController extends GetxController{
 
   bool isLoading = false;
+  bool isRating  = false;
   int ?orderId;
   OrderDetailsModel ?orderDetails;
   var razorpay = Razorpay();
@@ -19,6 +21,7 @@ class OrderDetailsController extends GetxController{
   OrderSuccessResponse? successResponse = OrderSuccessResponse();
   bool statusChanged   = false;
   bool updatingPayment = false;
+  ProfileController profileController = Get.find<ProfileController>();
 
   //
   getOrderDetails() async {
@@ -38,6 +41,31 @@ class OrderDetailsController extends GetxController{
       }
     }
     isLoading = false;
+    update();
+  }
+
+  //
+  rateProduct(Product product,{String ratingMessage = "",int ?rating}) async {
+
+    isRating = true;
+    update();
+    try{
+      var result = await HttpService.postRequest("product-review",{
+          "id" : product.id,
+          "user_id" : profileController.profile!.userDetails!.id,
+          "rating" : rating,
+          "comment" : ratingMessage
+      },insertHeader: true);
+      if(result is http.Response){
+        if(result.statusCode == 200){
+          ToastUtil().showToast(message: "Product rated successfully");
+          Get.back();
+        }
+      }
+    }catch(e){
+      print("rating error-->$e");
+    }
+    isRating = false;
     update();
   }
 

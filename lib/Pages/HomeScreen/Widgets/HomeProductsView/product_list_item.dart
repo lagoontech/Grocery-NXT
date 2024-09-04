@@ -48,11 +48,10 @@ class ProductListItem extends StatelessWidget {
                       }
                       Product copyProduct = Product.fromJson(product!.toJson());
                       Get.delete<ProductDetailsController>();
-                      Get.to(()=> new ProductDetailsView(
+                      Get.to(()=> ProductDetailsView(
                           productId: product!.prdId,
                           product: copyProduct
                       ),preventDuplicates: false);
-                      print("product tapped");
                     },
                     child: Column(
                       children: [
@@ -170,7 +169,10 @@ class ProductListItem extends StatelessWidget {
                                         child: const Center(
                                             child: Icon(Icons.add,
                                                 color: Colors.green)))
-                                    : Text(quantity.toString()),
+                                    : Text(quantity.toString(),style: TextStyle(
+                                  color: AppColors.primaryColor,
+                                  fontWeight: FontWeight.w600
+                                ),),
                               ),
                               hasProductInCart
                                   ? GestureDetector(

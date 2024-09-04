@@ -50,6 +50,12 @@
       "languageVersion": "2.17"
     },
     {
+      "name": "bounce",
+      "rootUri": "file:///Users/lagoontech/.pub-cache/hosted/pub.dev/bounce-1.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "cached_network_image",
       "rootUri": "file:///Users/lagoontech/.pub-cache/hosted/pub.dev/cached_network_image-3.3.1",
       "packageUri": "lib/",
@@ -126,6 +132,12 @@
       "rootUri": "file:///Users/lagoontech/.pub-cache/hosted/pub.dev/cupertino_icons-1.0.6",
       "packageUri": "lib/",
       "languageVersion": "2.19"
+    },
+    {
+      "name": "custom_rating_bar",
+      "rootUri": "file:///Users/lagoontech/.pub-cache/hosted/pub.dev/custom_rating_bar-3.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
     },
     {
       "name": "dbus",
@@ -800,6 +812,12 @@
       "languageVersion": "2.17"
     },
     {
+      "name": "widget_zoom",
+      "rootUri": "file:///Users/lagoontech/.pub-cache/hosted/pub.dev/widget_zoom-0.0.4",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
       "name": "win32",
       "rootUri": "file:///Users/lagoontech/.pub-cache/hosted/pub.dev/win32-5.5.0",
       "packageUri": "lib/",
@@ -824,19 +842,13 @@
       "languageVersion": "3.2"
     },
     {
-      "name": "zoom_widget",
-      "rootUri": "file:///Users/lagoontech/.pub-cache/hosted/pub.dev/zoom_widget-2.0.1",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
       "name": "grocery_nxt",
       "rootUri": "../",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     }
   ],
-  "generated": "2024-07-11T07:31:20.694848Z",
+  "generated": "2024-08-28T12:06:21.000585Z",
   "generator": "pub",
   "generatorVersion": "3.3.0"
 }

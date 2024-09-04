@@ -29,12 +29,15 @@ class CartController extends GetxController{
   addToCartFromDetailsPage({Product ?product}){
 
     if(product!.variantInfo!=null){
+      print("variant product from details page");
+      print(product.title);
       int index = products.indexWhere((element){
         if(element.productColor!=null) {
-          return element.productColor!.id == product.productColor!.id;
+          return (element.title==product.title) && element.productColor!.id == product.productColor!.id;
         }
         return false;
       });
+      print(index);
       if(index!=-1){
         products[index].cartQuantity = product.cartQuantity;
       }else{

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 Widget customTextField(BuildContext context,
     {TextInputType? textInputType,
@@ -39,7 +40,7 @@ Widget customTextField(BuildContext context,
     validator: validator,
     autovalidateMode: AutovalidateMode.always,
     keyboardType: textInputType ?? TextInputType.text,
-    style: const TextStyle(fontSize: 12, color: Colors.black),
+    style: TextStyle(fontSize: 12.sp, color: Colors.black),
     textCapitalization: textCapitalization ?? TextCapitalization.words,
     onSaved: onSaved,
     decoration: InputDecoration(
@@ -51,7 +52,7 @@ Widget customTextField(BuildContext context,
           borderSide: BorderSide(color: Colors.grey, width: 0.3)),
       isDense: true,
       filled: true,
-      //contentPadding: contentPadding ?? EdgeInsets.symmetric(vertical: 15.h),
+      contentPadding: contentPadding ?? EdgeInsets.symmetric(vertical: 8.h,horizontal: 8.w),
       fillColor: fillColor ?? Colors.white.withOpacity(0.2),
       counterText: "",
       prefixIcon: prefix,
@@ -59,25 +60,27 @@ Widget customTextField(BuildContext context,
       hintText: hint,
       hintStyle: TextStyle(
           color: Colors.black.withOpacity(0.4),
-          fontSize: 12,
+          fontSize: 12.sp,
           fontWeight: FontWeight.w400
       ),
       enabled: true,
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(borderRadius ?? 20),
+        borderRadius: BorderRadius.circular(borderRadius ?? 20.sp),
         borderSide: BorderSide(
-          // width: 0.90,
+          width: 0.90,
           color: borderColor ?? Colors.transparent,
         ),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(borderRadius ?? 20),
+        borderRadius: BorderRadius.circular(borderRadius ?? 20.sp),
         borderSide: BorderSide(
             color: borderColor ??
-                Colors.transparent), // Set border color to transparent
+                Colors.transparent,
+            width: 0.5
+        ), // Set border color to transparent
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(borderRadius ?? 20),
+        borderRadius: BorderRadius.circular(borderRadius ?? 20.sp),
         borderSide: BorderSide(
             color: borderColor ??
                 Colors.transparent), // Set border color to transparent
@@ -86,7 +89,7 @@ Widget customTextField(BuildContext context,
       //   borderRadius: BorderRadius.circular(borderRadius ?? 24.5.r),
       // ),
       errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(borderRadius ?? 20),
+        borderRadius: BorderRadius.circular(borderRadius ?? 20.sp),
         borderSide: BorderSide(
             color: borderColor ?? Colors.transparent,
             width: 0.3), // Set border color to transparent

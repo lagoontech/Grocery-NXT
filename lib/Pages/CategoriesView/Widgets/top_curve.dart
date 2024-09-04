@@ -7,19 +7,21 @@ class TopCurve extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: kToolbarHeight*2.6,
       child: CustomPaint(
         painter: TopCurvePaint(),
         child: Center(
-          child: Text("Categories",style: TextStyle(
+          child: Text("CATEGORIES",style: TextStyle(
             color: Colors.white,
             fontSize: 16.sp,
-            fontWeight: FontWeight.bold
-          ),),
-        ),
-      ),
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.75
+          ))
+        )
+      )
     );
   }
 }

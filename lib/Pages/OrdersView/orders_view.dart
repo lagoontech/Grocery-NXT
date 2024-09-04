@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/OrdersView/Controller/order_controller.dart';
@@ -17,7 +20,12 @@ class OrdersView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: "Orders"),
+      appBar: CustomAppBar(
+          title: "MY ORDERS",
+          color: AppColors.primaryColor,
+          elevation: 2,
+          textColor: Colors.white,
+      ),
       body: GetBuilder<OrderController>(builder: (vc) {
         return vc.pendingOrders.isEmpty && vc.completedOrders.isEmpty
             ? Column(
@@ -65,26 +73,84 @@ class OrdersView extends StatelessWidget {
                                   0, 2), // changes position of shadow
                             )
                           ]),
-                          child: TabBar(
-                              controller: vc.tabController,
-                              dividerColor: Colors.transparent,
-                              onTap: (v) {
-                                if (vc.tabController!.index == 0) {
-                                  vc.getPendingOrders();
-                                } else {
-                                  vc.getOrders();
-                                }
-                              },
-                              labelStyle:
-                                  const TextStyle(fontWeight: FontWeight.w600),
-                              tabs: const [
-                                Tab(
-                                  text: "Pending",
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: (){
+                                    vc.currentTab = 1;
+                                    vc.getPendingOrders();
+                                  },
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 250),
+                                    height: kToolbarHeight,
+                                    decoration: BoxDecoration(
+                                      color: vc.currentTab == 1
+                                          ? AppColors.primaryColor.withOpacity(0.7)
+                                          : Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.2),
+                                          blurRadius: 1,
+                                          offset: const Offset(
+                                              0, 2), // changes position of shadow
+                                        )
+                                      ]
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                          "Pending",
+                                          style: TextStyle(
+                                              fontSize: 14.sp,
+                                            color: vc.currentTab != 1
+                                                ? Colors.black
+                                                : Colors.white
+                                          ),
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                                Tab(
-                                  text: "Delivered",
+                              ),
+
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: (){
+                                    vc.currentTab = 2;
+                                    vc.getOrders();
+                                  },
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 250),
+                                    height: kToolbarHeight,
+                                    decoration: BoxDecoration(
+                                        color: vc.currentTab == 2
+                                            ? AppColors.primaryColor.withOpacity(0.7)
+                                            : Colors.white,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.2),
+                                            blurRadius: 1,
+                                            offset: const Offset(
+                                                0, 2), // changes position of shadow
+                                          )
+                                        ]
+                                    ),
+                                    child: Center(
+                                      child: Text("Completed",style: TextStyle(
+                                          fontSize: 14.sp,
+                                          color: vc.currentTab != 2
+                                              ? Colors.black
+                                              : Colors.white
+                                      ),),
+                                    ),
+                                  ),
                                 ),
-                              ]),
+                              ),
+
+                            ],
+                          )
+
                         ),
                       ),
                       vc.loadingOrders
@@ -100,7 +166,7 @@ class OrdersView extends StatelessWidget {
                                   child: CustomCircularLoader(
                                       color: AppColors.primaryColor)),
                             ))
-                          : vc.tabController!.index == 0 &&
+                          : vc.currentTab == 1 &&
                                   vc.pendingOrders.isEmpty
                               ? SliverToBoxAdapter(
                                   child: Column(
@@ -112,7 +178,7 @@ class OrdersView extends StatelessWidget {
                                     ],
                                   ),
                                 )
-                              : vc.tabController!.index == 1 &&
+                              : vc.currentTab == 2 &&
                                       vc.completedOrders.isEmpty
                                   ? SliverToBoxAdapter(
                                       child: Column(
@@ -135,7 +201,7 @@ class OrdersView extends StatelessWidget {
                                                   ? vc.pendingOrders.length
                                                   : vc.completedOrders.length,
                                           itemBuilder: (context, index) {
-                                            return vc.tabController!.index == 0
+                                            return vc.currentTab == 1
                                                 ? OrderPendingListItem(
                                                     order:
                                                         vc.pendingOrders[index],

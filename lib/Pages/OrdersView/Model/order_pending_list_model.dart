@@ -841,7 +841,7 @@ class Unit {
 
   factory Unit.fromJson(Map<String, dynamic> json) => Unit(
     id: json["id"],
-    name: unitNameValues.map[json["name"]]!,
+    name: unitNameValues.map[json["name"]],
     createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
     updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
     deletedAt: json["deleted_at"],

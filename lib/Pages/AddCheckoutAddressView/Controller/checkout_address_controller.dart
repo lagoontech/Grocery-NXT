@@ -8,6 +8,7 @@ import 'package:grocery_nxt/Pages/ProfileView/Controller/profile_controller.dart
 import 'package:grocery_nxt/Services/http_services.dart';
 import 'package:grocery_nxt/Utils/toast_util.dart';
 import 'package:http/http.dart' as http;
+import '../../RegisterScreen/Models/cities_model.dart';
 import '../Models/countries_model.dart';
 import '../Models/states_model.dart';
 
@@ -20,11 +21,14 @@ class AddCheckoutAddressController extends GetxController{
   bool creatingAddress        = false;
   List<Country?> countries    = [];
   List<CountryState?> states  = [];
+  List<City> cities  = [];
   CountryState ?selectedState;
+  City ?selectedCity;
   Country ?selectedCountry;
   Timer ?searchTimer;
   TextEditingController searchTEC       = TextEditingController();
   TextEditingController stateSearchTEC  = TextEditingController();
+  TextEditingController citySearchTEC   = TextEditingController();
   TextEditingController countryTEC      = TextEditingController();
   TextEditingController titleTEC        = TextEditingController();
   TextEditingController emailTEC        = TextEditingController();
@@ -33,6 +37,7 @@ class AddCheckoutAddressController extends GetxController{
   TextEditingController zipcodeTEC      = TextEditingController();
   TextEditingController orderNoteTEC    = TextEditingController();
   TextEditingController stateTEC        = TextEditingController();
+  TextEditingController cityTEC         = TextEditingController();
   String shippingCost                   = "";
 
   //
@@ -78,7 +83,28 @@ class AddCheckoutAddressController extends GetxController{
   }
 
   //
-  debounceSearch({bool isStateSearch = false}){
+  getCities() async {
+
+    loadingStates = true;
+    update();
+    try{
+      var result = await HttpService.getRequest(
+          "get-cities/${selectedState!.id}${citySearchTEC.text.isNotEmpty?"?name=${citySearchTEC.text}":""}");
+      if(result is http.Response){
+        if(result.statusCode==200){
+          cities = citiesModelFromJson(result.body).cities!;
+        }
+      }
+    }catch(e){
+      print(e);
+    }
+    loadingStates = false;
+    update();
+
+  }
+
+  //
+  debounceSearch({bool isStateSearch = false,bool isCitySearch = false}){
 
     if(searchTimer!=null && searchTimer!.isActive){
       searchTimer!.cancel();
@@ -87,6 +113,9 @@ class AddCheckoutAddressController extends GetxController{
     searchTimer = Timer(const Duration(milliseconds: 750), () {
       if(isStateSearch){
         getStates();
+        return;
+      }else if(isCitySearch){
+        getCities();
         return;
       }
       getCountries();
@@ -99,6 +128,10 @@ class AddCheckoutAddressController extends GetxController{
     ProfileController profileController = Get.find<ProfileController>();
     if(selectedState==null){
       ToastUtil().showToast(message: "Please select a state");
+      return;
+    }
+    if(selectedCity==null){
+      ToastUtil().showToast(message: "Please select a city");
       return;
     }
     if(zipcodeTEC.text.isEmpty || zipcodeTEC.text.length!=6){
@@ -119,8 +152,8 @@ class AddCheckoutAddressController extends GetxController{
         "country": "70",
         "address": addressTEC.text,
         "zip_code": zipcodeTEC.text,
-        "user_id": profileController.profile!.userDetails.id,
-        "city": "1",
+        "user_id": profileController.profile!.userDetails!.id,
+        "city": selectedCity!.id,
         "state": selectedState!.id,
         "shipping_address_name": titleTEC.text
       },insertHeader: true);
@@ -167,13 +200,11 @@ class AddCheckoutAddressController extends GetxController{
         body: map,
       );
       print(map);
-      if(result is http.Response){
-        if(result.statusCode == 200){
-          shippingCost = jsonDecode(result.body)["finalcost"].toString();
-          print(shippingCost);
-        }
+      if(result.statusCode == 200){
+        shippingCost = jsonDecode(result.body)["finalcost"].toString();
+        print(shippingCost);
       }
-    }catch(e){
+        }catch(e){
       print(e);
     }
     fetchingShippingCharge = false;

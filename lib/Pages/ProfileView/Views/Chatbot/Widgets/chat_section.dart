@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-
-import '../../../../../Constants/app_colors.dart';
 import '../Controllers/chat_screen_controller.dart';
 import 'normal_chat_box.dart';
 
@@ -57,10 +54,11 @@ class ChatModel {
   int? userId;
   String? message;
   DateTime? createdAt;
+  bool ?isSupport;
 
   // GlobalKey? key;
   final GlobalKey key;
 
-  ChatModel({this.name = "Vedh", this.message, this.userId, this.createdAt})
+  ChatModel({this.name = "Vedh", this.message, this.userId, this.createdAt,this.isSupport})
       : key = GlobalKey();
 }

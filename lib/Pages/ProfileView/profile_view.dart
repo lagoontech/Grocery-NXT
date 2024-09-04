@@ -101,7 +101,7 @@ class ProfileView extends StatelessWidget {
                                 ? Text(
                                     vc.profile == null
                                         ? ""
-                                        : vc.profile!.userDetails.name.toUpperCase(),
+                                        : vc.profile!.userDetails!.name!.toUpperCase(),
                                     style: const TextStyle(
                                         fontWeight: FontWeight.w600,
                                         letterSpacing: 1.3))
@@ -129,13 +129,13 @@ class ProfileView extends StatelessWidget {
                       },
                     ),
 
-                    ProfileItem(
+                    /*ProfileItem(
                       iconAsset: "profile",
                       title: "Help Center",
                       onTap: () {
                         Get.to(()=> const HelpCenterView());
                       },
-                    ),
+                    ),*/
 
                     ProfileItem(
                       iconAsset: "location",
@@ -145,11 +145,11 @@ class ProfileView extends StatelessWidget {
                       },
                     ),
 
-                    ProfileItem(
+                    /*ProfileItem(
                       iconAsset: "coupon",
                       title: "My Coupons",
                       onTap: () {},
-                    ),
+                    ),*/
 
                     ProfileItem(
                       iconAsset: "logout",
@@ -218,9 +218,7 @@ class ProfileView extends StatelessWidget {
          mainAxisAlignment: MainAxisAlignment.center,
          children: [
 
-           Icon(Icons.chat),
-
-           Text("Help")
+           Icon(Icons.chat,size: 32.sp),
 
        ],
      ),

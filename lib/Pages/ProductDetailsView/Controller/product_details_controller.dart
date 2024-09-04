@@ -32,7 +32,7 @@ class ProductDetailsController extends GetxController
       var result = await HttpService.getRequest("product/$productId");
       if (result is http.Response) {
         if (kDebugMode) {
-          print(result.body);
+          print("product details response-->"+result.body);
         }
         if (result.statusCode == 200) {
           productDetails = productDetailsModelFromJson(result.body);

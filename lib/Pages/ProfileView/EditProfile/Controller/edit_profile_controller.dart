@@ -44,11 +44,11 @@ class EditProfileController extends GetxController{
     var postData = {
       'name': nameTEC.text,
       'email': emailTEC.text,
-      'phone': profileController.profile!.userDetails.phone,
+      'phone': profileController.profile!.userDetails!.phone,
       'zipcode': '',
       'state': '',
       'city': '',
-      'user_id': profileController.profile!.userDetails.id,
+      'user_id': profileController.profile!.userDetails!.id,
       'country': "70",
       'address': addressTEC.text
     };
@@ -72,9 +72,9 @@ class EditProfileController extends GetxController{
   getProfileDetails() async {
 
     await profileController.fetchProfile();
-    nameTEC.text     = profileController.profile!.userDetails.name;
-    addressTEC.text  = profileController.profile!.userDetails.address ?? "";
-    emailTEC.text    = profileController.profile!.userDetails.email;
+    nameTEC.text     = profileController.profile!.userDetails!.name!;
+    addressTEC.text  = profileController.profile!.userDetails!.address ?? "";
+    emailTEC.text    = profileController.profile!.userDetails!.email ?? "";
   }
 
   //

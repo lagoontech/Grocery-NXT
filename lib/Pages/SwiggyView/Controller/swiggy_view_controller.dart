@@ -52,6 +52,23 @@ class SwiggyViewController extends GetxController with GetTickerProviderStateMix
   bool somethingWentWrong = false;
 
   //
+  debounceSearch(){
+
+    searchTEC.addListener(() {
+      print(searchTEC.text);
+      if(searchTimer!=null && searchTimer!.isActive){
+        searchTimer!.cancel();
+      }
+      searchTimer = Timer(const Duration(milliseconds: 750), () {
+        fetchProducts(
+          isRefresh: true, // Use isRefresh: true for search with non-empty text
+        );
+      });
+
+    });
+  }
+
+  //
   fetchSubCategories() async {
 
     isLoadingSubCategories = true;
@@ -76,6 +93,7 @@ class SwiggyViewController extends GetxController with GetTickerProviderStateMix
           fetchProducts(isRefresh: true);
           attachScrollListeners();
         }
+        print(selectedSubCategory);
       }
     }catch(e){
       if (kDebugMode) {

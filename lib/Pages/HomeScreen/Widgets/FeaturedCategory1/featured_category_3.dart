@@ -33,28 +33,13 @@ class FeaturedCategory3 extends StatelessWidget {
                       )),
 
                       SizedBox(
-                        width: 2.w,
+                        width: 8.w,
                       ),
 
-                      SizedBox(
-                        height: 14.h,
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: vc.subcategories3.length,
-                            itemBuilder: (context,index){
-                              var subCategory = vc.subcategories3[index];
-                              return CachedNetworkImage(
-                                imageUrl: subCategory.imageUrl!,
-                                width: 12.w,
-                                height: 12.w,
-                              );
-                            }
-                        ),
-                      ),
+                      Text("Oil & Ghee"),
 
                       SizedBox(
-                        width: 2.w,
+                        width: 8.w,
                       ),
 
                       Expanded(child: Divider(
@@ -69,12 +54,12 @@ class FeaturedCategory3 extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 8.w),
                   child: GridView.builder(
                       shrinkWrap: true,
-                      itemCount: vc.subcategories3.length,
-                      padding: EdgeInsets.only(top: 12.h),
+                      itemCount: 9,
+                      padding: EdgeInsets.only(top: 20.h),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 3,
-                          mainAxisSpacing: 12.h,
-                          crossAxisSpacing: 12.w
+                          mainAxisSpacing: 6.h,
+                          crossAxisSpacing: 6.w
                       ),
                       itemBuilder: (context,index){
                         var subCategory = vc.subcategories3[index];

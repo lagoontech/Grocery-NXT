@@ -7,16 +7,15 @@ import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/home_controller.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/CarouselView/carousel_view.dart';
-import 'package:grocery_nxt/Pages/HomeScreen/Widgets/FeaturedCategory1/featured_category_1.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/FeaturedProductsView/featured_products_view.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/HomeCampaign/home_campaign.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/HomeProductsView/home_products_view.dart';
+import 'package:grocery_nxt/Pages/HomeScreen/Widgets/OfferProducts/offer_products.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/ScrollIndicator/scroll_indicator.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/Top%20Content/appbar_content.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/Top%20Content/top_content.dart';
+import 'package:grocery_nxt/Widgets/custom_button.dart';
 import 'package:lottie/lottie.dart';
-import 'package:skeletonizer/skeletonizer.dart';
-import 'Widgets/FeaturedCategory1/featured_category_2.dart';
 import 'Widgets/FeaturedCategory1/featured_category_3.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -92,17 +91,11 @@ class HomeScreen extends StatelessWidget {
 
                           SizedBox(height: 24.h),
 
-                          HomeCampaign(),
-
-                          FeaturedCategory1(),
-
-                          SizedBox(height: 24.h),
+                          //HomeCampaign(),
 
                           CarouselView(),
 
-                          SizedBox(height: 24.h),
-
-                          FeaturedCategory2(),
+                          OfferProducts(),
 
                           SizedBox(height: 24.h),
 
@@ -124,6 +117,53 @@ class HomeScreen extends StatelessWidget {
               ),
 
               AppBarContent(),
+
+              GetBuilder<HomeController>(
+                  builder: (vc) {
+                    return vc.categories.isEmpty && !vc.loadingCategories?Container(
+                      color: AppColors.primaryColor,
+                      child: Stack(
+                        children: [
+
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height,
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                            ),
+                          ),
+
+                          Center(
+                            child: Container(
+                              width: MediaQuery.of(context).size.width*0.8,
+                              height: MediaQuery.of(context).size.height,
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+
+                                    Text('Something went wrong!'),
+
+                                    SizedBox(height: 12.h),
+
+                                    CustomButton(
+                                      child: Text('Try Again'),
+                                      onTap: (){
+                                        hc.onInit();
+                                      },
+                                    )
+
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )
+
+                        ],
+                      ),
+                    ):SizedBox();
+                  }
+              ),
 
               GetBuilder<HomeController>(
                 builder: (vc) {

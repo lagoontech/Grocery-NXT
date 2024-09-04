@@ -243,7 +243,7 @@ class OrderDetailsView extends StatelessWidget {
                           ),
                           SizedBox(height: 16.h),
                           vc.orderDetails!.paymentDetails!.paymentStatus ==
-                                  "pending"
+                                  "pending" && vc.orderDetails!.paymentDetails!.paymentGateway != "cash_on_delivery"
                               ? Center(
                                   child: SizedBox(
                                     width:

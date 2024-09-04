@@ -1,119 +1,193 @@
+// To parse this JSON data, do
+//
+//     final profileInfoModel = profileInfoModelFromJson(jsonString);
+
 import 'dart:convert';
 
-ProfileInfoModel profileInfoModelFromJson(String str) =>
-    ProfileInfoModel.fromJson(json.decode(str));
+ProfileInfoModel profileInfoModelFromJson(String str) => ProfileInfoModel.fromJson(json.decode(str));
+
+String profileInfoModelToJson(ProfileInfoModel data) => json.encode(data.toJson());
 
 class ProfileInfoModel {
+  UserDetails? userDetails;
+
   ProfileInfoModel({
-    required this.userDetails,
+    this.userDetails,
   });
 
-  UserDetails userDetails;
+  factory ProfileInfoModel.fromJson(Map<String, dynamic> json) => ProfileInfoModel(
+    userDetails: json["user_details"] == null ? null : UserDetails.fromJson(json["user_details"]),
+  );
 
-  factory ProfileInfoModel.fromJson(Map<String, dynamic> json) =>
-      ProfileInfoModel(
-        userDetails: UserDetails.fromJson(json["user_details"]),
-      );
+  Map<String, dynamic> toJson() => {
+    "user_details": userDetails?.toJson(),
+  };
 }
 
 class UserDetails {
-  UserDetails({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.username,
-    required this.emailVerified,
-    this.emailVerifyToken,
-    required this.phone,
-    this.address,
-    required this.state,
-    this.city,
-    this.zipcode,
-    required this.country,
-    this.image,
-    this.facebookId,
-    this.googleId,
-    this.profileImageUrl,
-    this.profileImage,
-    required this.userCountry,
-    required this.shipping,
-    required this.userState,
-    required this.userCity,
-  });
-
-  dynamic id;
-  String name;
-  String email;
-  String username;
-  bool emailVerified;
+  int? id;
+  String? name;
+  String? email;
+  String? username;
+  String? emailVerified;
   dynamic emailVerifyToken;
-  dynamic phone;
-  dynamic address;
-  String? state;
+  String? phone;
+  String? address;
+  dynamic state;
   dynamic city;
   dynamic zipcode;
   String? country;
   dynamic image;
+  DateTime? createdAt;
+  DateTime? updatedAt;
   dynamic facebookId;
   dynamic googleId;
+  dynamic deletedAt;
+  dynamic checkOnlineStatus;
+  dynamic firebaseDeviceToken;
+  int? usertype;
+  dynamic gstnumber;
+  int? otp;
+  dynamic companyname;
+  dynamic fssa;
   dynamic profileImageUrl;
   dynamic profileImage;
-  CountryState? userCountry;
-  List<dynamic> shipping;
-  CountryState? userState;
-  CountryState? userCity;
+  UserCountry? userCountry;
+  List<dynamic>? shipping;
+  dynamic userState;
+  dynamic userCity;
 
-  factory UserDetails.fromJson(Map<String, dynamic> json) => UserDetails(
-        id: json["id"],
-        name: json["name"],
-        email: json["email"] ?? "",
-        username: json["username"],
-        emailVerified: json["email_verified"] == 1,
-        emailVerifyToken: json["email_verify_token"],
-        phone: json["phone"],
-        address: json["address"],
-        state: json["state"],
-        city: json["city"],
-        zipcode: json["zipcode"],
-        country: json["country"],
-        image: json["image"],
-        facebookId: json["facebook_id"],
-        googleId: json["google_id"],
-        profileImageUrl: json["profile_image_url"],
-        profileImage: json["profile_image"],
-        userCountry: json["user_country"] == null
-            ? null
-            : CountryState.fromJson(json["user_country"]),
-        shipping: List<dynamic>.from(json["shipping"].map((x) => x)),
-        userState: json["user_state"] == null
-            ? null
-            : CountryState.fromJson(json["user_state"]),
-        userCity: json["user_city"] == null
-            ? null
-            : CountryState.fromJson(json["user_city"]),
-      );
-}
-
-class CountryState {
-  CountryState({
-    required this.id,
-    required this.name,
-    required this.status,
-    this.countryId,
-    this.stateId,
+  UserDetails({
+    this.id,
+    this.name,
+    this.email,
+    this.username,
+    this.emailVerified,
+    this.emailVerifyToken,
+    this.phone,
+    this.address,
+    this.state,
+    this.city,
+    this.zipcode,
+    this.country,
+    this.image,
+    this.createdAt,
+    this.updatedAt,
+    this.facebookId,
+    this.googleId,
+    this.deletedAt,
+    this.checkOnlineStatus,
+    this.firebaseDeviceToken,
+    this.usertype,
+    this.gstnumber,
+    this.otp,
+    this.companyname,
+    this.fssa,
+    this.profileImageUrl,
+    this.profileImage,
+    this.userCountry,
+    this.shipping,
+    this.userState,
+    this.userCity,
   });
 
-  dynamic id;
-  String name;
-  String status;
-  dynamic countryId;
-  dynamic stateId;
+  factory UserDetails.fromJson(Map<String, dynamic> json) => UserDetails(
+    id: json["id"],
+    name: json["name"],
+    email: json["email"],
+    username: json["username"],
+    emailVerified: json["email_verified"],
+    emailVerifyToken: json["email_verify_token"],
+    phone: json["phone"],
+    address: json["address"],
+    state: json["state"],
+    city: json["city"],
+    zipcode: json["zipcode"],
+    country: json["country"],
+    image: json["image"],
+    createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
+    updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
+    facebookId: json["facebook_id"],
+    googleId: json["google_id"],
+    deletedAt: json["deleted_at"],
+    checkOnlineStatus: json["check_online_status"],
+    firebaseDeviceToken: json["firebase_device_token"],
+    usertype: json["usertype"],
+    gstnumber: json["gstnumber"],
+    otp: json["otp"],
+    companyname: json["companyname"],
+    fssa: json["fssa"],
+    profileImageUrl: json["profile_image_url"],
+    profileImage: json["profile_image"],
+    userCountry: json["user_country"] == null ? null : UserCountry.fromJson(json["user_country"]),
+    shipping: json["shipping"] == null ? [] : List<dynamic>.from(json["shipping"]!.map((x) => x)),
+    userState: json["user_state"],
+    userCity: json["user_city"],
+  );
 
-  factory CountryState.fromJson(Map<String, dynamic> json) => CountryState(
-        id: json["id"],
-        name: json["name"],
-        status: json["status"],
-        countryId: json["country_id"],
-        stateId: json["state_id"],
-      );
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+    "email": email,
+    "username": username,
+    "email_verified": emailVerified,
+    "email_verify_token": emailVerifyToken,
+    "phone": phone,
+    "address": address,
+    "state": state,
+    "city": city,
+    "zipcode": zipcode,
+    "country": country,
+    "image": image,
+    "created_at": createdAt?.toIso8601String(),
+    "updated_at": updatedAt?.toIso8601String(),
+    "facebook_id": facebookId,
+    "google_id": googleId,
+    "deleted_at": deletedAt,
+    "check_online_status": checkOnlineStatus,
+    "firebase_device_token": firebaseDeviceToken,
+    "usertype": usertype,
+    "gstnumber": gstnumber,
+    "otp": otp,
+    "companyname": companyname,
+    "fssa": fssa,
+    "profile_image_url": profileImageUrl,
+    "profile_image": profileImage,
+    "user_country": userCountry?.toJson(),
+    "shipping": shipping == null ? [] : List<dynamic>.from(shipping!.map((x) => x)),
+    "user_state": userState,
+    "user_city": userCity,
+  };
+}
+
+class UserCountry {
+  int? id;
+  String? name;
+  String? status;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+
+  UserCountry({
+    this.id,
+    this.name,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  factory UserCountry.fromJson(Map<String, dynamic> json) => UserCountry(
+    id: json["id"],
+    name: json["name"],
+    status: json["status"],
+    createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
+    updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+    "status": status,
+    "created_at": createdAt?.toIso8601String(),
+    "updated_at": updatedAt?.toIso8601String(),
+  };
 }

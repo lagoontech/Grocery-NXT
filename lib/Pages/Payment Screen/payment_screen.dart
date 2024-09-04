@@ -197,8 +197,8 @@ class PaymentScreen extends StatelessWidget {
                             children: [
                               SummaryItem(
                                   title: "Items Total",
-                                  value: "\u{20B9} ${cc.total}"),
-                              SummaryItem(title: "Coupon Discount", value: "0"),
+                                  value: "\u{20B9} ${cc.subTotal}"),
+                              SummaryItem(title: "Coupon Discount", value: cc.couponAmount.toString()),
                               SummaryItem(title: "Tax", value: "0"),
                               SummaryItem(
                                   title: "Shipping Charge",
@@ -214,7 +214,7 @@ class PaymentScreen extends StatelessWidget {
                               ),
                               SummaryItem(
                                   title: "Total",
-                                  value: "\u{20B9} ${ac.finalTotal}"),
+                                  value: "\u{20B9} ${cc.total}"),
                             ],
                           ),
                         );

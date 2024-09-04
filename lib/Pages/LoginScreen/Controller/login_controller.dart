@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import 'package:mobile_number/mobile_number.dart';
 class LoginController extends GetxController{
 
   TextEditingController phoneTEC   = TextEditingController(text: "9080761312");
+  TextEditingController nameTEC    = TextEditingController(text: "Anlin Jude");
   TextEditingController gstTEC     = TextEditingController();
   TextEditingController fssaiTEC   = TextEditingController();
   TextEditingController companyTEC = TextEditingController();
@@ -27,13 +29,17 @@ class LoginController extends GetxController{
     try{
       var result = await HttpService.postRequest("loginotp",{
         "mobile": phoneTEC.text,
+        "username": nameTEC.text,
+        'gstnumber': gstTEC.text,
+        'fssai': fssaiTEC.text,
+        'companyname': companyTEC.text,
+        'usertype': isVendor ? "2":"1"
       });
-      print(result);
       if(result is http.Response){
         if(result.statusCode==200){
-          Get.to(()=>OtpScreen());
+          Get.to(()=> OtpScreen());
         }else{
-          register();
+          //register();
         }
       }
     }catch(e){
@@ -51,21 +57,34 @@ class LoginController extends GetxController{
 
     loggingIn = true;
     update();
+    if(isVendor && !validateVendor()){
+      loggingIn = false;
+      update();
+      return;
+    }
     try{
       var result = await HttpService.postRequest("register",{
-        'username': phoneTEC.text,
+        'username': nameTEC.text,
         'password': phoneTEC.text,
-        'full_name': phoneTEC.text,
+        'full_name': nameTEC.text,
         'email': phoneTEC.text+"@gmail.com",
         'phone': phoneTEC.text,
         'state_id': '',
         'city': '',
         'country_id': '70',
         'terms_conditions': 'on',
+        'gstnumber': gstTEC.text,
+        'fssa': fssaiTEC.text,
+        'companyname': companyTEC.text,
+        'usertype': isVendor ? "2":"1"
       });
       if(result is http.Response){
         if(result.statusCode==200){
           processLogin();
+        }else if(result.statusCode==422){
+          if(jsonDecode(result.body)["validation_errors"]["phone"]!=null){
+            ToastUtil().showToast(message: jsonDecode(result.body)["validation_errors"]["phone"][0]);
+          }
         }
       }
     }catch(e){
@@ -77,6 +96,24 @@ class LoginController extends GetxController{
     loggingIn = false;
     update();
 
+  }
+
+  //
+  bool validateVendor(){
+
+    if(gstTEC.text.isEmpty){
+      ToastUtil().showToast(message: "GST Number is required.");
+      return false;
+    }
+    if(fssaiTEC.text.isEmpty){
+      ToastUtil().showToast(message: "Fssai number is required.");
+      return false;
+    }
+    if(companyTEC.text.isEmpty){
+      ToastUtil().showToast(message: "Company name is required.");
+      return false;
+    }
+    return true;
   }
 
   //
@@ -132,7 +169,7 @@ class LoginController extends GetxController{
   @override
   void onInit() {
     super.onInit();
-    listenForPermissions();
+    //listenForPermissions();
     //getPhoneNumber();
   }
 

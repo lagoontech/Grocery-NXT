@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -6,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grocery_nxt/Pages/CartView/Widgets/cart_item.dart';
 import 'package:grocery_nxt/Pages/ChooseAddressView/choose_address_view.dart';
+import 'package:grocery_nxt/Pages/CouponsPage/coupons_page.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
 import 'package:grocery_nxt/Widgets/custom_circular_loader.dart';
 import 'package:lottie/lottie.dart';
@@ -15,7 +15,6 @@ class CartView extends StatelessWidget {
    CartView({super.key,this.showBack = true});
 
    bool showBack;
-
    CartController cc = Get.find<CartController>();
 
   @override
@@ -79,6 +78,7 @@ class CartView extends StatelessWidget {
         builder: (cc){
           return cc.products.isNotEmpty?Column(
             children: [
+
               Expanded(
                 flex: 4,
                 child: GetBuilder<CartController>(
@@ -115,19 +115,19 @@ class CartView extends StatelessWidget {
               ),
 
               Expanded(
-                flex: 4,
-                child: SingleChildScrollView(
+                flex: 2,
+                child: Container(
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.white,
+                        blurRadius: 4,
+                        offset: Offset(0,-4.h)
+                      )
+                    ]
+                  ),
                   child: Column(
                   children: [
-                  
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 32.w,vertical: 24.h),
-                      child: TextFormField(
-                        controller: cc.couponController,
-                        decoration: decoration(),
-                        onChanged: (v){},
-                      ),
-                    ),
                   
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 8.h),
@@ -168,11 +168,11 @@ class CartView extends StatelessWidget {
                   
                               SummaryItem(
                                   title: "Total",
-                                  value: "\u{20B9} ${cc.total}"
+                                  value: "\u{20B9} ${cc.subTotal - cc.couponAmount}"
                               ),
                   
                               SizedBox(
-                                  height: 12.h
+                                  height: 8.h
                               )
                   
                             ],
@@ -180,8 +180,7 @@ class CartView extends StatelessWidget {
                         }
                     ),
                   
-                  ],
-                                ),
+                  ]),
                 ),),
 
 
@@ -209,36 +208,40 @@ class CartView extends StatelessWidget {
       ),
       bottomNavigationBar: GetBuilder<CartController>(
         builder: (cc) {
-          return cc.products.isNotEmpty?Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-
-              GetBuilder<CartController>(
-                builder: (cc) {
-                  return cc.products.isNotEmpty?Padding(
-                    padding: EdgeInsets.only(left: 20.w,right: 20.w,bottom: 16.h),
-                    child: CustomButton(
-                      width: MediaQuery.of(context).size.width*0.8,
-                      child: const Text(
-                        "Checkout",
-                        style: TextStyle(color: Colors.white),),
-                      onTap: () async {
-                        if(cc.couponController.text.isNotEmpty){
-                          await cc.applyCoupon();
-                        }
-                        Get.to(()=> ChooseAddressView());
-                      },
-                    ),
-                  ):const SizedBox();
-                }
-              )
-
-            ],
+          return cc.products.isNotEmpty?GetBuilder<CartController>(
+            builder: (cc) {
+              return cc.products.isNotEmpty?Padding(
+                padding: EdgeInsets.only(left: 20.w,right: 20.w,bottom: 16.h),
+                child: CustomButton(
+                  width: MediaQuery.of(context).size.width*0.8,
+                  child: const Text(
+                    "Checkout",
+                    style: TextStyle(color: Colors.white)),
+                  onTap: () async {
+                    if(cc.couponController.text.isNotEmpty){
+                      await cc.applyCoupon();
+                    }
+                    Get.to(()=> ChooseAddressView());
+                  },
+                ),
+              ):const SizedBox();
+            }
           ):const SizedBox();
         }
       ),
     );
   }
+
+   /*Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 8.w,bottom: 16.h),
+                  child: TextFormField(
+                    controller: cc.couponController,
+                    decoration: decoration(),
+                    onChanged: (v){},
+                  ),
+                ),
+              ),*/
 
   //
   Widget SummaryItem({String title="", String value=""}){
@@ -250,7 +253,31 @@ class CartView extends StatelessWidget {
 
           Text(title),
 
-          Text(value)
+          title.contains("Coupon") ? Row(
+            children: [
+
+              SizedBox(
+                width: 50.w,
+                height: 24.h,
+                child: CustomButton(
+                  onTap: () async{
+                   var coupon = await Get.to(()=> CouponsPage());
+                   if(coupon!=null && coupon is String){
+                     cc.couponController.text = coupon;
+                     cc.applyCoupon();
+                   }
+                  },
+                  borderRadius: 8.r,
+                  child: Text("Apply",style: TextStyle(fontSize: 10.sp))
+                ),
+              ),
+
+              SizedBox(width: 4.w),
+
+              Text(value)
+
+            ],
+          ) : Text(value)
 
         ],
       ),
@@ -261,11 +288,12 @@ class CartView extends StatelessWidget {
     return InputDecoration(
       isDense: true,
       filled: true,
+      contentPadding: EdgeInsets.symmetric(horizontal: 6.w,vertical: 1.h),
       suffixIcon: Container(
-        width: 60.w,
-        height: 32.h,
+        width: 40.w,
+        height: 24.h,
         margin: EdgeInsets.symmetric(
-            vertical: 8.h,
+            vertical: 6.h,
             horizontal: 14.w),
         decoration: BoxDecoration(
           color: Colors.black,
@@ -279,11 +307,7 @@ class CartView extends StatelessWidget {
                 cc.applyCoupon();
               },
               child: Center(
-                  child: cc.applyingCoupon?CustomCircularLoader():Text(
-                    "Apply",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12.sp))),
+                  child: cc.applyingCoupon?CustomCircularLoader(): Icon(Icons.check,color: Colors.white,)),
             );
           }
         ),

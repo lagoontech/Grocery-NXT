@@ -75,7 +75,8 @@ class ChooseAddressController extends GetxController{
           print(result.body);
           shippingCharge = jsonDecode(result.body)["finalcost"].toString();
           showCOD = jsonDecode(result.body)["exclude"]=='0'?false:true;
-          finalTotal = double.parse(shippingCharge) + cc.total;
+          //finalTotal = double.parse(shippingCharge) + cc.total;
+          cc.total = (cc.subTotal + double.parse(shippingCharge)) - cc.couponAmount;
           print(finalTotal);
         }else{
           finalTotal = cc.total;

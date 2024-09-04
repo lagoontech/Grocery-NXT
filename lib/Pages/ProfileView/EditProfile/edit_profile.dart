@@ -31,11 +31,14 @@ class EditProfile extends StatelessWidget {
               onTap: () {
                 vc.updateProfile();
               },
-              child: !vc.updating?SizedBox(
-                width: 32.w,
-                height: 32.w,
-                child: const Image(image: AssetImage("assets/images/confirm_edit.png")),
-              ):CustomCircularLoader(color: AppColors.primaryColor,),
+              child: Padding(
+                padding: EdgeInsets.only(right: 16.w),
+                child: !vc.updating?SizedBox(
+                  width: 32.w,
+                  height: 32.w,
+                  child: const Image(image: AssetImage("assets/images/confirm_edit.png")),
+                ):CustomCircularLoader(color: AppColors.primaryColor,),
+              ),
             ),
           ),
           body: Padding(

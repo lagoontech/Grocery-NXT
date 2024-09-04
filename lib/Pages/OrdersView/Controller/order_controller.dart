@@ -17,6 +17,7 @@ class OrderController extends GetxController with GetTickerProviderStateMixin{
   RefreshController refreshController = RefreshController();
   int pendingOrdersPage = 1;
   int completedOrdersPage = 1;
+  int currentTab = 1;
 
   //
   getOrders({bool isLoading = false}) async {

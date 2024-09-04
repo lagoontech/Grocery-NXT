@@ -17,17 +17,14 @@ import '../../ProfileView/Views/WishlistView/Controller/wishlist_controller.dart
 import '../Model/products_list_model.dart';
 
 class AllProductsListItem extends StatelessWidget {
-   AllProductsListItem({
-     super.key,
-     this.index,
-     this.product});
+  AllProductsListItem({super.key, this.index, this.product});
 
-   AllProductsController vc = Get.find<AllProductsController>();
-   CartController        cc = Get.find<CartController>();
+  AllProductsController vc = Get.find<AllProductsController>();
+  CartController cc = Get.find<CartController>();
 
-   int ?index;
-   Product ?product;
-   GlobalKey cartKey = GlobalKey();
+  int? index;
+  Product? product;
+  GlobalKey cartKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -39,35 +36,35 @@ class AllProductsListItem extends StatelessWidget {
             padding: EdgeInsets.only(top: 8.h, left: 4.w, right: 4.w),
             child: Column(
               children: [
-
                 GestureDetector(
-                  onTap: (){
-                    if(!NetworkUtil().isConnected()){
+                  onTap: () {
+                    if (!NetworkUtil().isConnected()) {
                       ToastUtil().showToast(noInternet: true);
                       return;
                     }
                     Product copyProduct = Product.fromJson(product!.toJson());
-                    Get.to(()=> ProductDetailsView(
-                      productId: product!.prdId,
-                      product: copyProduct,
-                    ));
+                    Get.to(() => ProductDetailsView(
+                          productId: product!.prdId,
+                          product: copyProduct,
+                        ));
                   },
                   child: Column(
                     children: [
-
                       Container(
                         key: cartKey,
                         color: Colors.transparent,
                         child: CachedNetworkImage(
                           width: MediaQuery.of(context).size.width * 0.38 * 0.8,
-                          height: MediaQuery.of(context).size.height * 0.28*0.4,
+                          height:
+                              MediaQuery.of(context).size.height * 0.28 * 0.4,
                           imageUrl: product!.imgUrl!,
                         ),
                       ),
                       SizedBox(height: 4.h),
                       SizedBox(
                           width: MediaQuery.of(context).size.width * 0.4,
-                          height: MediaQuery.of(context).size.height * 0.28 * 0.2,
+                          height:
+                              MediaQuery.of(context).size.height * 0.28 * 0.2,
                           child: Center(
                             child: Text(
                               product!.title!,
@@ -76,13 +73,12 @@ class AllProductsListItem extends StatelessWidget {
                                   fontSize: 10.sp,
                                   fontWeight: FontWeight.w500,
                                   color: const Color(0xff222222),
-                                  fontFamily: ""
-                              ),
+                                  fontFamily: ""),
                               textAlign: TextAlign.center,
                             ),
                           )),
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.28*0.1,
+                        height: MediaQuery.of(context).size.height * 0.28 * 0.1,
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8.w),
                           child: Row(
@@ -99,169 +95,201 @@ class AllProductsListItem extends StatelessWidget {
                               SizedBox(width: 2.w),
                               Expanded(
                                   child: Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Text(
-                                      "\u{20B9}${product!.discountPrice}",
-                                      style: TextStyle(
-                                        color: AppColors.secondaryColor,
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ))
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  "\u{20B9}${product!.discountPrice}",
+                                  style: TextStyle(
+                                    color: AppColors.secondaryColor,
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ))
                             ],
                           ),
                         ),
                       ),
-
                     ],
                   ),
                 ),
-
                 SizedBox(height: 6.h),
-
-                product!.stockCount!=0?GetBuilder<CartController>(
-                  builder: (cc) {
-                    bool hasProductInCart
-                    = cc.products.firstWhere((element) => element.prdId==product!.prdId&&element.variantInfo==null,
-                        orElse: ()=>Product()).prdId!=null;
-                    int ?quantity;
-                    if(hasProductInCart){
-                      quantity = cc.products.where((element) => element.prdId==product!.prdId).toList()[0].cartQuantity;
-                    }
-                    return SizedBox(
-                      width: double.infinity,
-                      height: 20.h,
-                      child: CustomPaint(
-                        painter: CurvedCartAddContainer(
-                            curvePercent: 1,
-                            hasProduct: hasProductInCart
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 6.w),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-
-                              hasProductInCart? GestureDetector(
-                                    onTap: () async {
-                                      cc.addToCart(product: product,isSub: true);
-                                    },
-                                    child: const Center(
-                                        child: Icon(Icons.remove,
-                                            color: Colors.grey,size: 20,))).animate(
-                                  effects: [
-                                    const SlideEffect(
-                                        begin: Offset(1,0),
-                                        duration: Duration(milliseconds: 300)
-                                    ),
-                                    const FadeEffect()
-                                  ]
-                              )
-                                :const SizedBox(),
-
-                              Padding(
-                                padding: EdgeInsets.only(top: 2.h),
-                                child: !hasProductInCart?GestureDetector(
-                                    onTap: () async {
-                                      await vc.runAddToCartAnimation(cartKey);
-                                      cc.addToCart(product: product);
-                                    },
-                                    child: const Center(
-                                        child: Icon(
-                                          Icons.add,
-                                          color: Colors.green)
-                                    )):Text(quantity.toString()),
+                product!.stockCount != 0
+                    ? GetBuilder<CartController>(builder: (cc) {
+                        bool hasProductInCart = cc.products
+                                .firstWhere(
+                                    (element) =>
+                                        element.prdId == product!.prdId &&
+                                        element.variantInfo == null,
+                                    orElse: () => Product())
+                                .prdId !=
+                            null;
+                        int? quantity;
+                        if (hasProductInCart) {
+                          quantity = cc.products
+                              .where(
+                                  (element) => element.prdId == product!.prdId)
+                              .toList()[0]
+                              .cartQuantity;
+                        }
+                        return SizedBox(
+                          width: double.infinity,
+                          height: 20.h,
+                          child: CustomPaint(
+                            painter: CurvedCartAddContainer(
+                                curvePercent: 1, hasProduct: hasProductInCart),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 6.w),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  hasProductInCart
+                                      ? GestureDetector(
+                                          onTap: () async {
+                                            cc.addToCart(
+                                                product: product, isSub: true);
+                                          },
+                                          child: const Center(
+                                              child: Icon(
+                                            Icons.remove,
+                                            color: Colors.grey,
+                                            size: 20,
+                                          ))).animate(effects: [
+                                          const SlideEffect(
+                                              begin: Offset(1, 0),
+                                              duration:
+                                                  Duration(milliseconds: 300)),
+                                          const FadeEffect()
+                                        ])
+                                      : const SizedBox(),
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 4.h),
+                                    child: product!.inventoryattribute == "Yes"
+                                        ? GestureDetector(
+                                            onTap: () {
+                                              Get.to(() => ProductDetailsView(
+                                                productId: product!.prdId,
+                                                product: product,
+                                              ));
+                                            },
+                                            child: Center(
+                                                child: Icon(Icons.remove_red_eye,
+                                                    color: Colors.green)),
+                                          )
+                                        : !hasProductInCart
+                                            ? GestureDetector(
+                                                onTap: () async {
+                                                  await vc
+                                                      .runAddToCartAnimation(
+                                                          cartKey);
+                                                  cc.addToCart(
+                                                      product: product);
+                                                },
+                                                child: const Center(
+                                                    child: Icon(Icons.add,
+                                                        color: Colors.green)))
+                                            : Text(quantity.toString()),
+                                  ),
+                                  hasProductInCart
+                                      ? GestureDetector(
+                                          onTap: () async {
+                                            await vc
+                                                .runAddToCartAnimation(cartKey);
+                                            cc.addToCart(product: product);
+                                          },
+                                          child: const Center(
+                                              child: Icon(
+                                            Icons.add,
+                                            color: Colors.green,
+                                            size: 20,
+                                          ))).animate(effects: [
+                                          const SlideEffect(
+                                              begin: Offset(-1, 0),
+                                              duration:
+                                                  Duration(milliseconds: 300)),
+                                          const FadeEffect()
+                                        ])
+                                      : const SizedBox(),
+                                ],
                               ),
-
-                              hasProductInCart? GestureDetector(
-                                  onTap: () async {
-                                    await vc.runAddToCartAnimation(cartKey);
-                                    cc.addToCart(product: product);
-                                  },
-                                  child: const Center(
-                                      child: Icon(Icons.add,
-                                          color: Colors.green,size: 20,))).animate(
-                                  effects: [
-                                    const SlideEffect(
-                                        begin: Offset(-1,0),
-                                        duration: Duration(milliseconds: 300)
-                                    ),
-                                    const FadeEffect()
-                                  ]
-                              )
-                                  :const SizedBox(),
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
-                    );
-                  }
-                ): const Text("Out of stock",style: TextStyle(color: Colors.red),)
-
+                        );
+                      })
+                    : const Text(
+                        "Out of stock",
+                        style: TextStyle(color: Colors.red),
+                      )
               ],
             ),
           ),
         ),
-
         Positioned(
           right: 8.w,
           top: 8.h,
-          child:
-          GetBuilder<WishlistController>(builder: (wc) {
+          child: GetBuilder<WishlistController>(builder: (wc) {
             var isFavourite = wc.products
-                .firstWhere(
-                    (element) =>
-                element.prdId == product!.prdId,
-                orElse: () => Product())
-                .prdId !=
+                    .firstWhere((element) => element.prdId == product!.prdId,
+                        orElse: () => Product())
+                    .prdId !=
                 null;
             return GestureDetector(
               onTap: () {
                 wc.addOrRemoveProduct(
-                    product: product,
-                    isFavourite: isFavourite);
+                    product: product, isFavourite: isFavourite);
               },
               child: isFavourite
                   ? Icon(
-                Icons.favorite,
-                color: AppColors.primaryColor.withOpacity(0.6),
-              )
+                      Icons.favorite,
+                      color: AppColors.primaryColor.withOpacity(0.6),
+                    )
                   : Icon(
-                Icons.favorite_border,
-                color: Colors.grey.shade400,
-              ),
+                      Icons.favorite_border,
+                      color: Colors.grey.shade400,
+                    ),
             );
           }),
         ),
-
-        (((product!.price-product!.discountPrice)/product!.price)*100).toStringAsFixed(0)!="0"
-            && !(((product!.price-product!.discountPrice)/product!.price)*100).toStringAsFixed(0).contains("-") ? CustomPaint(
-          painter: WavyPainter(),
-          child: Container(
-            width: 32.w,
-            height: 28.h,
-            padding: EdgeInsets.only(left: 4.w),
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(8)),
-              //color: AppColors.primaryColor.withOpacity(0.8)
-            ),
-            child: DefaultTextStyle(
-              style: const TextStyle(color: Colors.white),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                      "${ (((product!.price-product!.discountPrice)/product!.price)*100).toStringAsFixed(0) }%",
-                      style: TextStyle(fontSize: 8.sp,fontWeight: FontWeight.w600),
+        (((product!.price - product!.discountPrice) / product!.price) * 100)
+                        .toStringAsFixed(0) !=
+                    "0" &&
+                !(((product!.price - product!.discountPrice) / product!.price) *
+                        100)
+                    .toStringAsFixed(0)
+                    .contains("-")
+            ? CustomPaint(
+                painter: WavyPainter(),
+                child: Container(
+                  width: 32.w,
+                  height: 28.h,
+                  padding: EdgeInsets.only(left: 4.w),
+                  decoration: const BoxDecoration(
+                    borderRadius:
+                        BorderRadius.only(topLeft: Radius.circular(8)),
+                    //color: AppColors.primaryColor.withOpacity(0.8)
                   ),
-                  Text("OFF",style: TextStyle(fontSize: 8.sp,fontWeight: FontWeight.w600),),
-                ],
-              ),
-            ),
-          ),
-        ):const SizedBox()
+                  child: DefaultTextStyle(
+                    style: const TextStyle(color: Colors.white),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "${(((product!.price - product!.discountPrice) / product!.price) * 100).toStringAsFixed(0)}%",
+                          style: TextStyle(
+                              fontSize: 8.sp, fontWeight: FontWeight.w600),
+                        ),
+                        Text(
+                          "OFF",
+                          style: TextStyle(
+                              fontSize: 8.sp, fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            : const SizedBox()
       ],
     );
   }

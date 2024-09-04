@@ -91,6 +91,24 @@ class AddCheckoutAddressView extends StatelessWidget {
                           ],
                         );
                       }),
+                      GetBuilder<AddCheckoutAddressController>(builder: (vc) {
+                        return vc.selectedState != null
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  label("City"),
+                                  customTextField(context,
+                                      readOnly: true,
+                                      controller: vc.cityTEC,
+                                      borderRadius: 12.r,
+                                      borderColor: const Color(0xffD7DFE9),
+                                      hint: "Select a city", onTap: () {
+                                    showCitiesBottomSheet(context);
+                                  }),
+                                ],
+                              )
+                            : const SizedBox();
+                      }),
                       label("Address"),
                       customTextField(context,
                           borderRadius: 12.r,
@@ -111,7 +129,6 @@ class AddCheckoutAddressView extends StatelessWidget {
                             }
                           }),
                       SizedBox(height: 8.h),
-
                       GetBuilder<AddCheckoutAddressController>(builder: (vc){
                         return vc.fetchingShippingCharge
                             ? AnimatedTextKit(
@@ -323,6 +340,87 @@ class AddCheckoutAddressView extends StatelessWidget {
                                       Get.back();
                                     },
                                     title: Text(vc.states[index]!.name!),
+                                  ),
+                                  const Divider(height: 0)
+                                ],
+                              );
+                            },
+                          )
+                        : CustomCircularLoader(
+                            color: AppColors.primaryColor,
+                          );
+                  }),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  //
+  showCitiesBottomSheet(BuildContext context) async {
+    if(vc.cities.isEmpty) {
+      vc.getCities();
+    }
+    await showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.0),
+            topRight: Radius.circular(20.0),
+          ),
+        ),
+        builder: (context) {
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.6,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    height: 16.h,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: customTextField(context,
+                        borderRadius: 12.r,
+                        borderColor: const Color(0xffD7DFE9),
+                        hint: "Search Cities",
+                        controller: vc.citySearchTEC, onChanged: (v) {
+                      vc.debounceSearch(isCitySearch: true);
+                    }),
+                  ),
+                  SizedBox(
+                    height: 16.h,
+                  ),
+                  Text(
+                    "Select City",
+                    style: TextStyle(
+                      color: const Color(0xff798397),
+                      fontSize: 14.sp,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 16.h,
+                  ),
+                  GetBuilder<AddCheckoutAddressController>(builder: (vc) {
+                    return !vc.loadingStates
+                        ? CustomListView(
+                            itemCount: vc.cities.length,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return Column(
+                                children: [
+                                  ListTile(
+                                    onTap: () {
+                                      vc.cityTEC.text =
+                                          vc.cities[index].name!;
+                                      vc.selectedCity = vc.cities[index];
+                                      Get.back();
+                                    },
+                                    title: Text(vc.cities[index].name!),
                                   ),
                                   const Divider(height: 0)
                                 ],

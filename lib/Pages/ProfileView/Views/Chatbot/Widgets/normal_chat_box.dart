@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart' hide DateUtils;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../../Constants/app_colors.dart';
 import '../Controllers/chat_screen_controller.dart';
+import 'dart:io';
 
 class NormalChatBox extends StatefulWidget {
   NormalChatBox(
@@ -41,23 +40,63 @@ class _NormalChatBoxState extends State<NormalChatBox> {
           : CrossAxisAlignment.end,
       children: [
 
-        Container(
-          padding:
-          EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
-          margin: EdgeInsets.symmetric(
-              vertical: 8.h,
-              horizontal: 20.w),
-          decoration: getDecoration(),
-          child: Text(
-            widget.message!,
-            style: TextStyle(
-                fontWeight: FontWeight.w300,
-                fontSize: 14.sp,
-                color: Colors.white),
+        GestureDetector(
+          onTap: (){
+            if(widget.message!.contains("contact") && widget.isCurrentUser!)
+             launchUrl(Uri.parse(url()));
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
+            margin: EdgeInsets.symmetric(
+                vertical: 8.h,
+                horizontal: 20.w),
+            decoration: getDecoration(),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.7
+                  ),
+                  child: Text(
+                    widget.message!,
+                    style: TextStyle(
+                        fontWeight: FontWeight.w300,
+                        fontSize: 14.sp,
+                        color: Colors.white),
+                  ),
+                ),
+
+                SizedBox(width: 4.w),
+
+                widget.message!.contains("contact") && widget.isCurrentUser!
+                    ? Container(
+                        padding: EdgeInsets.symmetric(horizontal: 4.w,vertical: 4.h),
+                        decoration: const BoxDecoration(
+                            color: Colors.white, shape: BoxShape.circle),
+                        child: Icon(
+                          Icons.call,
+                          color: AppColors.primaryColor,
+                          size: 16.sp,))
+                    : const SizedBox()
+              ],
+            ),
           ),
         ),
       ],
     );
+  }
+
+  //
+  String url() {
+    if (Platform.isAndroid) {
+      // add the [https]
+      return "https://wa.me/9003821040}"; // new line
+    } else {
+      // add the [https]
+      return "https://api.whatsapp.com/send?phone=9003821040}"; // new line
+    }
   }
 
   //

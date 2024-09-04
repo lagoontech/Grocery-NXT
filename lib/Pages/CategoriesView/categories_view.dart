@@ -1,4 +1,5 @@
 import 'package:animated_search_bar/animated_search_bar.dart';
+import 'package:bounce/bounce.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,7 +7,6 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Pages/AllProductsView/all_products_view.dart';
 import 'package:grocery_nxt/Pages/CategoriesView/Controller/categories_view_controller.dart';
-import 'package:grocery_nxt/Pages/CategoriesView/Widgets/top_curve.dart';
 import 'package:grocery_nxt/Widgets/custom_button.dart';
 import 'package:grocery_nxt/Widgets/custom_circular_loader.dart';
 import '../../Constants/app_colors.dart';
@@ -24,49 +24,49 @@ class CategoriesView extends StatelessWidget {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            backgroundColor: Colors.transparent,
+            backgroundColor: AppColors.primaryColor,
             scrolledUnderElevation: 0,
             title: SizedBox(
               height: 40.h,
-              child: AnimatedSearchBar(
-                label: "                 Categories",
-                  controller: vc.searchTEC,
-                  labelAlignment: Alignment.center,
-                  animationDuration: const Duration(milliseconds: 3000),
-                  duration: const Duration(milliseconds: 3000),
-                  labelStyle: TextStyle(fontSize: 16.sp,color: Colors.white),
-                  searchStyle: TextStyle(color: Colors.black.withOpacity(0.7)),
-                  cursorColor: Colors.black,
-                  textInputAction: TextInputAction.done,
-                  searchIcon: Container(
-                    width: 40.w,
-                    height: 40.h,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                        border: Border.all(color: Colors.grey.shade200)),
-                    child: const Icon(Icons.search),
-                  ),
-                  onChanged: (value) {
-                    vc.searchCategories();
-                  },
-                  onFieldSubmitted: (value) {
-                    debugPrint('value on Field Submitted');
-                  }),
+              child: Padding(
+                padding: EdgeInsets.only(top: 4.h),
+                child: AnimatedSearchBar(
+                    label: "                 Categories",
+                    controller: vc.searchTEC,
+                    labelAlignment: Alignment.center,
+                    animationDuration: const Duration(milliseconds: 3000),
+                    duration: const Duration(milliseconds: 3000),
+                    labelStyle: TextStyle(fontSize: 16.sp,color: Colors.white),
+                    searchStyle: const TextStyle(color: Colors.white),
+                    cursorColor: Colors.white,
+                    textInputAction: TextInputAction.done,
+                    searchDecoration: const InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white)
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white)
+                      ),
+                    ),
+                    searchIcon: Container(
+                      width: 48.w,
+                      height: 48.h,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                          border: Border.all(color: Colors.grey.shade200)),
+                      child: Icon(Icons.search,color: AppColors.primaryColor),
+                    ),
+                    onChanged: (value) {
+                      vc.searchCategories();
+                    },
+                    onFieldSubmitted: (value) {
+                      debugPrint('value on Field Submitted');
+                    }),
+              ),
             ),
             centerTitle: true,
-            actions: [
-              /*Container(
-                width: 40.w,
-                height: 40.h,
-                margin: EdgeInsets.symmetric(horizontal: 16.w),
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
-                    border: Border.all(color: Colors.grey.shade200)),
-                child: const Icon(Icons.search),
-              )*/
-            ],
+            actions: [],
           ),
           body: GetBuilder<CategoriesViewController>(builder: (vc) {
             return vc.loading
@@ -97,12 +97,12 @@ class CategoriesView extends StatelessWidget {
                                   physics: const NeverScrollableScrollPhysics(),
                                   gridDelegate:
                                       SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 2,
+                                          crossAxisCount: 3,
                                           crossAxisSpacing: 8.w,
                                           mainAxisSpacing: 8.h,
                                           mainAxisExtent:
                                               MediaQuery.of(context).size.height *
-                                                  0.20),
+                                                  0.12),
                                   itemBuilder: (context, index) {
                                     var category;
                                     if(vc.searchedCategories.isNotEmpty){
@@ -119,63 +119,71 @@ class CategoriesView extends StatelessWidget {
                                         child: SlideAnimation(
                                           verticalOffset: 50.h,
                                           child: FadeInAnimation(
-                                            child: GestureDetector(
+                                            child: Bounce(
+                                              scaleFactor: 0.9,
                                               onTap: () {
                                                 Get.to(() => AllProductsView(
                                                       category: category,
                                                     ));
                                               },
-                                              child: Container(
-                                                padding: EdgeInsets.only(
-                                                    top: 0.h, left: 0.w, right: 0.w),
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius: BorderRadius.circular(12.r),
-                                                ),
-                                                clipBehavior: Clip.antiAlias,
-                                                child: Stack(
-                                                  children: [
-                                                    CachedNetworkImage(
-                                                      imageUrl: category!.imageUrl ?? "",
-                                                      fit: BoxFit.fitHeight,
-                                                      height: MediaQuery.of(context).size.height * 0.20,
-                                                      errorWidget: (c, w, o) {
-                                                        return Image.asset(
-                                                            "assets/images/gnxt_logo.png");
-                                                      },
-                                                    ),
-                                                    SizedBox(height: 16.h),
-                                                    Align(
-                                                      alignment: Alignment.bottomCenter,
-                                                      child: Container(
-                                                        width: double.infinity,
-                                                        height: MediaQuery.of(context).size.height * 0.04,
-                                                        decoration: BoxDecoration(
-                                                          gradient: LinearGradient(
-                                                              begin: Alignment.bottomCenter,
-                                                              end: Alignment.topCenter,
-                                                              colors: [
-                                                            //AppColors.primaryColor.withOpacity(0.9),
-                                                            //AppColors.primaryColor.withOpacity(0.2)
-                                                                Colors.black.withOpacity(0.8),
-                                                                Colors.black.withOpacity(0.01)
-                                                          ])
+                                              child: Card(
+                                                margin: EdgeInsets.zero,
+                                                elevation: 3,
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius: BorderRadius.circular(12.r),
+                                                  ),
+                                                  clipBehavior: Clip.antiAlias,
+                                                  child: Stack(
+                                                    children: [
+                                                      CachedNetworkImage(
+                                                        imageUrl: category!.imageUrl ?? "",
+                                                        fit: BoxFit.fitHeight,
+                                                        height: MediaQuery.of(context).size.height * 0.20,
+                                                        errorWidget: (c, w, o) {
+                                                          return Image.asset(
+                                                              "assets/images/gnxt_logo.png");
+                                                        },
+                                                      ),
+                                                      SizedBox(height: 16.h),
+                                                      Align(
+                                                        alignment: Alignment.bottomCenter,
+                                                        child: Container(
+                                                          width: double.infinity,
+                                                          height: MediaQuery.of(context).size.height * 0.04,
+                                                          decoration: BoxDecoration(
+                                                            gradient: LinearGradient(
+                                                                begin: Alignment.bottomCenter,
+                                                                end: Alignment.topCenter,
+                                                                colors: [
+                                                              //AppColors.primaryColor.withOpacity(0.9),
+                                                              //AppColors.primaryColor.withOpacity(0.2)
+                                                                  Colors.black.withOpacity(0.9),
+                                                                  Colors.black.withOpacity(0.01)
+                                                            ])
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                    Align(
-                                                      alignment: Alignment.bottomCenter,
-                                                      child: Padding(
-                                                        padding: EdgeInsets.only(bottom: 6.h),
-                                                        child: Text(
-                                                          category.name!.toUpperCase(),
-                                                          textAlign: TextAlign.center,
-                                                          maxLines: 2,
-                                                          style: TextStyle(fontSize: 11.sp,color: Colors.white),
+                                                      Align(
+                                                        alignment: Alignment.bottomCenter,
+                                                        child: Padding(
+                                                          padding: EdgeInsets.only(bottom: 6.h),
+                                                          child: Text(
+                                                            category.name!.toUpperCase(),
+                                                            textAlign: TextAlign.center,
+                                                            maxLines: 2,
+                                                            style: TextStyle(
+                                                                fontSize: 9.sp,
+                                                                color: Colors.white,
+                                                                fontWeight: FontWeight.bold,
+                                                                fontFamily: "roboto"
+                                                            ),
+                                                          ),
                                                         ),
-                                                      ),
-                                                    )
-                                                  ],
+                                                      )
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                             ),
@@ -191,7 +199,7 @@ class CategoriesView extends StatelessWidget {
           }),
         ),
 
-        TopCurve()
+        //TopCurve()
 
       ],
     );

@@ -30,7 +30,7 @@ class BottomBar extends StatelessWidget {
             children: [
               Container(
                 width: MediaQuery.of(context).size.width,
-                height: 60.h,
+                height: 48.h,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   boxShadow: [
@@ -83,8 +83,8 @@ class BottomBar extends StatelessWidget {
                                     backgroundColor: AppColors.secondaryColor,
                                     label: Text(vc.totalProducts.toString()),
                                     child: Container(
-                                      width: 44.w,
-                                      height: 44.w,
+                                      width: 40.w,
+                                      height: 40.w,
                                       decoration: BoxDecoration(
                                           shape: BoxShape.circle,
                                           color: AppColors.primaryColor),
@@ -97,8 +97,8 @@ class BottomBar extends StatelessWidget {
                                         ),
                                         icon: Image.asset(
                                           "assets/icons/basket.png",
-                                          width: 20.w,
-                                          height: 20.w,
+                                          width: 16.w,
+                                          height: 16.w,
                                         ),
                                       ),
                                     ),
@@ -152,8 +152,8 @@ class BottomBar extends StatelessWidget {
           child: Center(
             child:
             SizedBox(
-                width: 24.w,
-                height: 24.w,
+                width: 16.w,
+                height: 16.w,
                 child: Center(child: child)),
           ),
         ),

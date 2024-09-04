@@ -23,7 +23,8 @@ class ProductDetailsModel {
         required this.settingText,
         required this.userRatedAlready,
         this.productDeliveryOption,
-      this.variantInfo});
+        this.variantInfo,
+        this.coupons});
 
   ProductDetailsModelProduct? product;
   dynamic productUrl;
@@ -44,6 +45,7 @@ class ProductDetailsModel {
   SettingText? settingText;
   dynamic userRatedAlready;
   List<ProductDeliveryOption>? productDeliveryOption;
+  CouponCode ?coupons;
 
   factory ProductDetailsModel.fromJson(Map<String, dynamic> json) =>
       ProductDetailsModel(
@@ -88,6 +90,7 @@ class ProductDetailsModel {
             ? null
             : List<ProductDeliveryOption>.from(json["product_delivery_option"]
             .map((x) => ProductDeliveryOption.fromJson(x))),
+        coupons: json["overallcouponcode"] != null ? CouponCode.fromJson(json["overallcouponcode"]) : null
       );
 }
 
@@ -937,6 +940,33 @@ class Vendor {
       vendorAddress: VendorAddress.fromJson(json["vendor_address"]),
       createdAt: DateTime.parse(json["created_at"]),
       image: json["image"]);
+}
+
+class CouponCode{
+
+  CouponCode({
+    this.allcategorycouponcode,
+    this.allsubcategorycouponcode,
+    this.allproductcouponcode,
+    this.customercouponcode,
+    this.allcouponcode
+});
+
+  String ?allcouponcode;
+  String ?allcategorycouponcode;
+  String ?allsubcategorycouponcode;
+  String ?allproductcouponcode;
+  String ?customercouponcode;
+
+  factory CouponCode.fromJson(Map<String, dynamic> json) {
+    return CouponCode(
+      allcouponcode:            json['allcouponcode'],
+      allcategorycouponcode:    json['allcategorycouponcode'],
+      allsubcategorycouponcode: json['allsubcategorycouponcode'],
+      allproductcouponcode:     json['allproductcouponcode'],
+      customercouponcode:       json['customercouponcode'],
+    );
+  }
 }
 
 class ProductElement {

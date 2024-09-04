@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:grocery_nxt/Pages/DashBoardView/Controller/dashboard_controller.dart';
 import 'package:lottie/lottie.dart';
 import '../../Widgets/custom_button.dart';
 
 class PaymentSuccess extends StatelessWidget {
-  const PaymentSuccess({super.key});
+  PaymentSuccess({super.key});
+
+  DashboardController dc = Get.find<DashboardController>();
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +41,7 @@ class PaymentSuccess extends StatelessWidget {
           CustomButton(
               onTap: (){
                 Get.back();
+                dc.changePage(0);
               },
               child: const Text(
                 "Continue Shopping",

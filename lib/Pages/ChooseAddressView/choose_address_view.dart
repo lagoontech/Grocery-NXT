@@ -6,6 +6,7 @@ import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/AddCheckoutAddressView/add_checkout_address_view.dart';
 import 'package:grocery_nxt/Pages/ChooseAddressView/Controller/choose_address_controller.dart';
 import 'package:grocery_nxt/Pages/Payment%20Screen/payment_screen.dart';
+import 'package:grocery_nxt/Pages/ProfileView/Views/ViewProfile/view_address.dart';
 import 'package:grocery_nxt/Utils/toast_util.dart';
 import 'package:grocery_nxt/Widgets/custom_appbar.dart';
 import 'package:grocery_nxt/Widgets/custom_circular_loader.dart';
@@ -55,63 +56,68 @@ class ChooseAddressView extends StatelessWidget {
                                   itemCount: vc.addresses.length,
                                   itemBuilder: (context, index) {
                                     var address = vc.addresses[index];
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                          border: Border(
-                                              bottom: BorderSide(
-                                                  color: Colors.grey.shade100),
-                                              top: BorderSide(color: Colors.grey.shade100))),
-                                      child: ListTile(
-                                        leading: Container(
-                                          width: 55.w,
-                                          height: 55.w,
-                                          padding: EdgeInsets.all(0.4.w),
-                                          decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(12.r),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                    color: Colors.black
-                                                        .withOpacity(0.2),
-                                                    blurRadius: 2)
-                                              ]),
-                                          child: Image.asset(
-                                              "assets/images/map.png"),
-                                        ),
-                                        title: Text(
-                                          address.name,
-                                          style: TextStyle(
-                                            color: AppColors.primaryColor,
-                                            fontSize: 14.sp,
-                                            fontWeight: FontWeight.w600,
+                                    return GestureDetector(
+                                      onTap: (){
+                                        Get.to(()=> ViewAddress(selectedAddress: address));
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            border: Border(
+                                                bottom: BorderSide(
+                                                    color: Colors.grey.shade100),
+                                                top: BorderSide(color: Colors.grey.shade100))),
+                                        child: ListTile(
+                                          leading: Container(
+                                            width: 55.w,
+                                            height: 55.w,
+                                            padding: EdgeInsets.all(0.4.w),
+                                            decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(12.r),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                      color: Colors.black
+                                                          .withOpacity(0.2),
+                                                      blurRadius: 2)
+                                                ]),
+                                            child: Image.asset(
+                                                "assets/images/map.png"),
                                           ),
+                                          title: Text(
+                                            address.name,
+                                            style: TextStyle(
+                                              color: AppColors.primaryColor,
+                                              fontSize: 14.sp,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                          subtitle: Text(
+                                            address.address!,
+                                            maxLines: 2,
+                                            style: TextStyle(
+                                                color: Colors.grey.shade400,
+                                                fontSize: 12.sp,
+                                                overflow:
+                                                    TextOverflow.ellipsis),
+                                          ),
+                                          trailing: !fromProfile!
+                                              ? Radio(
+                                                  value: address.id,
+                                                  groupValue:
+                                                      vc.selectedAddressId,
+                                                  onChanged: (v) {
+                                                    vc.selectedAddressId = v;
+                                                    vc.selectedAddress = vc
+                                                        .addresses
+                                                        .firstWhere((element) =>
+                                                            element.id ==
+                                                            vc.selectedAddressId);
+                                                    vc.update();
+                                                    vc.getShippingCharge();
+                                                  })
+                                              : const SizedBox(),
                                         ),
-                                        subtitle: Text(
-                                          address.address!,
-                                          maxLines: 2,
-                                          style: TextStyle(
-                                              color: Colors.grey.shade400,
-                                              fontSize: 12.sp,
-                                              overflow:
-                                                  TextOverflow.ellipsis),
-                                        ),
-                                        trailing: !fromProfile!
-                                            ? Radio(
-                                                value: address.id,
-                                                groupValue:
-                                                    vc.selectedAddressId,
-                                                onChanged: (v) {
-                                                  vc.selectedAddressId = v;
-                                                  vc.selectedAddress = vc
-                                                      .addresses
-                                                      .firstWhere((element) =>
-                                                          element.id ==
-                                                          vc.selectedAddressId);
-                                                  vc.update();
-                                                  vc.getShippingCharge();
-                                                })
-                                            : const SizedBox(),
                                       ),
                                     );
                                   }),
@@ -192,8 +198,8 @@ class ChooseAddressView extends StatelessWidget {
                         children: [
                           SummaryItem(
                               title: "Items Total",
-                              value: "\u{20B9} ${cc.total}"),
-                          SummaryItem(title: "Coupon Discount", value: "0"),
+                              value: "\u{20B9} ${cc.subTotal}"),
+                          SummaryItem(title: "Coupon Discount", value: cc.couponAmount.toString()),
                           SummaryItem(title: "Tax", value: "0"),
                           SummaryItem(
                               title: "Shipping Charge",
@@ -209,7 +215,7 @@ class ChooseAddressView extends StatelessWidget {
                           ),
                           SummaryItem(
                               title: "Total",
-                              value: "\u{20B9} ${vc.finalTotal}"),
+                              value: "\u{20B9} ${cc.total}"),
                           SizedBox(height: 12.h),
                           SizedBox(
                             width: MediaQuery.of(context).size.width * 0.8,

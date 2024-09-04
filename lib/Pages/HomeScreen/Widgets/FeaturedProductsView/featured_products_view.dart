@@ -22,7 +22,7 @@ class FeaturedProductsView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 16.h),
+                padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 8.h),
                 child: Row(
                   children: [
 
@@ -86,8 +86,9 @@ class FeaturedProductsView extends StatelessWidget {
                       }),
                 ),
               ),
+
             ],
-          ):SizedBox();
+          ): const SizedBox();
         }
     );
   }
