@@ -6,6 +6,7 @@ import '../../Widgets/custom_button.dart';
 import '../../Widgets/custom_circular_loader.dart';
 import '../../Widgets/custom_list_view.dart';
 import '../../Widgets/custom_textfield.dart';
+import '../AddCheckoutAddressView/Controller/checkout_address_controller.dart';
 import 'Controller/register_controller.dart';
 
 class Register extends StatelessWidget {
@@ -35,6 +36,7 @@ class Register extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20.h),
+
               customTextField(
                 context,
                 hint: "Name",
@@ -42,7 +44,9 @@ class Register extends StatelessWidget {
                 borderColor: AppColors.primaryColor,
                 controller: rc.nameTEC,
               ),
+
               SizedBox(height: 12.h),
+
               customTextField(
                 context,
                 hint: "Email",
@@ -50,7 +54,9 @@ class Register extends StatelessWidget {
                 borderColor: AppColors.primaryColor,
                 controller: rc.emailTEC,
               ),
+
               SizedBox(height: 12.h),
+
               customTextField(
                 context,
                 hint: "Password",
@@ -70,42 +76,69 @@ class Register extends StatelessWidget {
                 textInputType: TextInputType.phone,
                 controller: rc.phoneTEC,
               ),
+
               SizedBox(height: 12.h),
+
               customTextField(
                 context,
-                hint: "City",
+                hint: "State",
                 readOnly: true,
                 onTap: () {
-                  showCitiesBottomSheet(context);
+                  showStatesBottomSheet(context);
                 },
                 fillColor: AppColors.primaryColor.withOpacity(0.01),
                 borderColor: AppColors.primaryColor,
-                controller: rc.cityTEC,
+                controller: rc.stateTEC,
               ),
+
               SizedBox(height: 12.h),
+
+              rc.selectedState!=null?Column(
+                children: [
+
+                  customTextField(
+                    context,
+                    hint: "City",
+                    readOnly: true,
+                    onTap: () {
+                      showCitiesBottomSheet(context);
+                    },
+                    fillColor: AppColors.primaryColor.withOpacity(0.01),
+                    borderColor: AppColors.primaryColor,
+                    controller: rc.cityTEC,
+                  ),
+
+                  SizedBox(height: 12.h),
+
+                ],
+              ): const SizedBox(),
+
               customTextField(
                 context,
                 hint: "Zipcode",
-                readOnly: true,
+                textInputType: TextInputType.number,
                 onTap: () {
                   showCitiesBottomSheet(context);
                 },
                 fillColor: AppColors.primaryColor.withOpacity(0.01),
                 borderColor: AppColors.primaryColor,
-                controller: rc.cityTEC,
+                controller: rc.zipcodeTEC,
               ),
+
+              SizedBox(height: 12.h),
+
+              customTextField(
+                context,
+                hint: "Address",
+                fillColor: AppColors.primaryColor.withOpacity(0.01),
+                borderColor: AppColors.primaryColor,
+                controller: rc.addressTEC,
+              ),
+
               GetBuilder<RegisterController>(
                 builder: (vc) {
                   return vc.isVendor?Column(
                     children: [
-                      SizedBox(height: 12.h),
-                      customTextField(
-                        context,
-                        hint: "Address",
-                        fillColor: AppColors.primaryColor.withOpacity(0.01),
-                        borderColor: AppColors.primaryColor,
-                        controller: rc.addressTEC,
-                      ),
                       SizedBox(height: 12.h),
                       customTextField(
                         context,
@@ -164,6 +197,7 @@ class Register extends StatelessWidget {
               ),
 
               SizedBox(height: 24.h),
+
               GetBuilder<RegisterController>(builder: (vc) {
                 return CustomButton(
                   width: MediaQuery.of(context).size.width * 0.8,
@@ -194,7 +228,87 @@ class Register extends StatelessWidget {
   }
 
   //
+  showStatesBottomSheet(BuildContext context) async {
+    rc.getStates();
+    await showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.0),
+            topRight: Radius.circular(20.0),
+          ),
+        ),
+        builder: (context) {
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.6,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    height: 16.h,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: customTextField(context,
+                        borderRadius: 12.r,
+                        borderColor: const Color(0xffD7DFE9),
+                        hint: "Search State",
+                        controller: rc.stateSearchTEC, onChanged: (v) {
+                          rc.debounceSearch(isStateSearch: true);
+                        }),
+                  ),
+                  SizedBox(
+                    height: 16.h,
+                  ),
+                  Text(
+                    "Select State",
+                    style: TextStyle(
+                      color: const Color(0xff798397),
+                      fontSize: 14.sp,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 16.h,
+                  ),
+                  GetBuilder<RegisterController>(builder: (vc) {
+                    return !vc.loadingStates
+                        ? CustomListView(
+                      itemCount: vc.states.length,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            ListTile(
+                              onTap: () {
+                                vc.stateTEC.text =
+                                vc.states[index]!.name!;
+                                vc.selectedState = vc.states[index];
+                                Get.back();
+                              },
+                              title: Text(vc.states[index]!.name!),
+                            ),
+                            const Divider(height: 0)
+                          ],
+                        );
+                      },
+                    )
+                        : CustomCircularLoader(
+                      color: AppColors.primaryColor,
+                    );
+                  }),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  //
   showCitiesBottomSheet(BuildContext context) async {
+    rc.getCities();
     await showModalBottomSheet(
         context: context,
         isScrollControlled: true,

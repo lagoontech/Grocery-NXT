@@ -15,7 +15,7 @@ class FeaturedCategory3 extends StatelessWidget {
     return GetBuilder<HomeController>(
         id: "category_3",
         builder: (vc) {
-          return vc.subcategories1.isNotEmpty?Container(
+          return vc.subcategories3.isNotEmpty?Container(
             width: MediaQuery.of(context).size.width,
             margin: EdgeInsets.only(top: 12.h,bottom: 12.h),
             padding: EdgeInsets.symmetric(horizontal: 16.w),

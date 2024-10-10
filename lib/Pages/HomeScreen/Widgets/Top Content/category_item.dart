@@ -2,7 +2,9 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/home_controller.dart';
 import 'package:grocery_nxt/Pages/SwiggyView/swiggy_view.dart';
@@ -39,7 +41,9 @@ class CategoryItem extends StatelessWidget {
             offset: Offset(0, offsetY),
             child: Column(
               children: [
-                Expanded(
+                Flexible(
+                  fit: FlexFit.tight,
+                  flex: 4,
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width*0.25,
                     child: AnimatedContainer(
@@ -56,28 +60,36 @@ class CategoryItem extends StatelessWidget {
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                         ),
-                        padding: EdgeInsets.all(4.w),
-                        child: ClipRRect(
+                        padding: EdgeInsets.all(12.w),
+                        child: category!.imageUrl!=null?ClipRRect(
                           borderRadius: BorderRadius.circular(60.r),
-                          child: CachedNetworkImage(
+                          child: !category!.imageUrl!.contains(".svg")?CachedNetworkImage(
                               imageUrl: category!.imageUrl??"",
                               fit: BoxFit.fill,
-                          ),
+                          ) : SvgPicture.network(
+                              category!.imageUrl!,
+                              fit: BoxFit.fill)
+                        ) : ClipRRect(
+                          borderRadius: BorderRadius.circular(60.r),
+                          child: Image.asset("assets/images/gnxt_logo.png"),
                         ),
                       ),
                     ),
                   ),
                 ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width*0.20,
-                  child: Center(
-                    child: Text(category!.name??"",
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      style: TextStyle(
-                          fontSize: 10.sp,
-                          fontWeight: FontWeight.w600,
-                      ),),
+                Expanded(
+                  flex: 2,
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width*0.22,
+                    child: Center(
+                      child: Text(category!.name??"",
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        style: TextStyle(
+                            fontSize: 9.sp,
+                            fontWeight: FontWeight.w600,
+                        ),),
+                    ),
                   ),
                 )
               ],

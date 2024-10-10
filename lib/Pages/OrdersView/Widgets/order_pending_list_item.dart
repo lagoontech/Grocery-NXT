@@ -16,6 +16,7 @@ class OrderPendingListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return GestureDetector(
       onTap: () async {
         var result =
@@ -35,6 +36,7 @@ class OrderPendingListItem extends StatelessWidget {
         margin: EdgeInsets.symmetric(horizontal: 24.w, vertical: 10.h),
         child: Row(
           children: [
+
             Container(
               width: 70.w,
               height: 70.w,
@@ -50,8 +52,7 @@ class OrderPendingListItem extends StatelessWidget {
                   itemBuilder: (context, index) {
                     var image = order!.orderItem![index].product!.image;
                     return CachedNetworkImage(
-                      imageUrl:
-                      "https://grocerynxt.ltcloud247.com/assets/uploads/media-uploader/${image!.path}",
+                      imageUrl: "https://grocerynxt.com/assets/uploads/media-uploader/${image!.path}",
                       width: 35.w,
                     );
                   })
@@ -68,21 +69,23 @@ class OrderPendingListItem extends StatelessWidget {
                     var image = order!.orderItem![index].product!.image;
                     return CachedNetworkImage(
                         imageUrl:
-                        "https://grocerynxt.ltcloud247.com/assets/uploads/media-uploader/${image!.path}");
+                        "https://grocerynxt.com/assets/uploads/media-uploader/${image!.path}");
                   })
                   : CachedNetworkImage(
                   imageUrl:
-                  "https://grocerynxt.ltcloud247.com/assets/uploads/media-uploader/${order!.orderItem![0].product!.image!.path}"),
+                  "https://grocerynxt.com/assets/uploads/media-uploader/${order!.orderItem![0].product!.image!.path}"),
             ),
+
             SizedBox(
               width: 16.w,
             ),
+
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Text("#${order!.order!.invoiceNumber}"),
+                  Text("#${order!.order!.id}"),
                   Text(
                     order!.orderItem![0].product!.name.toString(),
                     maxLines: 1,
@@ -104,11 +107,12 @@ class OrderPendingListItem extends StatelessWidget {
                   )
                       : const SizedBox(),
                   Text(
-                    "\u{20B9} ${double.parse(order!.totalAmount!).toStringAsFixed(0)}",
+                    "\u{20B9} ${(double.parse(order!.totalAmount!) + double.parse(order!.shippingCost!)).toStringAsFixed(0)}",
                   )
                 ],
               ),
             ),
+
             /*Align(
               alignment: Alignment.bottomRight,
               child: Padding(
@@ -123,6 +127,7 @@ class OrderPendingListItem extends StatelessWidget {
                 ),
               ),
             )*/
+
           ],
         ),
       ),

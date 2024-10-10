@@ -1,12 +1,11 @@
 import 'package:add_to_cart_animation/add_to_cart_animation.dart';
-import 'package:add_to_cart_animation/add_to_cart_icon.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
+import 'package:grocery_nxt/Pages/HomeScreen/Controller/home_controller.dart';
 import 'package:grocery_nxt/Pages/ProductsSearchScreen/Widgets/searched_product.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -19,12 +18,14 @@ import '../HomeScreen/Widgets/HomeProductsView/curved_cart_add_container.dart';
 import 'Controller/products_search_controller.dart';
 
 class ProductsSearchScreen extends StatelessWidget {
+
   ProductsSearchScreen({super.key});
 
   ProductsSearchController vc = Get.put(ProductsSearchController());
 
   @override
   Widget build(BuildContext context) {
+
     return AddToCartAnimation(
       cartKey: vc.cartIconKey,
       height: 30,
@@ -57,7 +58,11 @@ class ProductsSearchScreen extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: TextFormField(
+                      focusNode: vc.focusNode,
                       controller: vc.searchTEC,
+                      onChanged: (v){
+                        vc.listenToSearch();
+                      },
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(horizontal: 4.w,vertical: 4.h),
                         hintText: "Search Products",
@@ -83,7 +88,95 @@ class ProductsSearchScreen extends StatelessWidget {
               ),
             ),
 
-            SliverToBoxAdapter(
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 16.h),
+
+                GetBuilder<ProductsSearchController>(
+                  builder: (vc) {
+                    return vc.suggestedCategories.isNotEmpty
+                        ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Updated header text with better style and spacing
+                        Text(
+                          "Suggested Categories",
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87,
+                          ),
+                        ),
+
+                        SizedBox(height: 8.h),
+
+                        SizedBox(
+                          height: 40.h,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: vc.suggestedCategories.length,
+                            itemBuilder: (context, index) {
+                              var category = vc.suggestedCategories[index];
+                              bool isSelected = vc.selectedCategory == category;
+
+                              return GestureDetector(
+                                onTap: () {
+                                  vc.selectedCategory = category;
+                                  vc.searchProducts(isRefresh: true);
+                                  vc.update();
+                                },
+                                child: AnimatedContainer(
+                                  duration: Duration(milliseconds: 200), // Smooth transition on selection
+                                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                                  margin: EdgeInsets.symmetric(horizontal: 6.w),
+                                  decoration: BoxDecoration(
+                                    color: isSelected ? AppColors.primaryColor : Colors.white,
+                                    border: Border.all(color: AppColors.primaryColor.withOpacity(0.8)),
+                                    borderRadius: BorderRadius.circular(20.r),
+                                    boxShadow: isSelected
+                                        ? [
+                                      BoxShadow(
+                                        color: AppColors.primaryColor.withOpacity(0.3),
+                                        offset: Offset(0, 4),
+                                        blurRadius: 8,
+                                      ),
+                                    ]
+                                        : [],
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      category.name!,
+                                      style: TextStyle(
+                                        color: isSelected ? Colors.white : AppColors.primaryColor,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14.sp,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    )
+                        : SizedBox.shrink(); // Replaced SizedBox() with SizedBox.shrink() for cleaner code
+                  },
+                ),
+
+                SizedBox(height: 20.h), // Extra space for padding at the bottom
+              ],
+            ),
+          ),
+        ),
+
+
+        SliverToBoxAdapter(
               child: Column(
                 children: [
 

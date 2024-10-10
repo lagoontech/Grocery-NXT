@@ -22,6 +22,7 @@ class OrderDetailsController extends GetxController{
   bool statusChanged   = false;
   bool updatingPayment = false;
   ProfileController profileController = Get.find<ProfileController>();
+  DateTime ?expectedDeliveryDate;
 
   //
   getOrderDetails() async {
@@ -67,24 +68,26 @@ class OrderDetailsController extends GetxController{
     }
     isRating = false;
     update();
+    
   }
 
   //
   processPayment(){
 
-    double amount = double.parse(orderDetails!.order![0].totalAmount!);
+    double amount = double.parse(orderDetails!.order![0].totalAmount!) + double.parse(orderDetails!.order![0].shippingCost!);
     var options = {
       'key': 'rzp_live_RKDSnxuUFaUL7h',
-      'amount': 100,//int.parse(amount.toStringAsFixed(0))*100,//totalAmount*100,
+      'amount': int.parse(amount.toStringAsFixed(0))*100,//totalAmount*100,
       'reference_id': orderId.toString(),
       'name': '',
       'description': '',
       'prefill': {
-        'contact': '8888888888',
-        'email': 'test@razorpay.com'
+        'contact': profileController.profile!.userDetails!.phone!,
+        'email': profileController.profile!.userDetails!.email!
       }
     };
     razorpay.open(options);
+
   }
 
   //

@@ -19,24 +19,29 @@ import 'package:grocery_nxt/Utils/toast_util.dart';
 import 'package:http/http.dart' as http;
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:uuid/uuid.dart';
+import '../../ProfileView/Controller/profile_controller.dart';
 
 class PaymentController extends GetxController {
-  bool loadingPaymentOptions = false;
-  List<PaymentOption> options = [];
+
+  bool loadingPaymentOptions                = false;
+  List<PaymentOption> options               = [];
   PaymentOption? selectedOption;
-  CartController cartController = Get.find<CartController>();
-  OrderController orderController = Get.find<OrderController>();
+  CartController cartController             = Get.find<CartController>();
+  OrderController orderController           = Get.find<OrderController>();
   ChooseAddressController addressController = Get.find<ChooseAddressController>();
-  bool isPlacingOrder = false;
+  ProfileController profileController       = Get.find<ProfileController>();
+  bool isPlacingOrder    = false;
   int ?orderId;
   dynamic totalAmount;
-  var razorpay = Razorpay();
+  var razorpay           = Razorpay();
   OrderSuccessResponse ?successResponse;
   String ?transactionId;
   bool confirmingPayment = false;
+  bool paid              = false;
 
   //
   loadPaymentOptions() async {
+
     loadingPaymentOptions = true;
     update();
     try {
@@ -59,6 +64,7 @@ class PaymentController extends GetxController {
     }
     loadingPaymentOptions = false;
     update();
+
   }
 
   //
@@ -84,9 +90,8 @@ class PaymentController extends GetxController {
       request.fields.addAll({
         'full_name': addressController.selectedAddress!.name,
         'note': "",
-        'phone': "9080761312",
-        'cart_items':
-            jsonEncode(cart_post),
+        'phone': profileController.profile!.userDetails!.phone!,
+        'cart_items': jsonEncode(cart_post),
         'selected_payment_gateway': selectedOption!.name!,
         'country_id': "70",
         'state_id': addressController.selectedAddress!.stateId.toString(),
@@ -95,11 +100,15 @@ class PaymentController extends GetxController {
         'shipping_cost': addressController.shippingCharge.toString(),
         'address': addressController.selectedAddress!.address!,
         'agree': 'on',
-        'coupon': ''
+        'city': addressController.selectedAddress!.city!=null
+            ? addressController.selectedAddress!.city!.id.toString()
+            : "",
+        'coupon': cartController.couponController.text
       });
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();
        await response.stream.bytesToString().then((value) async {
+         print(value);
          if(response.statusCode==200) {
            orderId     = jsonDecode(value)["order_id"];
            totalAmount = jsonDecode(value)["total_amount"];
@@ -108,13 +117,13 @@ class PaymentController extends GetxController {
              Future.delayed(const Duration(milliseconds: 10),(){
                var options = {
                  'key': 'rzp_live_RKDSnxuUFaUL7h',
-                 'amount': 100,//totalAmount*100,
+                 'amount': totalAmount * 100,
                  'reference_id': orderId.toString(),
                  'name': '',
-                 'description': '',
+                 'description': orderId.toString(),
                  'prefill': {
-                   'contact': '8888888888',
-                   'email': 'test@razorpay.com'
+                   'contact': profileController.profile!.userDetails!.phone!,
+                   'email': profileController.profile!.userDetails!.email!,
                  }
                };
                razorpay.open(options);
@@ -138,10 +147,11 @@ class PaymentController extends GetxController {
     }
     isPlacingOrder = false;
     update();
+
   }
 
   //
-  updatePaymentStatus()async{
+  updatePaymentStatus() async{
 
     confirmingPayment = true;
     update();
@@ -154,6 +164,7 @@ class PaymentController extends GetxController {
           insertHeader: true
       );
       if(result is http.Response){
+        log(result.body);
         if(result.statusCode==200){
           confirmingPayment = false;
           update();
@@ -169,11 +180,12 @@ class PaymentController extends GetxController {
           print(result.body);
         }
       }
-    }catch(e){
+    } catch(e){
       confirmingPayment = false;
     }
     confirmingPayment = false;
     update();
+
   }
 
   //
@@ -211,7 +223,7 @@ class PaymentController extends GetxController {
             Get.to(()=> PaymentFailed(
               successResponse: successResponse,
               orderId: orderId,
-              amount: totalAmount,
+              amount: int.parse(totalAmount.toString()),
               subTotal: cartController.subTotal.toInt(),
             ));
           });

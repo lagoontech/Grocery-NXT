@@ -18,20 +18,21 @@ class ShippingAddressListModel {
 
 class ShippingAddress {
   ShippingAddress({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.phone,
-    required this.userId,
-    required this.countryId,
-    required this.stateId,
-    required this.city,
-    required this.zipCode,
-    required this.address,
-    required this.shippingAddressName,
-    required this.getStates,
-    required this.country,
-    required this.state,
+    this.id,
+    this.name = "",
+    this.email = "",
+    this.phone = "",
+     this.userId,
+     this.countryId,
+     this.stateId,
+    this.city,
+     this.zipCode,
+    this.address,
+     this.shippingAddressName,
+     this.getStates,
+    this.country,
+    this.state,
+    this.deletingAddress = false,
   });
 
   dynamic id;
@@ -45,9 +46,10 @@ class ShippingAddress {
   String? zipCode;
   String? address;
   String? shippingAddressName;
-  List<GetState> getStates;
+  List<GetState> ?getStates;
   Country? country;
   Country? state;
+  bool ?deletingAddress;
 
   factory ShippingAddress.fromJson(Map<String, dynamic> json) => ShippingAddress(
     id: json["id"],

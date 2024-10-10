@@ -170,6 +170,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "easy_stepper",
+      "rootUri": "file:///Users/lagoontech/.pub-cache/hosted/pub.dev/easy_stepper-0.8.5+1",
+      "packageUri": "lib/",
+      "languageVersion": "2.16"
+    },
+    {
       "name": "eventify",
       "rootUri": "file:///Users/lagoontech/.pub-cache/hosted/pub.dev/eventify-1.0.1",
       "packageUri": "lib/",
@@ -201,7 +207,7 @@
     },
     {
       "name": "flutter",
-      "rootUri": "file:///Users/lagoontech/Downloads/flutter%203/packages/flutter",
+      "rootUri": "file:///Users/lagoontech/downloads/flutter%203/packages/flutter",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -255,13 +261,13 @@
     },
     {
       "name": "flutter_test",
-      "rootUri": "file:///Users/lagoontech/Downloads/flutter%203/packages/flutter_test",
+      "rootUri": "file:///Users/lagoontech/downloads/flutter%203/packages/flutter_test",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "flutter_web_plugins",
-      "rootUri": "file:///Users/lagoontech/Downloads/flutter%203/packages/flutter_web_plugins",
+      "rootUri": "file:///Users/lagoontech/downloads/flutter%203/packages/flutter_web_plugins",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -279,7 +285,7 @@
     },
     {
       "name": "google_fonts",
-      "rootUri": "file:///Users/lagoontech/.pub-cache/hosted/pub.dev/google_fonts-4.0.4",
+      "rootUri": "file:///Users/lagoontech/.pub-cache/hosted/pub.dev/google_fonts-6.2.0",
       "packageUri": "lib/",
       "languageVersion": "2.14"
     },
@@ -291,9 +297,9 @@
     },
     {
       "name": "http",
-      "rootUri": "file:///Users/lagoontech/.pub-cache/hosted/pub.dev/http-0.13.6",
+      "rootUri": "file:///Users/lagoontech/.pub-cache/hosted/pub.dev/http-1.2.2",
       "packageUri": "lib/",
-      "languageVersion": "2.19"
+      "languageVersion": "3.3"
     },
     {
       "name": "http_parser",
@@ -363,7 +369,7 @@
     },
     {
       "name": "lottie",
-      "rootUri": "file:///Users/lagoontech/.pub-cache/hosted/pub.dev/lottie-3.0.0",
+      "rootUri": "file:///Users/lagoontech/.pub-cache/hosted/pub.dev/lottie-3.1.2",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -384,6 +390,12 @@
       "rootUri": "file:///Users/lagoontech/.pub-cache/hosted/pub.dev/material_color_utilities-0.8.0",
       "packageUri": "lib/",
       "languageVersion": "2.17"
+    },
+    {
+      "name": "material_segmented_control",
+      "rootUri": "file:///Users/lagoontech/.pub-cache/hosted/pub.dev/material_segmented_control-5.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
     },
     {
       "name": "meta",
@@ -603,7 +615,7 @@
     },
     {
       "name": "sky_engine",
-      "rootUri": "file:///Users/lagoontech/Downloads/flutter%203/bin/cache/pkg/sky_engine",
+      "rootUri": "file:///Users/lagoontech/downloads/flutter%203/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -848,7 +860,7 @@
       "languageVersion": "3.3"
     }
   ],
-  "generated": "2024-08-28T12:06:21.000585Z",
+  "generated": "2024-10-10T05:15:58.596216Z",
   "generator": "pub",
   "generatorVersion": "3.3.0"
 }

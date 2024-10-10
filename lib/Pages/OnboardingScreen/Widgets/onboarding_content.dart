@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -16,8 +17,9 @@ class OnboardingContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isIpad = MediaQuery.of(context).size.width >600;
+    print(isIpad);
     return Container(
-      height: MediaQuery.of(context).size.height*0.6,
       decoration: BoxDecoration(
         gradient: RadialGradient(
           colors: [
@@ -44,22 +46,22 @@ class OnboardingContent extends StatelessWidget {
             ),
           ),
 
-          SizedBox(height: 20.h),
+          SizedBox(height: isIpad?8.h:20.h),
 
           SizedBox(
               width: MediaQuery.of(context).size.width*0.8,
-              child: AutoSizeText(
+              child: Text(
                 "Get your groceries delivered to your home",
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 style: TextStyle(
-                    fontSize: 22.sp,
+                    fontSize: isIpad?16.sp:22.sp,
                     fontWeight: FontWeight.w700
                 ),
               )
           ),
 
-          SizedBox(height: 20.h),
+          SizedBox(height: isIpad?8.h:20.h),
 
           SizedBox(
               width: MediaQuery.of(context).size.width*0.7,
@@ -77,8 +79,7 @@ class OnboardingContent extends StatelessWidget {
 
           GetBuilder<OnboardingController>(
             builder: (vc) {
-              return SizedBox(
-                  height: 60.h);
+              return SizedBox(height: isIpad?20.h:60.h);
             }
           ),
 
@@ -95,7 +96,7 @@ class OnboardingContent extends StatelessWidget {
                 },
               );
             }
-          )
+          ),
 
         ],
       ),

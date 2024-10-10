@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/ChooseAddressView/choose_address_view.dart';
-import 'package:grocery_nxt/Pages/Help_center/HelpCenter_view.dart';
 import 'package:grocery_nxt/Pages/LoginScreen/login_screen.dart';
 import 'package:grocery_nxt/Pages/ProfileView/Controller/profile_controller.dart';
 import 'package:grocery_nxt/Pages/ProfileView/Views/Chatbot/chat_screen.dart';
@@ -13,22 +13,30 @@ import 'package:grocery_nxt/Utils/shared_pref_utils.dart';
 import 'package:grocery_nxt/Widgets/custom_button.dart';
 import 'package:grocery_nxt/Widgets/custom_circular_loader.dart';
 import 'package:lottie/lottie.dart';
-
+import 'package:url_launcher/url_launcher.dart';
+import '../DashBoardView/Controller/dashboard_controller.dart';
 import 'EditProfile/edit_profile.dart';
 
 class ProfileView extends StatelessWidget {
   ProfileView({super.key});
 
   ProfileController profileController = Get.put(ProfileController());
+  DashboardController dc              = Get.find<DashboardController>();
 
   @override
   Widget build(BuildContext context) {
+
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      systemNavigationBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+    ));
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: GetBuilder<ProfileController>(
         builder: (vc) {
-          return Container(
+          return dc.signedIn?Container(
             decoration: BoxDecoration(
               color: Colors.white,
               gradient: RadialGradient(
@@ -45,25 +53,9 @@ class ProfileView extends StatelessWidget {
               children: [
                 Column(
                   children: [
+
                     SizedBox(height: MediaQuery.of(context).viewPadding.top*2),
-                    /*Stack(
-                      alignment: Alignment.centerLeft,
-                      children: [
-                        SizedBox(
-                          height: kToolbarHeight,
-                          child: Center(
-                            child: Text(
-                              "Profile",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),*/
+
                     Center(
                       child: Column(
                         children: [
@@ -95,7 +87,9 @@ class ProfileView extends StatelessWidget {
                               ),
                             ),
                           ),
+
                           SizedBox(height: 4.h),
+
                           GetBuilder<ProfileController>(builder: (vc) {
                             return !vc.loadingProfile
                                 ? Text(
@@ -111,6 +105,7 @@ class ProfileView extends StatelessWidget {
                         ],
                       ),
                     ),
+
                     SizedBox(height: 12.h),
 
                     ProfileItem(
@@ -129,14 +124,6 @@ class ProfileView extends StatelessWidget {
                       },
                     ),
 
-                    /*ProfileItem(
-                      iconAsset: "profile",
-                      title: "Help Center",
-                      onTap: () {
-                        Get.to(()=> const HelpCenterView());
-                      },
-                    ),*/
-
                     ProfileItem(
                       iconAsset: "location",
                       title: "My Address",
@@ -145,11 +132,47 @@ class ProfileView extends StatelessWidget {
                       },
                     ),
 
-                    /*ProfileItem(
-                      iconAsset: "coupon",
-                      title: "My Coupons",
-                      onTap: () {},
-                    ),*/
+                    ProfileItem(
+                      iconAsset: "profile",
+                      title: "Privacy Policy",
+                      onTap: () {
+                        launchUrl(Uri.parse("https://grocerynxt.com/privacy-policy"));
+                      },
+                    ),
+
+                    ProfileItem(
+                      iconAsset: "trash",
+                      title: "Delete Account",
+                      onTap: () async {
+                        await showDialog(
+                            context: context,
+                            builder: (context){
+                              return AlertDialog(
+                                title: const Center(child: Text('Delete Account')),
+                                backgroundColor: Colors.white,
+                                surfaceTintColor: Colors.white,
+                                content: const Text('Are you sure you want to delete your account?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Cancel'),
+                                  ),
+                                  CustomButton(
+                                    width: 80.w,
+                                    onTap: () async {
+                                      await profileController.deleteProfile();
+                                    },
+                                    child: !profileController.deletingProfile
+                                        ? Text('Delete',style: TextStyle(color: Colors.white))
+                                        : CustomCircularLoader(),
+                                  ),
+                                ],
+                              );
+                            });
+                      },
+                    ),
 
                     ProfileItem(
                       iconAsset: "logout",
@@ -183,8 +206,10 @@ class ProfileView extends StatelessWidget {
                             });
                       },
                     ),
+
                   ],
                 ),
+
                 Positioned(
                     right: -10.w,
                     top: 40.h,
@@ -192,6 +217,7 @@ class ProfileView extends StatelessWidget {
                       "assets/images/leaf.png",
                       width: MediaQuery.of(context).size.width * 0.1,
                     )),
+
                 Positioned(
                     left: -10.w,
                     top: MediaQuery.of(context).size.height * 0.12,
@@ -199,6 +225,7 @@ class ProfileView extends StatelessWidget {
                       "assets/images/leaf.png",
                       width: MediaQuery.of(context).size.width * 0.08,
                     )),
+
                 Positioned(
                     right: 0.w,
                     top: MediaQuery.of(context).size.height * 0.5,
@@ -206,7 +233,15 @@ class ProfileView extends StatelessWidget {
                       "assets/images/leaf_blurred.png",
                       width: MediaQuery.of(context).size.width * 0.1,
                     )),
+
               ],
+            ),
+          ) : Center(
+            child: CustomButton(
+              child: Text("Sign In"),
+              onTap: () {
+                Get.to(() => LoginScreen());
+              },
             ),
           );
         }

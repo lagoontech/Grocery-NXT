@@ -1,5 +1,5 @@
+import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
@@ -26,11 +26,15 @@ class RegisterController extends GetxController{
   TextEditingController companyTEC       = TextEditingController();
   CountryState ?selectedState;
   City ?selectedCity;
+  bool isRegistering                     = false;
+  bool loadingCities                     = false;
+  bool isVendor                          = false;
+  List<City> cities                      = [];
+  List<CountryState?> states             = [];
+  bool loadingStates                     = false;
+  TextEditingController stateSearchTEC   = TextEditingController();
+  Timer ?searchTimer;
 
-  bool isRegistering = false;
-  bool loadingCities = false;
-  bool isVendor      = false;
-  List<City> cities = [];
 
   //
   @override
@@ -109,6 +113,10 @@ class RegisterController extends GetxController{
         'zipcode': zipcodeTEC.text,
         'country_id': "70",
         'terms_conditions': 'on',
+        'usertype': isVendor ? 1 : 0,
+        'gstnumber': isVendor? gstTEC.text : null,
+        'fssa': isVendor? fssaiTEC.text : null,
+        'companyname': isVendor? companyTEC.text : null,
       });
       if(result is http.Response){
         print(result.statusCode);
@@ -133,21 +141,56 @@ class RegisterController extends GetxController{
   }
 
   //
-  getCities() async{
+  getStates() async {
 
+    loadingStates = true;
+    update();
     try{
-      var result = await HttpService.getRequest("get-cities/613");
+      var result = await HttpService.getRequest("state/70?name=${stateSearchTEC.text}");
       if(result is http.Response){
-       if(result.statusCode == 200){
-         cities = citiesModelFromJson(result.body).cities!;
-       }
+        if(result.statusCode==200){
+          states = stateModelFromJson(result.body)!.states!;
+          selectedState = states[0];
+        }
       }
     }catch(e){
-      if (kDebugMode) {
-        print(e);
-      }
+      print(e);
     }
+    loadingStates = false;
     update();
+
+  }
+
+  //
+  getCities() async{
+
+      var result = await HttpService.getRequest("get-cities/${selectedState!.id}${citySearchTEC.text.isNotEmpty?"?name=${citySearchTEC.text}":""}",insertHeader: false);
+      if(result is http.Response){
+        if(result.statusCode == 200){
+          cities = citiesModelFromJson(result.body).cities!;
+        }
+      }
+    update();
+
+  }
+
+  //
+  debounceSearch({bool isStateSearch = false,bool isCitySearch = false}){
+
+    if(searchTimer!=null && searchTimer!.isActive){
+      searchTimer!.cancel();
+      return;
+    }
+    searchTimer = Timer(const Duration(milliseconds: 750), () {
+      if(isStateSearch){
+        getStates();
+        return;
+      }else if(isCitySearch){
+        getCities();
+        return;
+      }
+    });
+
   }
 
   //

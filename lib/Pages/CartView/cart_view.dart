@@ -7,17 +7,23 @@ import 'package:grocery_nxt/Pages/CartView/Widgets/cart_item.dart';
 import 'package:grocery_nxt/Pages/ChooseAddressView/choose_address_view.dart';
 import 'package:grocery_nxt/Pages/CouponsPage/coupons_page.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
+import 'package:grocery_nxt/Pages/LoginScreen/login_screen.dart';
+import 'package:grocery_nxt/Utils/toast_util.dart';
 import 'package:grocery_nxt/Widgets/custom_circular_loader.dart';
 import 'package:lottie/lottie.dart';
+import '../../Constants/app_size.dart';
 import '../../Widgets/custom_button.dart';
+import '../DashBoardView/Controller/dashboard_controller.dart';
 
 class CartView extends StatelessWidget {
    CartView({super.key,this.showBack = true});
 
    bool showBack;
-   CartController cc = Get.find<CartController>();
+   CartController cc      = Get.find<CartController>();
+   DashboardController dc = Get.find<DashboardController>();
 
-  @override
+
+   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
@@ -115,7 +121,9 @@ class CartView extends StatelessWidget {
               ),
 
               Expanded(
-                flex: 2,
+                flex: isIpad
+                    ? 3
+                    : 2,
                 child: Container(
                   decoration: BoxDecoration(
                     boxShadow: [
@@ -155,7 +163,7 @@ class CartView extends StatelessWidget {
                               ),
                               SummaryItem(
                                   title: "Tax",
-                                  value: "0"
+                                  value: "\u{20B9} 0.0"
                               ),
                   
                               const Padding(
@@ -183,8 +191,6 @@ class CartView extends StatelessWidget {
                   ]),
                 ),),
 
-
-
             ],
           ):SizedBox(
               height: MediaQuery.of(context).size.height,
@@ -210,7 +216,7 @@ class CartView extends StatelessWidget {
         builder: (cc) {
           return cc.products.isNotEmpty?GetBuilder<CartController>(
             builder: (cc) {
-              return cc.products.isNotEmpty?Padding(
+              return cc.products.isNotEmpty? Padding(
                 padding: EdgeInsets.only(left: 20.w,right: 20.w,bottom: 16.h),
                 child: CustomButton(
                   width: MediaQuery.of(context).size.width*0.8,
@@ -218,6 +224,11 @@ class CartView extends StatelessWidget {
                     "Checkout",
                     style: TextStyle(color: Colors.white)),
                   onTap: () async {
+                    if(!dc.signedIn){
+                      ToastUtil().showToast(message: "Login to continue");
+                      Get.to(()=> LoginScreen());
+                      return;
+                    }
                     if(cc.couponController.text.isNotEmpty){
                       await cc.applyCoupon();
                     }
@@ -251,33 +262,65 @@ class CartView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
 
-          Text(title),
+          Text(title,style: TextStyle(
+            fontSize: 13.sp
+          ),),
 
           title.contains("Coupon") ? Row(
             children: [
+              
+              cc.couponAmount != 0.0 
+                  ? GestureDetector(
+                    onTap: (){
+                      cc.couponAmount = 0.0;
+                      cc.couponController.text = "";
+                      cc.calculateTotal();
+                      cc.update();
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.only(right: 4.w),
+                      child: Icon(Icons.close,size: 18.sp,color: Colors.red),
+                    ),
+                  )
+                  : const SizedBox(),
 
-              SizedBox(
-                width: 50.w,
-                height: 24.h,
-                child: CustomButton(
-                  onTap: () async{
-                   var coupon = await Get.to(()=> CouponsPage());
-                   if(coupon!=null && coupon is String){
-                     cc.couponController.text = coupon;
-                     cc.applyCoupon();
-                   }
-                  },
-                  borderRadius: 8.r,
-                  child: Text("Apply",style: TextStyle(fontSize: 10.sp))
-                ),
+              GetBuilder<CartController>(
+                id: "coupon",
+                builder: (vc) {
+                  return SizedBox(
+                    width: 50.w,
+                    height: 24.h,
+                    child: CustomButton(
+                      onTap: () async{
+                       var coupon = await Get.to(()=> CouponsPage());
+                       if(coupon!=null && coupon is String){
+                         cc.couponController.text = coupon;
+                         cc.applyCoupon();
+                       }
+                      },
+                      borderRadius: 8.r,
+                      child: cc.applyingCoupon
+                          ? CustomCircularLoader(color: Colors.white,width: 10.w,height: 10.w,)
+                          : Text(
+                          "Apply",
+                          style: TextStyle(fontSize: 10.sp))
+                    ),
+                  );
+                }
               ),
 
               SizedBox(width: 4.w),
 
-              Text(value)
+              Text(
+                value,
+                style: TextStyle(
+                    fontSize: 13.sp
+              ),)
 
             ],
-          ) : Text(value)
+          ) : Text(value,style: TextStyle(
+            fontSize: 13.sp
+          ),)
 
         ],
       ),

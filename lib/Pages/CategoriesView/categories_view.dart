@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Pages/AllProductsView/all_products_view.dart';
 import 'package:grocery_nxt/Pages/CategoriesView/Controller/categories_view_controller.dart';
@@ -102,7 +103,7 @@ class CategoriesView extends StatelessWidget {
                                           mainAxisSpacing: 8.h,
                                           mainAxisExtent:
                                               MediaQuery.of(context).size.height *
-                                                  0.12),
+                                                  0.18),
                                   itemBuilder: (context, index) {
                                     var category;
                                     if(vc.searchedCategories.isNotEmpty){
@@ -126,65 +127,59 @@ class CategoriesView extends StatelessWidget {
                                                       category: category,
                                                     ));
                                               },
-                                              child: Card(
-                                                margin: EdgeInsets.zero,
-                                                elevation: 3,
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                      color: Colors.white,
+                                              child: Column(
+                                                children: [
+
+                                                  Container(
+                                                    height: MediaQuery.of(context).size.height * 0.12,
+                                                    decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        borderRadius: BorderRadius.circular(12.r),
+                                                      border: Border.all(color: AppColors.primaryColor,width: 0.6)
+                                                    ),
+                                                    child: ClipRRect(
                                                       borderRadius: BorderRadius.circular(12.r),
-                                                  ),
-                                                  clipBehavior: Clip.antiAlias,
-                                                  child: Stack(
-                                                    children: [
-                                                      CachedNetworkImage(
+                                                      child: category!.imageUrl!=null &&
+                                                          !category!.imageUrl.contains("svg") ? CachedNetworkImage(
                                                         imageUrl: category!.imageUrl ?? "",
-                                                        fit: BoxFit.fitHeight,
-                                                        height: MediaQuery.of(context).size.height * 0.20,
+                                                        fit: BoxFit.cover,
                                                         errorWidget: (c, w, o) {
                                                           return Image.asset(
                                                               "assets/images/gnxt_logo.png");
                                                         },
+                                                      ) : category!.imageUrl!=null?Center(child: SvgPicture.network(category!.imageUrl))
+                                                      : CachedNetworkImage(
+                                                        imageUrl: "",
+                                                        errorWidget: (c, w, o) {
+                                                          return Center(
+                                                            child: Image.asset(
+                                                                "assets/images/gnxt_logo.png"),
+                                                          );
+                                                        },
                                                       ),
-                                                      SizedBox(height: 16.h),
-                                                      Align(
-                                                        alignment: Alignment.bottomCenter,
-                                                        child: Container(
-                                                          width: double.infinity,
-                                                          height: MediaQuery.of(context).size.height * 0.04,
-                                                          decoration: BoxDecoration(
-                                                            gradient: LinearGradient(
-                                                                begin: Alignment.bottomCenter,
-                                                                end: Alignment.topCenter,
-                                                                colors: [
-                                                              //AppColors.primaryColor.withOpacity(0.9),
-                                                              //AppColors.primaryColor.withOpacity(0.2)
-                                                                  Colors.black.withOpacity(0.9),
-                                                                  Colors.black.withOpacity(0.01)
-                                                            ])
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Align(
-                                                        alignment: Alignment.bottomCenter,
-                                                        child: Padding(
-                                                          padding: EdgeInsets.only(bottom: 6.h),
-                                                          child: Text(
-                                                            category.name!.toUpperCase(),
-                                                            textAlign: TextAlign.center,
-                                                            maxLines: 2,
-                                                            style: TextStyle(
-                                                                fontSize: 9.sp,
-                                                                color: Colors.white,
-                                                                fontWeight: FontWeight.bold,
-                                                                fontFamily: "roboto"
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      )
-                                                    ],
+                                                    ),
                                                   ),
-                                                ),
+
+                                                  SizedBox(height: 8.h),
+
+                                                  Align(
+                                                    alignment: Alignment.bottomCenter,
+                                                    child: Padding(
+                                                      padding: EdgeInsets.only(bottom: 6.h),
+                                                      child: Text(
+                                                        category.name!.toUpperCase(),
+                                                        textAlign: TextAlign.center,
+                                                        maxLines: 2,
+                                                        style: TextStyle(
+                                                            fontSize: 9.sp,
+                                                            color: Colors.black,
+                                                            fontWeight: FontWeight.bold,
+                                                            fontFamily: "roboto"
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
                                               ),
                                             ),
                                           ),

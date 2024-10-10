@@ -15,6 +15,7 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return GetBuilder<SplashController>(
       builder: (vc) {
         return Scaffold(

@@ -14,6 +14,7 @@ import 'package:get/state_manager.dart';
 import 'package:grocery_nxt/Pages/DashBoardView/Controller/dashboard_controller.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
 import '../../../../Constants/app_colors.dart';
+import '../../../Constants/app_size.dart';
 
 class BottomBar extends StatelessWidget {
    BottomBar({super.key});
@@ -152,8 +153,8 @@ class BottomBar extends StatelessWidget {
           child: Center(
             child:
             SizedBox(
-                width: 16.w,
-                height: 16.w,
+                width: isIpad?56.w: 24.w,
+                height: isIpad?56.w:24.w,
                 child: Center(child: child)),
           ),
         ),

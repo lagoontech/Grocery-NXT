@@ -8,7 +8,7 @@ class OrderSuccessResponse {
   bool? success;
   String? type;
   int? orderId;
-  int? totalAmount;
+  dynamic? totalAmount;
   String? tested;
   String? secreteKey;
   int? invoiceNumber;

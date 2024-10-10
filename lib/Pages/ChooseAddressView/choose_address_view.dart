@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/AddCheckoutAddressView/add_checkout_address_view.dart';
 import 'package:grocery_nxt/Pages/ChooseAddressView/Controller/choose_address_controller.dart';
+import 'package:grocery_nxt/Pages/ChooseAddressView/Models/shipping_addresses_model.dart';
+import 'package:grocery_nxt/Pages/EditAddress/edit_address.dart';
 import 'package:grocery_nxt/Pages/Payment%20Screen/payment_screen.dart';
 import 'package:grocery_nxt/Pages/ProfileView/Views/ViewProfile/view_address.dart';
 import 'package:grocery_nxt/Utils/toast_util.dart';
@@ -56,9 +58,21 @@ class ChooseAddressView extends StatelessWidget {
                                   itemCount: vc.addresses.length,
                                   itemBuilder: (context, index) {
                                     var address = vc.addresses[index];
+                                    print(address.id);
+                                    bool selected = address!.id == vc.selectedAddressId;
                                     return GestureDetector(
-                                      onTap: (){
-                                        Get.to(()=> ViewAddress(selectedAddress: address));
+                                      onTap: () async{
+                                        var result = await Get.to(()=> EditAddress(
+                                            address: address,
+                                            addressId: address.id,
+                                            fromCheckout: true
+                                        ));
+                                        if(result != null && result is ShippingAddress){
+                                          vc.selectedAddressId = result.id;
+                                          vc.selectedAddress = result;
+                                          vc.update();
+                                          vc.getShippingCharge();
+                                        }
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
@@ -73,12 +87,10 @@ class ChooseAddressView extends StatelessWidget {
                                             padding: EdgeInsets.all(0.4.w),
                                             decoration: BoxDecoration(
                                                 color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(12.r),
+                                                borderRadius: BorderRadius.circular(12.r),
                                                 boxShadow: [
                                                   BoxShadow(
-                                                      color: Colors.black
-                                                          .withOpacity(0.2),
+                                                      color: Colors.black.withOpacity(0.2),
                                                       blurRadius: 2)
                                                 ]),
                                             child: Image.asset(
@@ -88,35 +100,62 @@ class ChooseAddressView extends StatelessWidget {
                                             address.name,
                                             style: TextStyle(
                                               color: AppColors.primaryColor,
-                                              fontSize: 14.sp,
+                                              fontSize: 12.sp,
                                               fontWeight: FontWeight.w600,
                                             ),
                                           ),
                                           subtitle: Text(
-                                            address.address!,
+                                            selected?vc.selectedAddress!.address!:address.address!,
                                             maxLines: 2,
                                             style: TextStyle(
                                                 color: Colors.grey.shade400,
-                                                fontSize: 12.sp,
+                                                fontSize: 11.sp,
                                                 overflow:
                                                     TextOverflow.ellipsis),
                                           ),
                                           trailing: !fromProfile!
-                                              ? Radio(
-                                                  value: address.id,
-                                                  groupValue:
-                                                      vc.selectedAddressId,
-                                                  onChanged: (v) {
-                                                    vc.selectedAddressId = v;
-                                                    vc.selectedAddress = vc
-                                                        .addresses
-                                                        .firstWhere((element) =>
-                                                            element.id ==
-                                                            vc.selectedAddressId);
-                                                    vc.update();
-                                                    vc.getShippingCharge();
-                                                  })
-                                              : const SizedBox(),
+                                              ? SizedBox(
+                                                width: 20.w,
+                                                height: 20.w,
+                                                child: Transform.scale(
+                                                  scale: 1.1,
+                                                  child: Radio(
+                                                      value: address.id,
+                                                      groupValue:
+                                                          vc.selectedAddressId,
+                                                      onChanged: (v) {
+                                                        vc.selectedAddressId = v;
+                                                        vc.selectedAddress = vc
+                                                            .addresses
+                                                            .firstWhere((element) =>
+                                                                element.id ==
+                                                                vc.selectedAddressId);
+                                                        vc.update();
+                                                        vc.getShippingCharge();
+                                                      }),
+                                                ),
+                                              )
+                                              : Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+
+                                                  IconButton(
+                                                      onPressed: () async {
+                                                        var result = await Get.to(()=> EditAddress(addressId: address.id,address: address));
+                                                        if(result is bool){
+                                                          vc.getAddresses();
+                                                        }
+                                                      },
+                                                      icon: Icon(Icons.edit,size: 18.sp)),
+
+                                                  !vc.addresses[index].deletingAddress! ?IconButton(onPressed: (){
+                                                    vc.deleteAddress(index: index,addressId: address.id);
+                                                  }, icon: Icon(Icons.delete,size: 18.sp))
+                                                      : CustomCircularLoader(color: AppColors.primaryColor),
+
+                                                ],
+                                              ),
+
                                         ),
                                       ),
                                     );
@@ -143,6 +182,7 @@ class ChooseAddressView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 mainAxisSize: MainAxisSize.min,
                 children: [
+
                   SizedBox(height: 12.h),
 
                   Padding(
@@ -165,7 +205,7 @@ class ChooseAddressView extends StatelessWidget {
                           borderRadius:
                           const BorderRadius.all(Radius.circular(12)),
                           child: Container(
-                            height: 44.h,
+                            height: 32.h,
                             margin: EdgeInsets.symmetric(horizontal: 24.w),
                             width: MediaQuery.of(context).size.width,
                             child: Row(
@@ -180,7 +220,7 @@ class ChooseAddressView extends StatelessWidget {
                                   "Add New Address",
                                   style: TextStyle(
                                     color: AppColors.primaryColor,
-                                    fontSize: 14.sp,
+                                    fontSize: 12.sp,
                                   ),
                                 )
                               ],
@@ -199,11 +239,11 @@ class ChooseAddressView extends StatelessWidget {
                           SummaryItem(
                               title: "Items Total",
                               value: "\u{20B9} ${cc.subTotal}"),
-                          SummaryItem(title: "Coupon Discount", value: cc.couponAmount.toString()),
-                          SummaryItem(title: "Tax", value: "0"),
+                          SummaryItem(title: "Coupon Discount", value: "\u{20B9} ${cc.couponAmount}"),
+                          SummaryItem(title: "Tax", value: "\u{20B9} 0.0"),
                           SummaryItem(
                               title: "Shipping Charge",
-                              value: vc.shippingCharge,
+                              value: "\u{20B9} ${vc.shippingCharge}",
                               load: vc.fetchingShippingCharge
                           ),
                           const Padding(
@@ -220,9 +260,9 @@ class ChooseAddressView extends StatelessWidget {
                           SizedBox(
                             width: MediaQuery.of(context).size.width * 0.8,
                             child: CustomButton(
-                              child: const Text(
+                              child: Text(
                                 "Proceed To Payment",
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(color: Colors.white,fontSize: 13.sp),
                               ),
                               onTap: () {
                                 if (vc.selectedAddress != null && !vc.fetchingShippingCharge) {
@@ -253,10 +293,14 @@ class ChooseAddressView extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title),
+          Text(title,style: TextStyle(
+            fontSize: 12.sp
+          ),),
           load
               ? Skeletonizer(child: Text(value))
-              : Text(value)
+              : Text(value,style: TextStyle(
+            fontSize: 12.sp
+          ),)
         ],
       ),
     );

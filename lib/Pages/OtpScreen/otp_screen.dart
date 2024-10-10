@@ -8,6 +8,7 @@ import 'package:grocery_nxt/Pages/OtpScreen/Controller/otp_controller.dart';
 import 'package:grocery_nxt/Widgets/custom_circular_loader.dart';
 import 'package:numpad/numpad.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import '../../Constants/app_size.dart';
 import '../../Widgets/custom_button.dart';
 
 class OtpScreen extends StatelessWidget {
@@ -65,26 +66,28 @@ class OtpScreen extends StatelessWidget {
                           )),
                       SizedBox(height: 20.h),
                       SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.6,
+                        width: isIpad
+                            ? MediaQuery.of(context).size.width*0.6
+                            : MediaQuery.of(context).size.width * 0.6,
                         child: PinCodeTextField(
                           length: 4,
                           obscureText: false,
                           animationType: AnimationType.fade,
-                          readOnly: true,
+                          readOnly: !isIpad,
                           pinTheme: PinTheme(
-                            inactiveFillColor: Colors.grey.shade200,
+                            inactiveFillColor: Colors.white,
                             borderWidth: 0,
                             fieldOuterPadding: EdgeInsets.symmetric(horizontal: 2.w),
                             activeBorderWidth: 0,
                             inactiveBorderWidth: 0,
                             shape: PinCodeFieldShape.box,
                             borderRadius: BorderRadius.circular(5),
-                            fieldHeight: 50,
-                            fieldWidth: 50,
+                            fieldHeight: 50.h,
+                            fieldWidth: 50.w,
                             activeFillColor: Colors.grey.shade200,
                           ),
                           animationDuration: const Duration(milliseconds: 300),
-                          backgroundColor: Colors.white,
+                          backgroundColor: Colors.transparent,
                           enableActiveFill: true,
                           controller: vc.otpTEC,
                           onCompleted: (v) {
@@ -119,7 +122,7 @@ class OtpScreen extends StatelessWidget {
                       SizedBox(height: 8.h),
                     ],
                   )),
-              Expanded(
+              !isIpad?Expanded(
                   flex: 4,
                   child: Container(
                     padding: const EdgeInsets.all(16),
@@ -149,7 +152,7 @@ class OtpScreen extends StatelessWidget {
                             print(vc.otpTEC.text);
                           }),
                     ),
-                  ))
+                  )) : const SizedBox()
             ],
           ),
         ));

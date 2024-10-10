@@ -12,8 +12,8 @@ import 'package:mobile_number/mobile_number.dart';
 
 class LoginController extends GetxController{
 
-  TextEditingController phoneTEC   = TextEditingController(text: "9080761312");
-  TextEditingController nameTEC    = TextEditingController(text: "Anlin Jude");
+  TextEditingController phoneTEC   = TextEditingController();
+  TextEditingController nameTEC    = TextEditingController();
   TextEditingController gstTEC     = TextEditingController();
   TextEditingController fssaiTEC   = TextEditingController();
   TextEditingController companyTEC = TextEditingController();
@@ -37,7 +37,11 @@ class LoginController extends GetxController{
       });
       if(result is http.Response){
         if(result.statusCode==200){
-          Get.to(()=> OtpScreen());
+          if(!jsonDecode(result.body)["message"].toString().contains("Try")) {
+            Get.to(()=> OtpScreen());
+          }else{
+            ToastUtil().showToast(message: jsonDecode(result.body)["message"].toString());
+          }
         }else{
           //register();
         }

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:grocery_nxt/Constants/app_size.dart';
 import 'package:grocery_nxt/Pages/SplashScreen/splash_screen.dart';
 import 'package:grocery_nxt/Services/binding_service.dart';
 import 'package:grocery_nxt/Services/network_util.dart';
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       builder: (context,w) {
+        isIpad = MediaQuery.of(context).size.width>600;
         return UpgradeAlert(
           child: GetMaterialApp(
             debugShowCheckedModeBanner: false,
@@ -44,7 +46,12 @@ class MyApp extends StatelessWidget {
               useMaterial3: true,
             ),
             initialBinding: RootBinding(),
-            home: SplashScreen(),
+            home: DefaultTextStyle(
+                style: TextStyle(
+                    fontSize: isIpad
+                        ? 12.sp
+                        : null),
+            child: SplashScreen()),
           ),
         );
       }

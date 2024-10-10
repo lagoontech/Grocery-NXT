@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/home_controller.dart';
-
+import '../../../../Constants/app_size.dart';
 import 'category_scroll_indicator.dart';
 
 class ScrollIndicator extends StatelessWidget {
@@ -11,7 +11,7 @@ class ScrollIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Transform.translate(
-      offset: Offset(0,-24.h),
+      offset: Offset(0,isIpad?-4.h:-12.h),
       child: GetBuilder<HomeController>(
         id: "scrollIndicator",
         builder: (vc) {

@@ -6,13 +6,11 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:http/http.dart' as http;
 import '../../../Services/http_services.dart';
 import '../../../Utils/shared_pref_utils.dart';
-import '../../DashBoardView/Controller/dashboard_controller.dart';
 import '../../OrdersView/Controller/order_controller.dart';
-import '../payment_failed.dart';
+import '../../ProfileView/Controller/profile_controller.dart';
 import '../payment_success.dart';
 
 class PaymentFailedController extends GetxController{
-
 
   int ?amount;
   int ?orderId;
@@ -22,6 +20,7 @@ class PaymentFailedController extends GetxController{
   OrderController orderController = Get.find<OrderController>();
   OrderSuccessResponse ?successResponse;
   String ?transactionId;
+  ProfileController profileController = Get.find<ProfileController>();
 
   //
   retryPayment(){
@@ -30,22 +29,23 @@ class PaymentFailedController extends GetxController{
       Future.delayed(const Duration(milliseconds: 10),(){
         var options = {
           'key': 'rzp_live_RKDSnxuUFaUL7h',
-          'amount': 100,//totalAmount*100,
+          'amount': amount!*100,//totalAmount*100,
           'reference_id': orderId.toString(),
           'name': '',
           'description': '',
           'prefill': {
-            'contact': '8888888888',
-            'email': 'test@razorpay.com'
+            'contact': profileController.profile!.userDetails!.phone!,
+            'email': profileController.profile!.userDetails!.email!
           }
         };
-        razorpay!.open(options);
+        razorpay.open(options);
         cartController.loadProducts();
         orderController.getPendingOrders();
       });
     }catch(e){
-
+      print(e);
     }
+
   }
 
   //
@@ -103,11 +103,13 @@ class PaymentFailedController extends GetxController{
     }
     confirmingPayment = false;
     update();
+
   }
 
   //
   @override
   void onInit() {
+
     super.onInit();
     razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, (v){
       transactionId = v.paymentId;
@@ -116,6 +118,7 @@ class PaymentFailedController extends GetxController{
     razorpay.on(Razorpay.EVENT_PAYMENT_ERROR,(v){
       ToastUtil().showToast(message: "Payment failed");
     });
+
   }
 
 }

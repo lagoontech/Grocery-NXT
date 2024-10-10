@@ -4,12 +4,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
+import 'package:grocery_nxt/Constants/app_size.dart';
 import 'package:grocery_nxt/Pages/LoginScreen/Controller/login_controller.dart';
 import 'package:grocery_nxt/Pages/RegisterScreen/register_screen.dart';
 import 'package:grocery_nxt/Widgets/custom_circular_loader.dart';
 import 'package:grocery_nxt/Widgets/custom_textfield.dart';
 import 'package:numpad/numpad.dart';
 import '../../Widgets/custom_button.dart';
+import '../DashBoardView/dashboard_view.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -100,10 +102,10 @@ class LoginScreen extends StatelessWidget {
                                       customTextField(
                                         context,
                                         hint: "Phone",
-                                        fillColor: AppColors.primaryColor
-                                            .withOpacity(0.01),
+                                        fillColor: AppColors.primaryColor.withOpacity(0.01),
                                         borderColor: AppColors.primaryColor,
                                         controller: lc.phoneTEC,
+                                        textInputType: TextInputType.number
                                       ),
                                     ],
                                   ),
@@ -116,10 +118,10 @@ class LoginScreen extends StatelessWidget {
                                     width:
                                         MediaQuery.of(context).size.width * 0.8,
                                     child: !vc.loggingIn
-                                        ? const Text(
+                                        ? Text(
                                             "Login",
                                             style:
-                                                TextStyle(color: Colors.white),
+                                                TextStyle(color: Colors.white,fontSize: 14.sp),
                                           )
                                         : CustomCircularLoader(),
                                     onTap: () {
@@ -135,16 +137,21 @@ class LoginScreen extends StatelessWidget {
                                     onPressed: (){
                                       Get.to(()=> Register());
                                     },
-                                    child: const Text("Register")
+                                    child: Text("Register",style: TextStyle(
+                                      fontSize: isIpad?12.sp:14.sp
+                                    ),)
                                 ),
 
                                 Padding(
                                   padding:
-                                      EdgeInsets.symmetric(horizontal: 12.w),
-                                  child: const Text.rich(
+                                      EdgeInsets.symmetric(horizontal: 12.w,vertical: isIpad?4.h:2.h),
+                                  child: Text.rich(
                                     TextSpan(
                                         text:
                                             "By continuing you are agreeing to our \n",
+                                        style: TextStyle(
+                                          fontSize: isIpad?10.sp:12.sp
+                                        ),
                                         children: [
                                           TextSpan(
                                               text: "terms of use",
@@ -155,7 +162,35 @@ class LoginScreen extends StatelessWidget {
                                         ]),
                                     textAlign: TextAlign.center,
                                   ),
-                                )
+                                ),
+
+                                SizedBox(height: 32.h),
+
+                                Container(
+                                  width: MediaQuery.of(context).size.width * 0.8,
+                                  height: 40.h,
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey.shade50,
+                                      borderRadius: BorderRadius.circular(12.r),
+                                      border: Border.all(
+                                          color: AppColors.primaryColor
+                                      )
+                                  ),
+                                  child: TextButton(
+                                      onPressed: (){
+                                        Get.offAll(()=> DashboardView());
+                                      },
+                                      child: Text(
+                                        "Continue as guest",
+                                        style: TextStyle(
+                                            color: AppColors.primaryColor,
+                                            fontSize: isIpad?12.sp:null
+                                        ),
+                                      )
+                                  ),
+                                ),
+
+
                               ],
                             )),
 

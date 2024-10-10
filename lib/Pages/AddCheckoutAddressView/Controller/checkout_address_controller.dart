@@ -41,7 +41,7 @@ class AddCheckoutAddressController extends GetxController{
   String shippingCost                   = "";
 
   //
-  getCountries()async{
+  getCountries() async{
 
     loadingCountries = true;
     update();
@@ -60,6 +60,7 @@ class AddCheckoutAddressController extends GetxController{
     }
     loadingCountries = false;
     update();
+
   }
 
   //
@@ -146,6 +147,7 @@ class AddCheckoutAddressController extends GetxController{
     update();
     try{
       var result = await HttpService.postRequest("user/add-shipping-address",{
+        "id": 0,
         "name": titleTEC.text,
         "email": emailTEC.text,
         "phone": phoneTEC.text,
@@ -158,7 +160,6 @@ class AddCheckoutAddressController extends GetxController{
         "shipping_address_name": titleTEC.text
       },insertHeader: true);
       if(result is http.Response){
-        print(result.body);
         if(result.statusCode==200){
           Get.back(result: 1);
         }else{
@@ -170,6 +171,7 @@ class AddCheckoutAddressController extends GetxController{
     }
     creatingAddress = false;
     update();
+
   }
 
   //
@@ -189,7 +191,7 @@ class AddCheckoutAddressController extends GetxController{
         }
         quantity_ids = "$quantity_ids${element.cartQuantity},";
       }
-      final Uri uri = Uri.parse('http://grocerynxt.lagoontechcloud.com/api/shippingaddresszipcode.php');
+      final Uri uri = Uri.parse('http://grocerynxt.com/api/shippingaddresszipcode.php');
       final map = <String, dynamic>{};
       map['zipcode']    = zipcodeTEC.text;
       map['productids'] = products_ids;
@@ -199,14 +201,10 @@ class AddCheckoutAddressController extends GetxController{
         uri,
         body: map,
       );
-      print(map);
       if(result.statusCode == 200){
         shippingCost = jsonDecode(result.body)["finalcost"].toString();
         print(shippingCost);
-      }
-        }catch(e){
-      print(e);
-    }
+      }}catch(e){}
     fetchingShippingCharge = false;
     update();
   }
@@ -214,14 +212,6 @@ class AddCheckoutAddressController extends GetxController{
  @override
   void onInit() {
     super.onInit();
-    if(kDebugMode){
-      titleTEC.text = "Office";
-      emailTEC.text = "anlin.jude.7@gmail.com";
-      phoneTEC.text = "9080761312";
-      stateTEC.text = "TamilNadu";
-      addressTEC.text = "Sree sai Complex1";
-      zipcodeTEC.text = "629157";
-    }
     getCountries();
   }
 

@@ -10,6 +10,7 @@ import 'package:grocery_nxt/Pages/HomeScreen/Widgets/Top%20Content/category_item
 import 'package:grocery_nxt/Pages/HomeScreen/Models/home_categories_model.dart';
 import 'package:flutter/foundation.dart' hide Category;
 import 'package:grocery_nxt/Pages/HomeScreen/Widgets/ScrollIndicator/category_scroll_indicator.dart';
+import '../../../../Constants/app_size.dart';
 
 class TopContent extends StatelessWidget {
   TopContent({super.key});
@@ -25,8 +26,10 @@ class TopContent extends StatelessWidget {
           duration: const Duration(milliseconds: 1000),
           curve: Curves.easeIn);
     });
+
     return Column(
       children: [
+
         Stack(
           clipBehavior: Clip.none,
           children: [
@@ -43,7 +46,7 @@ class TopContent extends StatelessWidget {
               top: 40.h,
               child: SizedBox(
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height*0.27,
+                height: MediaQuery.of(context).size.height * 0.29,
                 child: NotificationListener(
                   onNotification: (ScrollNotification v){
                     hc.update();
@@ -55,15 +58,18 @@ class TopContent extends StatelessWidget {
                       return AnimationLimiter(
                         child: ListView.builder(
                             controller: hc.sc,
-                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.17),
+                            padding: EdgeInsets.only(
+                                top: isIpad
+                                    ? MediaQuery.of(context).size.height*0.14
+                                    : MediaQuery.of(context).size.height*0.17),
                             physics: const BouncingScrollPhysics(),
-                            itemCount: vc.categories.length,
+                            itemCount: vc.exploreCategories.length,
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (context, index) {
-                              if(vc.categories.isEmpty){
+                              if(vc.exploreCategories.isEmpty){
                                 return const SizedBox();
                               }
-                              var category = vc.categories[index];
+                              var category = vc.exploreCategories[index];
                               return AnimationConfiguration.staggeredList(
                                 position: index,
                                 child: SlideAnimation(

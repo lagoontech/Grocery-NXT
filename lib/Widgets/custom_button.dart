@@ -3,8 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grocery_nxt/Widgets/custom_circular_loader.dart';
 import '../Constants/app_colors.dart';
+import '../Constants/app_size.dart';
 
 class CustomButton extends StatefulWidget {
+
   CustomButton({
     Key? key,
     this.child,
@@ -31,9 +33,11 @@ class CustomButton extends StatefulWidget {
 }
 
 class _CustomButtonState extends State<CustomButton>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
+  late AnimationController _colorController;
+  late Animation<double> _colorAnimation;
 
   @override
   void initState() {
@@ -48,8 +52,22 @@ class _CustomButtonState extends State<CustomButton>
         curve: Curves.easeInOut,
       ),
     );
+    _colorController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+    _colorController.addListener(() {
+      setState(() {});
+    });
+    _colorAnimation = Tween<double>(begin: 0.6, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _colorController,
+        curve: Curves.easeInOut,
+      ));
+    _colorController.forward();
   }
 
+  //
   @override
   void dispose() {
     _controller.dispose();
@@ -58,6 +76,7 @@ class _CustomButtonState extends State<CustomButton>
 
   @override
   Widget build(BuildContext context) {
+
     return GestureDetector(
       onTap: (){
         _controller.forward().then((value){
@@ -66,30 +85,26 @@ class _CustomButtonState extends State<CustomButton>
           });
         });
       },
-      /*onTapDown: (_) {
-        _controller.forward();
-      },
-      onTapUp: (_) {
-        _controller.reverse();
-        if (widget.onTap != null) {
-          widget.onTap!();
-        }
-      },
-      onTapCancel: () {
-        _controller.reverse();
-      },*/
       child: DefaultTextStyle(
-        style: TextStyle(fontWeight: FontWeight.w600,fontFamily: GoogleFonts.ibmPlexSans().fontFamily),
+        style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontFamily: GoogleFonts.ibmPlexSans().fontFamily,
+            letterSpacing: 0.72,
+            fontSize: isIpad
+                ? 12.sp
+                : null
+        ),
         child: AnimatedBuilder(
           animation: _animation,
           builder: (context, child) {
             return Transform.scale(
               scale: _animation.value,
-              child: Container(
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 1200),
                 width: widget.width ?? MediaQuery.of(context).size.width * 0.5,
                 height: widget.height ?? 40.h,
                 decoration: BoxDecoration(
-                  color: widget.color ?? AppColors.primaryColor,
+                  color: widget.color ?? AppColors.primaryColor.withOpacity(_colorAnimation.value),
                   borderRadius: BorderRadius.circular(widget.borderRadius ??  30.r),
                 ),
                 child: Center(
@@ -101,7 +116,7 @@ class _CustomButtonState extends State<CustomButton>
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 14.sp, color: Colors.white),
                       ),
-                ),
+                )
               ),
             );
           },
@@ -109,4 +124,5 @@ class _CustomButtonState extends State<CustomButton>
       ),
     );
   }
+
 }

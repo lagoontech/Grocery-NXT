@@ -45,7 +45,7 @@ class ProfileItem extends StatelessWidget {
                 title,
                 style: TextStyle(
                     fontWeight: FontWeight.w500,
-                    fontSize: 16.sp
+                    fontSize: 14.sp
                 ),
               ),
             ),

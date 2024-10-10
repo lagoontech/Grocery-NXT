@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Services/http_services.dart';
 import 'package:http/http.dart' as http;
@@ -39,6 +40,7 @@ class ChooseAddressController extends GetxController{
     }
     loadingAddresses = false;
     update();
+
   }
 
   //
@@ -58,7 +60,7 @@ class ChooseAddressController extends GetxController{
         }
         quantity_ids = "$quantity_ids${element.cartQuantity},";
       }
-      final Uri uri = Uri.parse('http://grocerynxt.lagoontechcloud.com/api/shippingaddresszipcode.php');
+      final Uri uri = Uri.parse('http://grocerynxt.com/api/shippingaddresszipcode.php');
       final map = <String, dynamic>{};
       map['zipcode']    = selectedAddress!.zipCode;
       map['productids'] = products_ids;
@@ -70,14 +72,16 @@ class ChooseAddressController extends GetxController{
         body: map,
       );
       if(result is http.Response){
-        print(result.statusCode);
         if(result.statusCode == 200){
-          print(result.body);
           shippingCharge = jsonDecode(result.body)["finalcost"].toString();
+          try{
+            shippingCharge = double.parse(shippingCharge).toStringAsFixed(1);
+          }catch(e){
+            
+          }
           showCOD = jsonDecode(result.body)["exclude"]=='0'?false:true;
           //finalTotal = double.parse(shippingCharge) + cc.total;
           cc.total = (cc.subTotal + double.parse(shippingCharge)) - cc.couponAmount;
-          print(finalTotal);
         }else{
           finalTotal = cc.total;
         }
@@ -88,6 +92,31 @@ class ChooseAddressController extends GetxController{
     }
     fetchingShippingCharge = false;
     update();
+
+  }
+
+  //
+  deleteAddress({int ?addressId,int ?index}) async{
+
+    addresses[index!].deletingAddress = true;
+    update();
+    try{
+      var result = await HttpService.postRequest("user/delete-shipping-address",{
+        "id": addressId
+      },insertHeader: true);
+      if(result is http.Response){
+        if(result.statusCode == 200){
+          getAddresses();
+        }
+      }
+    } catch(e){
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+    addresses[index].deletingAddress = false;
+    update();
+
   }
 
   //

@@ -5,6 +5,8 @@ import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/OnboardingScreen/Controller/onboarding_controller.dart';
 import 'package:grocery_nxt/Pages/OnboardingScreen/Widgets/onboarding_content.dart';
 
+import '../../Constants/app_size.dart';
+
 class OnboardingScreen extends StatelessWidget {
    OnboardingScreen({super.key});
 
@@ -12,6 +14,7 @@ class OnboardingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
@@ -23,8 +26,10 @@ class OnboardingScreen extends StatelessWidget {
           Align(
             alignment: Alignment.bottomCenter,
             child: Image.asset(
-                "assets/images/onboarding_image_1.png",
-                height: MediaQuery.of(context).size.height*0.4,
+              "assets/images/onboarding_image_1.png",
+              height: MediaQuery.of(context).size.height * 0.4,
+              width: isIpad ?MediaQuery.of(context).size.width : null,
+              fit: isIpad ? BoxFit.fill : null,
             ),
           ),
           

@@ -79,30 +79,33 @@ class ProductListItem extends StatelessWidget {
                                 textAlign: TextAlign.center,
                               ),
                             )),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 4.w),
-                          child: Row(
-                            children: [
-                              Text(
-                                "\u{20B9}${product!.price.toString()}",
-                                style: TextStyle(
-                                    decoration: TextDecoration.lineThrough,
-                                    fontSize: 12.sp),
-                              ),
-                              SizedBox(width: 2.w),
-                              Expanded(
-                                  child: Align(
-                                alignment: Alignment.centerRight,
-                                child: Text(
-                                  "\u{20B9}${product!.discountPrice.toString()}",
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.0275,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 4.w),
+                            child: Row(
+                              children: [
+                                Text(
+                                  "\u{20B9}${product!.price.toString()}",
                                   style: TextStyle(
-                                      color: AppColors.secondaryColor,
-                                      fontWeight: FontWeight.w600,
-
-                                  ),
+                                      decoration: TextDecoration.lineThrough,
+                                      fontSize: 12.sp),
                                 ),
-                              ))
-                            ],
+                                SizedBox(width: 2.w),
+                                Expanded(
+                                    child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Text(
+                                    "\u{20B9}${product!.discountPrice.toString()}",
+                                    style: TextStyle(
+                                        color: AppColors.secondaryColor,
+                                        fontWeight: FontWeight.w600,
+
+                                    ),
+                                  ),
+                                ))
+                              ],
+                            ),
                           ),
                         ),
                       ],

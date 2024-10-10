@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' hide Category;
@@ -33,6 +34,7 @@ class HomeController extends GetxController{
   List<Product> offerProducts      = [];
   List<Product> featuredProducts   = [];
   List<CategoryModel?> categories  = [];
+  List<CategoryModel?> exploreCategories  = [];
   List<Subcategory> subcategories1 = [];
   List<Subcategory> subcategories2 = [];
   List<Subcategory> subcategories3 = [];
@@ -40,6 +42,7 @@ class HomeController extends GetxController{
   List<Carousel>        carousels2 = [];
   bool loadingCarousel             = false;
   bool loadingCategories           = false;
+  bool loadingExploreCategories           = false;
   HomeCampaignsModel ?campaign;
   int currentCarouselIndex = 0;
   bool shrinkAppbar = false;
@@ -54,6 +57,9 @@ class HomeController extends GetxController{
       if(result is http.Response){
         if(result.statusCode == 200 || result.statusCode==201){
           categories = homeCategoriesModelFromJson(result.body)!.categories!;
+          categories.forEach((element) {
+            print(element!.imageUrl);
+          });
         }
       }
     }catch(e){
@@ -63,6 +69,7 @@ class HomeController extends GetxController{
     }
     loadingCategories = false;
     update(["categories"]);
+
   }
 
   //
@@ -90,7 +97,6 @@ class HomeController extends GetxController{
       if(result is http.Response){
         if(result.statusCode==200){
           campaign = HomeCampaignsModel.fromJson(jsonDecode(result.body));
-          print(campaign!.data![0]!.image);
         }
       }
     }catch(e){
@@ -99,6 +105,7 @@ class HomeController extends GetxController{
       }
     }
     update();
+
   }
 
   //
@@ -123,6 +130,7 @@ class HomeController extends GetxController{
       }
     }
     update();
+
   }
 
   //
@@ -196,6 +204,7 @@ class HomeController extends GetxController{
             featuredProducts.addAll(productsListFromJson(result.body).products!);
           }
           fetchOfferProducts();
+          fetchProducts(isRefresh: true);
         }
       }
     }catch(e){
@@ -204,6 +213,7 @@ class HomeController extends GetxController{
       }
     }
     update(["featured_products"]);
+
   }
 
   //
@@ -260,20 +270,6 @@ class HomeController extends GetxController{
   }
 
   //
-  /*autoScrollProducts() async {
-    update();
-    await Future.delayed(const Duration(milliseconds: 5000));
-    autoScroll1.animateTo(
-    autoScroll1.position.maxScrollExtent,
-    duration: const Duration(seconds: 150),
-    curve: Curves.linear);
-    autoScroll2.animateTo(
-    autoScroll2.position.maxScrollExtent,
-    duration: const Duration(seconds: 150),
-    curve: Curves.linear);
-  }*/
-
-  //
   calculateCurrentScrollPosition(){
 
     final maxScrollExtent = sc.position.maxScrollExtent;
@@ -301,7 +297,26 @@ class HomeController extends GetxController{
   }
 
   //
-  carouselChange(){
+  fetchExploreCategories() async{
+
+    loadingExploreCategories = true;
+    update();
+    try{
+      var result = await HttpService.getRequest("category/explore");
+      if(result is http.Response){
+        if(result.statusCode==200){
+          log("explore categories-->${result.body}");
+          exploreCategories = homeCategoriesModelFromJson(result.body)!.categories!;
+          fetchCategories();
+        }
+      }
+    }catch(e){
+      if(kDebugMode){
+        print("explore categories error-->$e");
+      }
+    }
+    loadingExploreCategories = false;
+    update(["categories"]);
 
   }
 
@@ -309,13 +324,10 @@ class HomeController extends GetxController{
   @override
   void onInit() {
     super.onInit();
-    fetchCategories();
-    fetchProducts(isRefresh: true);
+    fetchExploreCategories();
     fetchFeaturedProducts();
     fetchCarousel1();
     fetchCampaigns();
-    fetchSubCategories();
-    fetchSubCategories2();
     fetchSubCategories3();
     sc.addListener(() {
       calculateCurrentScrollPosition();

@@ -15,13 +15,13 @@ import '../HomeScreen/Controller/cart_controller.dart';
 class PaymentScreen extends StatelessWidget {
   PaymentScreen({super.key});
 
-  PaymentController vc = Get.put(PaymentController());
-  CartController    cc = Get.find<CartController>();
-  ChooseAddressController addressController =
-      Get.find<ChooseAddressController>();
+  PaymentController vc                      = Get.put(PaymentController());
+  CartController    cc                      = Get.find<CartController>();
+  ChooseAddressController addressController = Get.find<ChooseAddressController>();
 
   @override
   Widget build(BuildContext context) {
+
     return GetBuilder<PaymentController>(
       builder: (vc) {
         return Stack(
@@ -42,7 +42,7 @@ class PaymentScreen extends StatelessWidget {
                       style: TextStyle(
                           color: const Color(0xff2B3241),
                           fontWeight: FontWeight.w600,
-                          fontSize: 16.sp),
+                          fontSize: 14.sp),
                     ),
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 16.h),
@@ -88,10 +88,12 @@ class PaymentScreen extends StatelessWidget {
                         title: Text(addressController.selectedAddress!.name,
                             style: TextStyle(
                               color: Colors.black,
-                              fontSize: 14.sp,
+                              fontSize: 13.sp,
                               fontWeight: FontWeight.w600,
                             )),
-                        subtitle: Text(addressController.selectedAddress!.address!),
+                        subtitle: Text(addressController.selectedAddress!.address!,style: TextStyle(
+                          fontSize: 12.sp,
+                        ),),
                       ),
                     ),
                     Text(
@@ -99,7 +101,7 @@ class PaymentScreen extends StatelessWidget {
                       style: TextStyle(
                           color: const Color(0xff2B3241),
                           fontWeight: FontWeight.w600,
-                          fontSize: 16.sp),
+                          fontSize: 14.sp),
                     ),
                     GetBuilder<PaymentController>(builder: (vc) {
                       return vc.loadingPaymentOptions
@@ -198,11 +200,15 @@ class PaymentScreen extends StatelessWidget {
                               SummaryItem(
                                   title: "Items Total",
                                   value: "\u{20B9} ${cc.subTotal}"),
-                              SummaryItem(title: "Coupon Discount", value: cc.couponAmount.toString()),
-                              SummaryItem(title: "Tax", value: "0"),
+                              SummaryItem(
+                                  title: "Coupon Discount",
+                                  value: "\u{20B9} ${cc.couponAmount}"),
+                              SummaryItem(
+                                  title: "Tax",
+                                  value: "\u{20B9} 0.0"),
                               SummaryItem(
                                   title: "Shipping Charge",
-                                  value: ac.shippingCharge,
+                                  value: "\u{20B9} "+ac.shippingCharge,
                                   load: ac.fetchingShippingCharge
                               ),
                               const Padding(
@@ -302,7 +308,9 @@ class PaymentScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title),
+          Text(title,style: TextStyle(
+            fontSize: 12.sp
+          ),),
           load
               ? Skeletonizer(child: Text(value))
               : Text(
@@ -313,7 +321,8 @@ class PaymentScreen extends StatelessWidget {
                       : Colors.black,
                   fontWeight: title == "Total"
                       ? FontWeight.w600
-                      : FontWeight.w500
+                      : FontWeight.w500,
+                  fontSize: 12.sp
               ))
         ],
       ),

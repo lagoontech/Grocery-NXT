@@ -359,9 +359,8 @@ class AddCheckoutAddressView extends StatelessWidget {
 
   //
   showCitiesBottomSheet(BuildContext context) async {
-    if(vc.cities.isEmpty) {
-      vc.getCities();
-    }
+
+    vc.getCities();
     await showModalBottomSheet(
         context: context,
         isScrollControlled: true,

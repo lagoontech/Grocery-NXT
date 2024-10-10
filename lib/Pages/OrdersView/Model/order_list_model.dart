@@ -136,19 +136,19 @@ class OrderElement {
     coupon: json["coupon"],
     couponAmount: json["coupon_amount"],
     paymentTrack: json["payment_track"],
-    paymentGateway: paymentGatewayValues.map[json["payment_gateway"]]!,
+    paymentGateway: paymentGatewayValues.map[json["payment_gateway"]],
     transactionId: json["transaction_id"],
-    orderStatus: orderOrderStatusValues.map[json["order_status"]]!,
-    paymentStatus: orderOrderStatusValues.map[json["payment_status"]]!,
+    orderStatus: orderOrderStatusValues.map[json["order_status"]],
+    paymentStatus: orderOrderStatusValues.map[json["payment_status"]],
     invoiceNumber: json["invoice_number"],
     createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
     updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
     userId: json["user_id"],
-    type: datumTypeValues.map[json["type"]]!,
+    type: datumTypeValues.map[json["type"]],
     note: json["note"],
     selectedCustomer: json["selected_customer"],
     paymentMeta: json["payment_meta"] == null ? null : PaymentMeta.fromJson(json["payment_meta"]),
-    orderTrack: json["order_track"] == null ? [] : List<OrderTrack>.from(json["order_track"]!.map((x) => OrderTrack.fromJson(x))),
+    orderTrack: json["order_track"] == null ? [] : List<OrderTrack>.from(json["order_track"].map((x) => OrderTrack.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -837,7 +837,7 @@ class Unit {
 
   factory Unit.fromJson(Map<String, dynamic> json) => Unit(
     id: json["id"],
-    name: unitNameValues.map[json["name"]]!,
+    name: unitNameValues.map[json["name"]],
     createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
     updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
     deletedAt: json["deleted_at"],
