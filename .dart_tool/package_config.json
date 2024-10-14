@@ -207,7 +207,7 @@
     },
     {
       "name": "flutter",
-      "rootUri": "file:///Users/lagoontech/downloads/flutter%203/packages/flutter",
+      "rootUri": "file:///Users/lagoontech/Downloads/flutter%203/packages/flutter",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -261,13 +261,13 @@
     },
     {
       "name": "flutter_test",
-      "rootUri": "file:///Users/lagoontech/downloads/flutter%203/packages/flutter_test",
+      "rootUri": "file:///Users/lagoontech/Downloads/flutter%203/packages/flutter_test",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "flutter_web_plugins",
-      "rootUri": "file:///Users/lagoontech/downloads/flutter%203/packages/flutter_web_plugins",
+      "rootUri": "file:///Users/lagoontech/Downloads/flutter%203/packages/flutter_web_plugins",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -422,16 +422,16 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "numpad",
-      "rootUri": "file:///Users/lagoontech/.pub-cache/hosted/pub.dev/numpad-0.0.2",
-      "packageUri": "lib/",
-      "languageVersion": "2.16"
-    },
-    {
       "name": "octo_image",
       "rootUri": "file:///Users/lagoontech/.pub-cache/hosted/pub.dev/octo_image-2.0.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
+    },
+    {
+      "name": "onscreen_num_keyboard",
+      "rootUri": "file:///Users/lagoontech/.pub-cache/hosted/pub.dev/onscreen_num_keyboard-1.0.4",
+      "packageUri": "lib/",
+      "languageVersion": "2.16"
     },
     {
       "name": "os_detect",
@@ -615,7 +615,7 @@
     },
     {
       "name": "sky_engine",
-      "rootUri": "file:///Users/lagoontech/downloads/flutter%203/bin/cache/pkg/sky_engine",
+      "rootUri": "file:///Users/lagoontech/Downloads/flutter%203/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -860,7 +860,7 @@
       "languageVersion": "3.3"
     }
   ],
-  "generated": "2024-10-10T05:15:58.596216Z",
+  "generated": "2024-10-14T11:52:03.615702Z",
   "generator": "pub",
   "generatorVersion": "3.3.0"
 }

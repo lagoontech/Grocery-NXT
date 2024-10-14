@@ -17,9 +17,9 @@ class LoginController extends GetxController{
   TextEditingController gstTEC     = TextEditingController();
   TextEditingController fssaiTEC   = TextEditingController();
   TextEditingController companyTEC = TextEditingController();
-  bool loggingIn                 = false;
-  bool isVendor                  = false;
-  PageController pageController = PageController();
+  bool loggingIn                   = false;
+  bool isVendor                    = false;
+  PageController pageController    = PageController();
 
   //
   processLogin() async {

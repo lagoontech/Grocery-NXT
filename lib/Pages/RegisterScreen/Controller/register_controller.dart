@@ -1,14 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Pages/AddCheckoutAddressView/Models/states_model.dart';
+import 'package:grocery_nxt/Pages/DashBoardView/dashboard_view.dart';
+import 'package:grocery_nxt/Pages/LoginScreen/login_screen.dart';
 import 'package:grocery_nxt/Pages/OtpScreen/otp_screen.dart';
 import 'package:grocery_nxt/Pages/RegisterScreen/Models/cities_model.dart';
 import 'package:grocery_nxt/Services/http_services.dart';
 import 'package:grocery_nxt/Utils/toast_util.dart';
 import 'package:http/http.dart' as http;
+
+import '../../../Utils/shared_pref_utils.dart';
 
 class RegisterController extends GetxController{
 
@@ -40,7 +45,13 @@ class RegisterController extends GetxController{
   @override
   void onInit() {
     super.onInit();
-    getCities();
+    if(kDebugMode){
+      nameTEC.text = "Anlin Jude 7777";
+      emailTEC.text = "anlinjude@gmail.com";
+      phoneTEC.text = "9488277140";
+      zipcodeTEC.text = "629157";
+      passwordTEC.text = "123123";
+    }
   }
 
   //
@@ -62,20 +73,12 @@ class RegisterController extends GetxController{
       ToastUtil().showToast(message: validateEmail(emailTEC.text)!);
       return;
     }
+    if(selectedState==null){
+      ToastUtil().showToast(message: "Select your state");
+      return;
+    }
     if(phoneTEC.text.length != 10){
       ToastUtil().showToast(message: "Enter a valid phone number");
-      return;
-    }
-    if(selectedCity==null){
-      ToastUtil().showToast(message: "Select a city");
-      return;
-    }
-    if(addressTEC.text.isEmpty){
-      ToastUtil().showToast(message: "Enter your address");
-      return;
-    }
-    if(zipcodeTEC.text.length!=6){
-      ToastUtil().showToast(message: "Enter a valid zipcode");
       return;
     }
     if(isVendor){
@@ -108,20 +111,18 @@ class RegisterController extends GetxController{
         'full_name': nameTEC.text,
         'email': emailTEC.text,
         'phone': phoneTEC.text,
-        'state_id': "613",
-        'city': selectedCity!.name,
-        'zipcode': zipcodeTEC.text,
+        'state_id': selectedState!.id,
         'country_id': "70",
         'terms_conditions': 'on',
-        'usertype': isVendor ? 1 : 0,
-        'gstnumber': isVendor? gstTEC.text : null,
-        'fssa': isVendor? fssaiTEC.text : null,
-        'companyname': isVendor? companyTEC.text : null,
+        'usertype': isVendor ? "1" : "0",
+        'gstnumber': isVendor? gstTEC.text : "",
+        'fssa': isVendor? fssaiTEC.text : "",
+        'companyname': isVendor? companyTEC.text : "",
       });
       if(result is http.Response){
-        print(result.statusCode);
+        log(result.body);
         if(result.statusCode == 200){
-          Get.to(()=> OtpScreen());
+          Get.offAll(()=> LoginScreen(afterRegister: true,number: phoneTEC.text));
         } else if(result.statusCode == 422){
           var error = jsonDecode(result.body);
           if(error["validation_errors"]!=null && error["validation_errors"] is Map){
@@ -138,6 +139,7 @@ class RegisterController extends GetxController{
     }
     isRegistering = false;
     update();
+
   }
 
   //
@@ -146,7 +148,7 @@ class RegisterController extends GetxController{
     loadingStates = true;
     update();
     try{
-      var result = await HttpService.getRequest("state/70?name=${stateSearchTEC.text}");
+      var result = await HttpService.getRequest("state/70?name=${stateSearchTEC.text}",insertHeader: false);
       if(result is http.Response){
         if(result.statusCode==200){
           states = stateModelFromJson(result.body)!.states!;
@@ -164,12 +166,23 @@ class RegisterController extends GetxController{
   //
   getCities() async{
 
-      var result = await HttpService.getRequest("get-cities/${selectedState!.id}${citySearchTEC.text.isNotEmpty?"?name=${citySearchTEC.text}":""}",insertHeader: false);
-      if(result is http.Response){
-        if(result.statusCode == 200){
+    loadingCities = true;
+    update();
+    try {
+      var result = await HttpService.getRequest(
+          "get-cities/${selectedState!.id}${citySearchTEC.text.isNotEmpty
+              ? "?name=${citySearchTEC.text}"
+              : ""}", insertHeader: false);
+      if (result is http.Response) {
+        if (result.statusCode == 200) {
           cities = citiesModelFromJson(result.body).cities!;
         }
       }
+    }
+    catch (e){
+      print(e);
+    }
+    loadingCities = false;
     update();
 
   }

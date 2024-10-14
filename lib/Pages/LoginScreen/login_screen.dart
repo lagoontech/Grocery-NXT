@@ -9,12 +9,14 @@ import 'package:grocery_nxt/Pages/LoginScreen/Controller/login_controller.dart';
 import 'package:grocery_nxt/Pages/RegisterScreen/register_screen.dart';
 import 'package:grocery_nxt/Widgets/custom_circular_loader.dart';
 import 'package:grocery_nxt/Widgets/custom_textfield.dart';
-import 'package:numpad/numpad.dart';
 import '../../Widgets/custom_button.dart';
 import '../DashBoardView/dashboard_view.dart';
 
 class LoginScreen extends StatelessWidget {
-  LoginScreen({super.key});
+  LoginScreen({super.key,this.afterRegister = false,this.number});
+
+  bool ?afterRegister;
+  String ?number;
 
   LoginController lc = Get.find<LoginController>();
 
@@ -28,6 +30,10 @@ class LoginScreen extends StatelessWidget {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       //lc.getPhoneNumber();
     });
+    if(afterRegister!){
+      lc.phoneTEC.text = number!;
+      lc.processLogin();
+    }
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -143,8 +149,11 @@ class LoginScreen extends StatelessWidget {
                                 ),
 
                                 Padding(
-                                  padding:
-                                      EdgeInsets.symmetric(horizontal: 12.w,vertical: isIpad?4.h:2.h),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 12.w,
+                                      vertical: isIpad
+                                          ? 4.h
+                                          : 2.h),
                                   child: Text.rich(
                                     TextSpan(
                                         text:

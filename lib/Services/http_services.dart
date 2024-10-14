@@ -74,7 +74,7 @@ class HttpService {
                   ? {
                       'content-type': 'application/json',
                       'accept': 'application/json',
-                      'authorization': "Bearer "+await SharedPrefUtils().getToken(),
+                      'authorization': "Bearer "+await SharedPrefUtils().getToken() ?? "",
                       'x-api-key': "b8f4a0ba4537ad6c3ee41ec0a43549d1"
                     }
                   : {'content-type': 'application/json'})

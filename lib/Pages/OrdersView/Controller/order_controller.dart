@@ -72,7 +72,7 @@ class OrderController extends GetxController with GetTickerProviderStateMixin{
       pendingOrdersPage++;
     }
     update();
-      var result = await HttpService.getRequest("user/orderpending-list?page=${pendingOrdersPage}");
+      var result = await HttpService.getRequest("user/orderpending-list?page=${pendingOrdersPage}",insertHeader: false);
       if(result is http.Response){
         if(result.statusCode==200){
           if(isLoading){

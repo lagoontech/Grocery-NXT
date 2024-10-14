@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:flutter/animation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
@@ -11,19 +12,21 @@ import '../../AllProductsView/Model/products_list_model.dart';
 
 class ProductDetailsController extends GetxController
     with GetTickerProviderStateMixin {
+
   late Animation animation;
   late AnimationController animationController;
-  CartController cc = Get.find<CartController>();
+  CartController cc    = Get.find<CartController>();
   ProductDetailsModel? productDetails;
   ProductColor? selectedVariant;
-  bool isLoading = true;
+  ProductColor? selectedType;
+  bool isLoading       = true;
   int? productId;
   String selectedImage = "";
   List<AdditionalInfoStore> additionalInfos = [];
   Product? product;
-  int? quantity = 1;
+  int? quantity  = 1;
   String preBook = "";
-  bool booking = false;
+  bool booking   = false;
 
   //
   getProductDetails() async {
@@ -32,10 +35,22 @@ class ProductDetailsController extends GetxController
       var result = await HttpService.getRequest("product/$productId");
       if (result is http.Response) {
         if (kDebugMode) {
-          print("product details response-->"+result.body);
+          print(result.body);
         }
         if (result.statusCode == 200) {
           productDetails = productDetailsModelFromJson(result.body);
+          if(productDetails!.productColors!=null && productDetails!.productColors!.isNotEmpty){
+            for (var element in productDetails!.productSizes!) {
+              for (var detail in productDetails!.product!.inventoryDetails!) {
+                if(detail.size == element.id.toString()){
+                  if(element.itemTypes == null){
+                    element.itemTypes = [];
+                  }
+                  element.itemTypes!.add(ProductColor.fromJson(detail.productColor)..additionalPrice = element.additionalPrice);
+                }
+              }
+            }
+          }
           selectedImage = productDetails!.product!.image!;
           animationController.forward();
           if (productDetails!.additionalInfoStore != null) {
@@ -55,76 +70,82 @@ class ProductDetailsController extends GetxController
     }
     isLoading = false;
     update();
+
   }
 
   //
   changeVariant() {
-    int index = productDetails!.productSizes!.indexOf(selectedVariant!);
+
+    int index = 0;
+    index = productDetails!.productSizes!.indexOf(selectedVariant!);
     if (kDebugMode) {
       print("selected variant index-->$index");
     }
-    /*if (index == 0) {
-      productDetails!.product!.salePrice =
-          additionalInfos[index].additionalPrice;
-      product!.discountPrice =
-          int.parse(additionalInfos[index].additionalPrice.ceil().toString());
-      product!.cartQuantity = quantity!;
-      product!.productColor = productDetails!.productSizes![index];
-      product!.variantInfo = null;
-      product!.stockCount = additionalInfos[index].stockCount;
-      update();
-      return;
-    }*/
-    productDetails!.product!.salePrice = additionalInfos[index].additionalPrice;
-    product!.discountPrice =
-        int.parse(additionalInfos[index].additionalPrice.ceil().toString());
-    product!.productColor = productDetails!.productSizes![index];
-    product!.variantInfo = additionalInfos[index];
-    product!.cartQuantity = quantity!;
-    product!.stockCount = additionalInfos[index].stockCount;
-    product!.postInventoryId = productDetails!.product!.inventoryDetails!.firstWhere((element) =>
-    element.size==product!.productColor!.id.toString()).id.toString();
+    if(selectedVariant!.itemTypes != null && selectedVariant!.itemTypes!.isNotEmpty && selectedType != null){
+      int index = 0;
+      for (var element in productDetails!.product!.inventoryDetails!) {
+        if(element.size.toString() == selectedVariant!.id.toString()){
+          if(element.color == selectedType!.id.toString()){
+            productDetails!.product!.salePrice = element.additionalPrice;
+            product!.discountPrice             = element.additionalPrice;
+            product!.postInventoryId           = element.id.toString();
+            product!.itemType                  = selectedType;
+          }
+        }
+      }
+    }else{
+      productDetails!.product!.salePrice = additionalInfos[index].additionalPrice;
+      product!.discountPrice             = int.parse(additionalInfos[index].additionalPrice.ceil().toString());
+    }
+    product!.productColor    = productDetails!.productSizes![index];
+    product!.variantInfo     = additionalInfos[index];
+    product!.cartQuantity    = quantity!;
+    product!.stockCount      = additionalInfos[index].stockCount;
+    product!.postInventoryId =
+        productDetails!.product!.inventoryDetails!.firstWhere((element) =>
+        element.size == product!.productColor!.id.toString()).id.toString();
     update();
+
   }
 
   //
   checkVariant() {
     bool regularProductInCart = cc.products
-            .firstWhere(
-                (element) =>
-                    element.prdId == product!.prdId &&
-                    element.variantInfo == null,
-                orElse: () => Product())
-            .prdId !=
+        .firstWhere(
+            (element) =>
+        element.prdId == product!.prdId &&
+            element.variantInfo == null,
+        orElse: () => Product())
+        .prdId !=
         null;
     if (regularProductInCart) {
       print("regularProductInCart");
       quantity = cc.products
           .firstWhere((element) =>
-              element.prdId == product!.prdId && element.variantInfo == null)
+      element.prdId == product!.prdId && element.variantInfo == null)
           .cartQuantity;
-      selectedVariant = productDetails!.productSizes!.first;
+      selectedVariant = productDetails!.productSizes!.first..itemTypes=[];
       changeVariant();
       return;
     }
 
     bool variantInCart = cc.products
-            .firstWhere(
-                (element) =>
-                    element.prdId == product!.prdId &&
-                    element.variantInfo != null,
-                orElse: () => Product())
-            .prdId !=
+        .firstWhere(
+            (element) =>
+        element.prdId == product!.prdId &&
+            element.variantInfo != null,
+        orElse: () => Product())
+        .prdId !=
         null;
     if (variantInCart) {
       int index = cc.products.indexWhere((element) =>
-          element.prdId == product!.prdId && element.variantInfo != null);
+      element.prdId == product!.prdId && element.variantInfo != null);
       selectedVariant = productDetails!.productSizes!.firstWhere((element) {
         return element.id == cc.products[index].productColor!.id;
       });
       quantity = cc.products
           .firstWhere((element) =>
-              element.prdId == product!.prdId && element.variantInfo != null)
+      element.prdId == product!.prdId && element.variantInfo != null)
           .cartQuantity;
       changeVariant();
       update();
@@ -135,7 +156,7 @@ class ProductDetailsController extends GetxController
       changeVariant();
     }
   }
-  
+
   //
   preBookAPI() async {
 

@@ -324,6 +324,69 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                           }
                                       ),
                                     ): const SizedBox(),
+
+                                    vc.selectedVariant != null
+                                        && vc.selectedVariant!.itemTypes!=null
+                                        && vc.selectedVariant!.itemTypes!.isNotEmpty?
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+
+                                        Padding(
+                                          padding: EdgeInsets.only(top: 8.h,bottom: 4.h),
+                                          child: Text(
+                                              "Item Types",
+                                              style: TextStyle(
+                                                  fontSize: 12.sp,
+                                                  fontWeight: FontWeight.w600
+                                              )),
+                                        ),
+
+                                        SizedBox(
+                                          height: 35.h,
+                                          child: ListView.builder(
+                                              itemCount: vc.selectedVariant!.itemTypes!.length,
+                                              shrinkWrap: true,
+                                              scrollDirection: Axis.horizontal,
+                                              itemBuilder: (context,index){
+                                                var  unit       = vc.selectedVariant!.itemTypes![index];
+                                                bool isSelected = vc.selectedType==unit;
+                                                return GestureDetector(
+                                                  onTap: (){
+                                                    vc.selectedType = unit;
+                                                    vc.changeVariant();
+                                                  },
+                                                  child: Container(
+                                                    padding: EdgeInsets.symmetric(horizontal: 4.w),
+                                                    margin: EdgeInsets.only(right: 4.w),
+                                                    decoration: BoxDecoration(
+                                                      color: isSelected
+                                                          ? AppColors.primaryColor
+                                                          : Colors.transparent,
+                                                      border: Border.all(color: AppColors.primaryColor),
+                                                      borderRadius: BorderRadius.circular(4.w),
+                                                    ),
+                                                    child: Center(
+                                                        child: Text(
+                                                          unit.name,
+                                                          style: TextStyle(
+                                                            color: isSelected
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                            fontSize: 12.sp,
+                                                          ),
+                                                        )
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                          ),
+                                        ),
+
+                                        SizedBox(height: 8.h)
+
+                                      ],
+                                    ): const SizedBox(),
                           
                                     SizedBox(height: 4.h),
                           
@@ -440,18 +503,6 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                             ),
                                           ),
 
-                                          Container(
-                                            width: 100.w,
-                                            height: 24.h,
-                                            decoration: BoxDecoration(
-                                                color: Colors.white
-                                            ),
-                                            child: Center(
-                                              child: Text(vc.productDetails!.coupons!.allcouponcode!,style: TextStyle(
-                                                  color: Colors.black
-                                              ),)
-                                            )
-                                          ),
 
                                         ],
                                       ),

@@ -23,8 +23,7 @@ class ProductDetailsModel {
         required this.settingText,
         required this.userRatedAlready,
         this.productDeliveryOption,
-        this.variantInfo,
-        this.coupons});
+        this.variantInfo});
 
   ProductDetailsModelProduct? product;
   dynamic productUrl;
@@ -45,7 +44,6 @@ class ProductDetailsModel {
   SettingText? settingText;
   dynamic userRatedAlready;
   List<ProductDeliveryOption>? productDeliveryOption;
-  CouponCode ?coupons;
 
   factory ProductDetailsModel.fromJson(Map<String, dynamic> json) =>
       ProductDetailsModel(
@@ -90,7 +88,6 @@ class ProductDetailsModel {
             ? null
             : List<ProductDeliveryOption>.from(json["product_delivery_option"]
             .map((x) => ProductDeliveryOption.fromJson(x))),
-        coupons: json["overallcouponcode"] != null ? CouponCode.fromJson(json["overallcouponcode"]) : null
       );
 }
 
@@ -422,85 +419,85 @@ class ProductDetailsModelProduct {
 
   factory ProductDetailsModelProduct.fromJson(Map<String, dynamic> json) =>
       ProductDetailsModelProduct(
-        id: json["id"],
-        name: json["name"],
-        slug: json["slug"],
-        randomKey: json["random_key"],
-        randomSecret: json["random_secret"],
-        summary: json["summary"],
-        description: json["description"],
-        imageId: json["image_id"],
-        price: json["price"] is String
-            ? num.parse(json["price"]).toDouble()
-            : json["price"]?.toDouble(),
-        salePrice: json["sale_price"] is String
-            ? num.parse(json["sale_price"]).toDouble()
-            : json["sale_price"].toDouble(),
-        cost: json["cost"],
-        badgeId: json["badge_id"],
-        brandId: json["brand_id"],
-        statusId: json["status_id"],
-        productType: json["product_type"],
-        soldCount: json["sold_count"],
-        minPurchase: json["min_purchase"],
-        maxPurchase: json["max_purchase"],
-        isRefundable: json["is_refundable"],
-        isInHouse: json["is_in_house"],
-        isInventoryWarnAble: json["is_inventory_warn_able"],
-        deletedAt: json["deleted_at"],
-        adminId: json["admin_id"],
-        vendorId: json["vendor_id"],
-        reviewsAvgRating: json["reviews_avg_rating"] is String
-            ? double.parse(json["reviews_avg_rating"])
-            : json["reviews_avg_rating"]?.toDouble(),
-        reviewsCount: json["reviews_count"],
-        image: json["image"],
-        badge: json["badge"],
-        uom: json["uom"],
-        category: json["category"] == null
-            ? null
-            : Category.fromJson(json["category"]),
-        subCategory: json["sub_category"] == null
-            ? null
-            : Category.fromJson(json["sub_category"]),
-        childCategory: json["child_category"] == null
-            ? null
-            : List<ChildCategory>.from(
-            json["child_category"].map((x) => ChildCategory.fromJson(x))),
-        tag: json["tag"] == null
-            ? null
-            : List<Tag>.from(json["tag"].map((x) => Tag.fromJson(x))),
-        brand: json["brand"]?["name"],
-        color: json["color"] == null
-            ? null
-            : List<ProductColor>.from(
-            json["color"].map((x) => ProductColor.fromJson(x))),
-        size: json["size"] == null
-            ? null
-            : List<ProductColor>.from(
-            json["size"].map((x) => ProductColor.fromJson(x))),
-        campaignProduct: json["campaign_product"] == null
-            ? null
-            : CampaignProduct.fromJson(json["campaign_product"]),
-        inventoryDetails: json["inventory_detail"] == null
-            ? null
-            : List<InventoryDetail>.from(
-            json["inventory_detail"].map((x) => InventoryDetail.fromJson(x))),
-        inventoryDetail: json["inventory_detail"],
-        reviews:
-        List<Review>.from(json["reviews"].map((x) => Review.fromJson(x))),
-        inventory: json["inventory"],
-        galleryImages:
-        List<String>.from(json["gallery_images"].map((x) => x["image"])),
-        productDeliveryOption: json["product_delivery_option"] == null
-            ? null
-            : List<ProductDeliveryOption>.from(json["product_delivery_option"]
-            .map((x) => ProductDeliveryOption.fromJson(x))),
-        campaignSoldProduct: json["campaign_sold_product"] == null
-            ? null
-            : CampaignSoldProduct.fromJson(json["campaign_sold_product"]),
-        vendor: json["vendor"] == null ? null : Vendor.fromJson(json["vendor"]),
-        enablePrebook: json["is_prebook"] == 1 ? true : false
+          id: json["id"],
+          name: json["name"],
+          slug: json["slug"],
+          randomKey: json["random_key"],
+          randomSecret: json["random_secret"],
+          summary: json["summary"],
+          description: json["description"],
+          imageId: json["image_id"],
+          price: json["price"] is String
+              ? num.parse(json["price"]).toDouble()
+              : json["price"]?.toDouble(),
+          salePrice: json["sale_price"] is String
+              ? num.parse(json["sale_price"]).toDouble()
+              : json["sale_price"].toDouble(),
+          cost: json["cost"],
+          badgeId: json["badge_id"],
+          brandId: json["brand_id"],
+          statusId: json["status_id"],
+          productType: json["product_type"],
+          soldCount: json["sold_count"],
+          minPurchase: json["min_purchase"],
+          maxPurchase: json["max_purchase"],
+          isRefundable: json["is_refundable"],
+          isInHouse: json["is_in_house"],
+          isInventoryWarnAble: json["is_inventory_warn_able"],
+          deletedAt: json["deleted_at"],
+          adminId: json["admin_id"],
+          vendorId: json["vendor_id"],
+          reviewsAvgRating: json["reviews_avg_rating"] is String
+              ? double.parse(json["reviews_avg_rating"])
+              : json["reviews_avg_rating"]?.toDouble(),
+          reviewsCount: json["reviews_count"],
+          image: json["image"],
+          badge: json["badge"],
+          uom: json["uom"],
+          category: json["category"] == null
+              ? null
+              : Category.fromJson(json["category"]),
+          subCategory: json["sub_category"] == null
+              ? null
+              : Category.fromJson(json["sub_category"]),
+          childCategory: json["child_category"] == null
+              ? null
+              : List<ChildCategory>.from(
+              json["child_category"].map((x) => ChildCategory.fromJson(x))),
+          tag: json["tag"] == null
+              ? null
+              : List<Tag>.from(json["tag"].map((x) => Tag.fromJson(x))),
+          brand: json["brand"]?["name"],
+          color: json["color"] == null
+              ? null
+              : List<ProductColor>.from(
+              json["color"].map((x) => ProductColor.fromJson(x))),
+          size: json["size"] == null
+              ? null
+              : List<ProductColor>.from(
+              json["size"].map((x) => ProductColor.fromJson(x))),
+          campaignProduct: json["campaign_product"] == null
+              ? null
+              : CampaignProduct.fromJson(json["campaign_product"]),
+          inventoryDetails: json["inventory_detail"] == null
+              ? null
+              : List<InventoryDetail>.from(
+              json["inventory_detail"].map((x) => InventoryDetail.fromJson(x))),
+          inventoryDetail: json["inventory_detail"],
+          reviews:
+          List<Review>.from(json["reviews"].map((x) => Review.fromJson(x))),
+          inventory: json["inventory"],
+          galleryImages:
+          List<String>.from(json["gallery_images"].map((x) => x["image"])),
+          productDeliveryOption: json["product_delivery_option"] == null
+              ? null
+              : List<ProductDeliveryOption>.from(json["product_delivery_option"]
+              .map((x) => ProductDeliveryOption.fromJson(x))),
+          campaignSoldProduct: json["campaign_sold_product"] == null
+              ? null
+              : CampaignSoldProduct.fromJson(json["campaign_sold_product"]),
+          vendor: json["vendor"] == null ? null : Vendor.fromJson(json["vendor"]),
+          enablePrebook: json["is_prebook"] == 1 ? true : false
       );
 }
 
@@ -641,12 +638,17 @@ class ProductColor {
     required this.name,
     this.colorCode,
     this.sizeCode,
+    this.itemTypes,
+    this.additionalPrice
   });
 
   dynamic id;
   String name;
   String? colorCode;
   String? sizeCode;
+  List<ProductColor> ?itemTypes;
+  double ?additionalPrice;
+
 
   factory ProductColor.fromJson(Map<String, dynamic> json) => ProductColor(
     id: json["id"],
@@ -940,33 +942,6 @@ class Vendor {
       vendorAddress: VendorAddress.fromJson(json["vendor_address"]),
       createdAt: DateTime.parse(json["created_at"]),
       image: json["image"]);
-}
-
-class CouponCode{
-
-  CouponCode({
-    this.allcategorycouponcode,
-    this.allsubcategorycouponcode,
-    this.allproductcouponcode,
-    this.customercouponcode,
-    this.allcouponcode
-});
-
-  String ?allcouponcode;
-  String ?allcategorycouponcode;
-  String ?allsubcategorycouponcode;
-  String ?allproductcouponcode;
-  String ?customercouponcode;
-
-  factory CouponCode.fromJson(Map<String, dynamic> json) {
-    return CouponCode(
-      allcouponcode:            json['allcouponcode'],
-      allcategorycouponcode:    json['allcategorycouponcode'],
-      allsubcategorycouponcode: json['allsubcategorycouponcode'],
-      allproductcouponcode:     json['allproductcouponcode'],
-      customercouponcode:       json['customercouponcode'],
-    );
-  }
 }
 
 class ProductElement {

@@ -59,6 +59,7 @@ class Product {
   int cartQuantity;
   AdditionalInfoStore ?variantInfo;
   ProductColor ?productColor;
+  ProductColor ?itemType;
   Color ?color;
   String? inventoryattribute;
   String? postInventoryId;

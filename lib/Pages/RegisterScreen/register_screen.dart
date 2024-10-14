@@ -18,7 +18,7 @@ class Register extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -91,109 +91,65 @@ class Register extends StatelessWidget {
                 controller: rc.stateTEC,
               ),
 
-              SizedBox(height: 12.h),
-
-              rc.selectedState!=null?Column(
-                children: [
-
-                  customTextField(
-                    context,
-                    hint: "City",
-                    readOnly: true,
-                    onTap: () {
-                      showCitiesBottomSheet(context);
-                    },
-                    fillColor: AppColors.primaryColor.withOpacity(0.01),
-                    borderColor: AppColors.primaryColor,
-                    controller: rc.cityTEC,
-                  ),
-
-                  SizedBox(height: 12.h),
-
-                ],
-              ): const SizedBox(),
-
-              customTextField(
-                context,
-                hint: "Zipcode",
-                textInputType: TextInputType.number,
-                onTap: () {
-                  showCitiesBottomSheet(context);
-                },
-                fillColor: AppColors.primaryColor.withOpacity(0.01),
-                borderColor: AppColors.primaryColor,
-                controller: rc.zipcodeTEC,
-              ),
-
-              SizedBox(height: 12.h),
-
-              customTextField(
-                context,
-                hint: "Address",
-                fillColor: AppColors.primaryColor.withOpacity(0.01),
-                borderColor: AppColors.primaryColor,
-                controller: rc.addressTEC,
-              ),
-
               GetBuilder<RegisterController>(
-                builder: (vc) {
-                  return vc.isVendor?Column(
-                    children: [
-                      SizedBox(height: 12.h),
-                      customTextField(
-                        context,
-                        hint: "GST number",
-                        fillColor: AppColors.primaryColor
-                            .withOpacity(0.01),
-                        borderColor: AppColors.primaryColor,
-                        controller: rc.gstTEC,
-                      ),
-                      SizedBox(height: 12.h),
-                      customTextField(context,
-                          hint: "FSSAI number",
+                  builder: (vc) {
+                    return vc.isVendor?Column(
+                      children: [
+                        SizedBox(height: 12.h),
+                        customTextField(
+                          context,
+                          hint: "GST number",
                           fillColor: AppColors.primaryColor
                               .withOpacity(0.01),
                           borderColor: AppColors.primaryColor,
-                          controller: rc.fssaiTEC),
-                      SizedBox(height: 12.h),
-                      customTextField(context,
-                          hint: "Company",
-                          fillColor: AppColors.primaryColor
-                              .withOpacity(0.01),
-                          borderColor: AppColors.primaryColor,
-                          controller: rc.companyTEC),
-                    ],
-                  ) : SizedBox();
-                }
+                          controller: rc.gstTEC,
+                        ),
+                        SizedBox(height: 12.h),
+                        customTextField(context,
+                            hint: "FSSAI number",
+                            fillColor: AppColors.primaryColor
+                                .withOpacity(0.01),
+                            borderColor: AppColors.primaryColor,
+                            controller: rc.fssaiTEC),
+                        SizedBox(height: 12.h),
+                        customTextField(context,
+                            hint: "Company",
+                            fillColor: AppColors.primaryColor
+                                .withOpacity(0.01),
+                            borderColor: AppColors.primaryColor,
+                            controller: rc.companyTEC),
+                      ],
+                    ) : SizedBox();
+                  }
               ),
 
               SizedBox(height: 4.h),
 
               GetBuilder<RegisterController>(
-                builder: (vc) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
+                  builder: (vc) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
 
-                      SizedBox(
-                        width: 30.w,
-                        child: Checkbox(
-                            value: rc.isVendor,
-                            side: BorderSide(color: AppColors.primaryColor,width: 1),
-                            onChanged: (v){
-                              rc.isVendor = v!;
-                              rc.update();
-                            }),
-                      ),
+                        SizedBox(
+                          width: 30.w,
+                          child: Checkbox(
+                              value: rc.isVendor,
+                              side: BorderSide(color: AppColors.primaryColor,width: 1),
+                              onChanged: (v){
+                                rc.isVendor = v!;
+                                rc.update();
+                              }),
+                        ),
 
-                      Text(
-                        "Re-seller",
-                        style: TextStyle(
-                            color: AppColors.primaryColor))
+                        Text(
+                            "Re-seller",
+                            style: TextStyle(
+                                color: AppColors.primaryColor))
 
-                    ],
-                  );
-                }
+                      ],
+                    );
+                  }
               ),
 
               SizedBox(height: 24.h),
@@ -203,9 +159,9 @@ class Register extends StatelessWidget {
                   width: MediaQuery.of(context).size.width * 0.8,
                   child: !vc.isRegistering
                       ? const Text(
-                          "Register",
-                          style: TextStyle(color: Colors.white),
-                        )
+                    "Register",
+                    style: TextStyle(color: Colors.white),
+                  )
                       : CustomCircularLoader(),
                   onTap: () {
                     rc.register();
@@ -286,6 +242,7 @@ class Register extends StatelessWidget {
                                 vc.stateTEC.text =
                                 vc.states[index]!.name!;
                                 vc.selectedState = vc.states[index];
+                                vc.update();
                                 Get.back();
                               },
                               title: Text(vc.states[index]!.name!),
@@ -354,28 +311,28 @@ class Register extends StatelessWidget {
                   GetBuilder<RegisterController>(builder: (vc) {
                     return !vc.loadingCities
                         ? CustomListView(
-                            itemCount: vc.cities.length,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              return Column(
-                                children: [
-                                  ListTile(
-                                    onTap: () {
-                                      vc.cityTEC.text =
-                                          vc.cities[index]!.name!;
-                                      vc.selectedCity = vc.cities[index];
-                                      Get.back();
-                                    },
-                                    title: Text(vc.cities[index]!.name!),
-                                  ),
-                                  const Divider(height: 0)
-                                ],
-                              );
-                            },
-                          )
+                      itemCount: vc.cities.length,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            ListTile(
+                              onTap: () {
+                                vc.cityTEC.text =
+                                vc.cities[index]!.name!;
+                                vc.selectedCity = vc.cities[index];
+                                Get.back();
+                              },
+                              title: Text(vc.cities[index]!.name!),
+                            ),
+                            const Divider(height: 0)
+                          ],
+                        );
+                      },
+                    )
                         : CustomCircularLoader(
-                            color: AppColors.primaryColor,
-                          );
+                      color: AppColors.primaryColor,
+                    );
                   }),
                 ],
               ),

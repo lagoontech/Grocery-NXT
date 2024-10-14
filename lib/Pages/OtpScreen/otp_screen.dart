@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/app_colors.dart';
 import 'package:grocery_nxt/Pages/OtpScreen/Controller/otp_controller.dart';
 import 'package:grocery_nxt/Widgets/custom_circular_loader.dart';
-import 'package:numpad/numpad.dart';
+import 'package:onscreen_num_keyboard/onscreen_num_keyboard.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import '../../Constants/app_size.dart';
 import '../../Widgets/custom_button.dart';
@@ -130,26 +130,22 @@ class OtpScreen extends StatelessWidget {
                         BoxDecoration(borderRadius: BorderRadius.circular(16)),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(16),
-                      child: NumPad(
-                          backgroundColor: const Color(0xfff3f5f7),
-                          buttonSize: 12,
-                          mainAxisSpacing: 12,
-                          textStyle: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 32,
-                          ),
-                          numItemDecoration: const BoxDecoration(),
-                          onTap: (val) {
-                            if (val == 99) {
-                              if (vc.otpTEC.text.isEmpty) {
+                      child: NumericKeyboard(
+                          rightIcon: IconButton(
+                              onPressed: (){
+                                if (vc.otpTEC.text.isEmpty) {
+                                  return;
+                                }
+                                vc.otpTEC.text = vc.otpTEC.text
+                                    .substring(0, vc.otpTEC.text.length - 1);
                                 return;
-                              }
-                              vc.otpTEC.text = vc.otpTEC.text
-                                  .substring(0, vc.otpTEC.text.length - 1);
-                              return;
-                            }
+                              },
+                              icon: const Icon(Icons.close)),
+                          onKeyboardTap: (val) {
                             vc.otpTEC.text = vc.otpTEC.text + val.toString();
-                            print(vc.otpTEC.text);
+                            if(vc.otpTEC.text.length == 4){
+                              vc.checkOTP();
+                            }
                           }),
                     ),
                   )) : const SizedBox()
