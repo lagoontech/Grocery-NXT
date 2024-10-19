@@ -60,17 +60,15 @@ class ChooseAddressController extends GetxController{
         }
         quantity_ids = "$quantity_ids${element.cartQuantity},";
       }
-      final Uri uri = Uri.parse('http://grocerynxt.com/api/shippingaddresszipcode.php');
+      final Uri uri = Uri.parse('http://grocerynxt.com/api/shippingaddresszipcode_weight.php');
       final map = <String, dynamic>{};
-      map['zipcode']    = selectedAddress!.zipCode;
-      map['productids'] = products_ids;
-      map['sizeid']     = size_ids;
-      map['qtyvid']     = quantity_ids;
-      log(map.toString());
+      map['zipcode']          = selectedAddress!.zipCode;
+      map['overall_weight']   = cc.weight.toString();
       http.Response result = await http.post(
         uri,
-        body: map,
+        body: map
       );
+      log(map.toString());
       if(result is http.Response){
         if(result.statusCode == 200){
           shippingCharge = jsonDecode(result.body)["finalcost"].toString();
@@ -80,7 +78,6 @@ class ChooseAddressController extends GetxController{
             
           }
           showCOD = jsonDecode(result.body)["exclude"]=='0'?false:true;
-          //finalTotal = double.parse(shippingCharge) + cc.total;
           cc.total = (cc.subTotal + double.parse(shippingCharge)) - cc.couponAmount;
         }else{
           finalTotal = cc.total;

@@ -191,12 +191,10 @@ class AddCheckoutAddressController extends GetxController{
         }
         quantity_ids = "$quantity_ids${element.cartQuantity},";
       }
-      final Uri uri = Uri.parse('http://grocerynxt.com/api/shippingaddresszipcode.php');
+      final Uri uri = Uri.parse('http://grocerynxt.com/api/shippingaddresszipcode_weight.php');
       final map = <String, dynamic>{};
       map['zipcode']    = zipcodeTEC.text;
-      map['productids'] = products_ids;
-      map['sizeid']     = size_ids;
-      map['qtyvid']     = quantity_ids;
+      map['overall_weight'] = cc.weight.toString();
       http.Response result = await http.post(
         uri,
         body: map,

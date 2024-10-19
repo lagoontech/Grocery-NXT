@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -20,13 +19,22 @@ class CartItem extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Dismissible(
-      key: ValueKey(product!.variantInfo!=null
-          ? product!.productColor!.id
+      key: ValueKey(product!.variantInfo!=null && product!.itemType == null
+          ? product!.variantInfo!.pidId
+          : product!.variantInfo!=null && product!.itemType!=null
+          ? "${product!.variantInfo!.pidId}${product!.itemType!.id}"
           : product!.prdId),
       onDismissed: (v){
-        if(product!.variantInfo!=null){
+        if(product!.variantInfo!=null && product!.itemType == null){
           cc.products.removeWhere(
-                  (element) => element.prdId==product!.prdId&&element.productColor!.id==product!.productColor!.id);
+                  (element) => element.prdId==product!.prdId
+                      && element.variantInfo!.pidId==product!.variantInfo!.pidId
+                      && element.productColor!.id == product!.productColor!.id);
+        }else if(product!.variantInfo != null && product!.itemType!=null){
+          cc.products.removeWhere(
+                  (element) => element.prdId==product!.prdId
+                  && element.variantInfo!.pidId==product!.variantInfo!.pidId
+                  && element.itemType!.id==product!.itemType!.id);
         }else{
           cc.products.removeWhere((element) => element.prdId==product!.prdId);
         }
@@ -69,27 +77,47 @@ class CartItem extends StatelessWidget {
                             overflow: TextOverflow.ellipsis
                           )),
                       SizedBox(height: 2.h),
-                      Row(
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(product!.productColor != null
-                              ? product!.productColor!.name
-                              : "",style: TextStyle(
-                              color: AppColors.primaryColor,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 12.sp
-                          ),),
-                          product!.productColor != null
-                              ?SizedBox(width: 4.w,):const SizedBox(),
-                          DefaultTextStyle(
-                            style: TextStyle(color: Colors.grey.shade600,fontSize: 12.sp),
-                            child: Row(
-                              children: [
-                                Text("\u{20B9}${product!.discountPrice!}",),
-                                Text(" x ${product!.cartQuantity} = \u{20B9}"),
-                                Text((product!.cartQuantity * product!.discountPrice).toStringAsFixed(0)),
-                              ],
-                            ),
-                          )
+
+                          product!.itemType!=null
+                              ? Padding(
+                                padding: EdgeInsets.symmetric(vertical: 2.h),
+                                child: Text(
+                                    product!.itemType!.name,
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
+                                      color: AppColors.primaryColor
+                                    ),
+                                ),
+                              )
+                              : const SizedBox(),
+
+
+                          Row(
+                            children: [
+                              Text(product!.productColor != null
+                                  ? product!.productColor!.name
+                                  : "",style: TextStyle(
+                                  color: AppColors.primaryColor,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 12.sp
+                              ),),
+                              product!.productColor != null
+                                  ?SizedBox(width: 4.w,):const SizedBox(),
+                              DefaultTextStyle(
+                                style: TextStyle(color: Colors.grey.shade600,fontSize: 12.sp),
+                                child: Row(
+                                  children: [
+                                    Text("\u{20B9}${product!.discountPrice!}",),
+                                    Text(" x ${product!.cartQuantity} = \u{20B9}"),
+                                    Text((product!.cartQuantity * product!.discountPrice).toStringAsFixed(0)),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         ],
                       ),
 
@@ -97,53 +125,57 @@ class CartItem extends StatelessWidget {
                   )),
               Expanded(
                   flex: 2,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                  GestureDetector(
-                    onTap: () {
-                      if(product!.cartQuantity==1){
-                        return;
-                      }
-                      cc.addToCart(product: product, isSub: true);
-                    },
-                    child: Container(
-                      width: 32.w,
-                      padding: EdgeInsets.all(2.w),
-                      decoration: BoxDecoration(
-                          color: Colors.grey.shade200, shape: BoxShape.circle),
-                      child: const Icon(
-                        Icons.remove,
-                        color: Colors.grey,
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end, children: [
+                      GestureDetector(
+                        onTap: () {
+                          if(product!.cartQuantity==1){
+                            return;
+                          }
+                          cc.addToCart(product: product, isSub: true);
+                        },
+                        child: Container(
+                          width: 32.w,
+                          padding: EdgeInsets.all(2.w),
+                          decoration: BoxDecoration(
+                              color: Colors.grey.shade200, shape: BoxShape.circle),
+                          child: const Icon(
+                            Icons.remove,
+                            color: Colors.grey,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 28.w,
-                    child: Center(
-                        child: Text(
-                      product!.cartQuantity.toString(),
-                      style: const TextStyle(fontWeight: FontWeight.w600),
-                    )),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      cc.addToCart(product: product);
-                    },
-                    child: Container(
-                      width: 32.w,
-                      padding: EdgeInsets.all(2.w),
-                      decoration: BoxDecoration(
-                          color: AppColors.primaryColor.withOpacity(0.8),
-                          shape: BoxShape.circle),
-                      child: const Icon(
-                        Icons.add,
-                        color: Colors.white,
+                      SizedBox(
+                        width: 28.w,
+                        child: Center(
+                            child: Text(
+                          product!.cartQuantity.toString(),
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        )),
                       ),
-                    ),
-                  ),
-                                ],
-                              ))
+                      GestureDetector(
+                        onTap: () {
+                          cc.addToCart(product: product);
+                        },
+                        child: Container(
+                          width: 32.w,
+                          padding: EdgeInsets.all(2.w),
+                          decoration: BoxDecoration(
+                              color: AppColors.primaryColor.withOpacity(0.8),
+                              shape: BoxShape.circle),
+                          child: const Icon(
+                            Icons.add,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                                    ],
+                                  )
+
+                    ],
+                  ))
             ],
           ),
         ),

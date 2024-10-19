@@ -9,7 +9,6 @@ import 'package:grocery_nxt/Services/binding_service.dart';
 import 'package:grocery_nxt/Services/network_util.dart';
 import 'package:grocery_nxt/Utils/shared_pref_utils.dart';
 import 'package:upgrader/upgrader.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 Future<void> main() async {
 
@@ -32,10 +31,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return ScreenUtilInit(
       builder: (context,w) {
         isIpad = MediaQuery.of(context).size.width>600;
         return UpgradeAlert(
+          upgrader: Upgrader(),
           child: GetMaterialApp(
             debugShowCheckedModeBanner: false,
             defaultTransition: Transition.native,

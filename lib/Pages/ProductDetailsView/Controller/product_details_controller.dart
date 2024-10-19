@@ -15,13 +15,13 @@ class ProductDetailsController extends GetxController
 
   late Animation animation;
   late AnimationController animationController;
-  CartController cc    = Get.find<CartController>();
+  CartController cc                         = Get.find<CartController>();
   ProductDetailsModel? productDetails;
   ProductColor? selectedVariant;
   ProductColor? selectedType;
-  bool isLoading       = true;
+  bool isLoading                            = true;
   int? productId;
-  String selectedImage = "";
+  String selectedImage                      = "";
   List<AdditionalInfoStore> additionalInfos = [];
   Product? product;
   int? quantity  = 1;
@@ -39,6 +39,21 @@ class ProductDetailsController extends GetxController
         }
         if (result.statusCode == 200) {
           productDetails = productDetailsModelFromJson(result.body);
+          if(productDetails!.product!.uom!=null){
+            product!.uom = Uom.fromJson(productDetails!.product!.uom);
+          }
+          if(productDetails!.productSizes!=null && productDetails!.productSizes!.isNotEmpty){
+            for (var element in productDetails!.productSizes!) {
+              for (var detail in productDetails!.product!.inventoryDetails!) {
+                if(detail.size == element.id.toString()){
+                  if(element.itemTypes == null){
+                    element.itemTypes = [];
+                  }
+                  element.regularPrice = double.parse(detail.adregularPrice.toString());
+                }
+              }
+            }
+          }
           if(productDetails!.productColors!=null && productDetails!.productColors!.isNotEmpty){
             for (var element in productDetails!.productSizes!) {
               for (var detail in productDetails!.product!.inventoryDetails!) {
@@ -46,7 +61,7 @@ class ProductDetailsController extends GetxController
                   if(element.itemTypes == null){
                     element.itemTypes = [];
                   }
-                  element.itemTypes!.add(ProductColor.fromJson(detail.productColor)..additionalPrice = element.additionalPrice);
+                  element.itemTypes!.add(ProductColor.fromJson(detail.productColor)..additionalPrice = element.additionalPrice..regularPrice = double.parse(detail.adregularPrice.toString()));
                 }
               }
             }
@@ -55,8 +70,7 @@ class ProductDetailsController extends GetxController
           animationController.forward();
           if (productDetails!.additionalInfoStore != null) {
             for (var element in productDetails!.additionalInfoStore!.keys) {
-              additionalInfos
-                  .add(productDetails!.additionalInfoStore![element]!);
+              additionalInfos.add(productDetails!.additionalInfoStore![element]!);
             }
           }
           checkVariant();
@@ -78,10 +92,9 @@ class ProductDetailsController extends GetxController
 
     int index = 0;
     index = productDetails!.productSizes!.indexOf(selectedVariant!);
-    if (kDebugMode) {
-      print("selected variant index-->$index");
-    }
-    if(selectedVariant!.itemTypes != null && selectedVariant!.itemTypes!.isNotEmpty && selectedType != null){
+    if(selectedVariant!.itemTypes != null
+        && selectedVariant!.itemTypes!.isNotEmpty
+        && selectedType != null){
       int index = 0;
       for (var element in productDetails!.product!.inventoryDetails!) {
         if(element.size.toString() == selectedVariant!.id.toString()){
@@ -95,6 +108,7 @@ class ProductDetailsController extends GetxController
       }
     }else{
       productDetails!.product!.salePrice = additionalInfos[index].additionalPrice;
+      product!.price = selectedVariant!.regularPrice;
       product!.discountPrice             = int.parse(additionalInfos[index].additionalPrice.ceil().toString());
     }
     product!.productColor    = productDetails!.productSizes![index];
@@ -119,7 +133,6 @@ class ProductDetailsController extends GetxController
         .prdId !=
         null;
     if (regularProductInCart) {
-      print("regularProductInCart");
       quantity = cc.products
           .firstWhere((element) =>
       element.prdId == product!.prdId && element.variantInfo == null)

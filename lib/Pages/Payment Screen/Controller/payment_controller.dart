@@ -163,6 +163,9 @@ class PaymentController extends GetxController {
           successResponse!.toJson(),
           insertHeader: true
       );
+      if(kDebugMode){
+        log(successResponse!.toJson().toString());
+      }
       if(result is http.Response){
         log(result.body);
         if(result.statusCode==200){
@@ -245,7 +248,9 @@ class PaymentController extends GetxController {
     super.onInit();
     loadPaymentOptions();
     razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, (v){
-      print("razorpay trId-->${v.paymentId}");
+      if(kDebugMode){
+        print("razorpay trId-->${v.paymentId}");
+      }
       transactionId = v.paymentId;
       updatePaymentStatus();
     });

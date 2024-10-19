@@ -11,25 +11,28 @@ import '../../AllProductsView/Model/products_list_model.dart';
 import 'package:http/http.dart' as http;
 
 class CartController extends GetxController {
+
   GlobalKey<CartIconKey> cartIconKey = GlobalKey<CartIconKey>();
   late Function(GlobalKey) runAddToCartAnimation;
   ScrollController scrollController = ScrollController();
 
   List<Product> products = [];
-  double totalCost    = 0.0;
-  double subTotal     = 0.0;
-  double total        = 0.0;
-  double couponAmount = 0.0;
-  int totalProducts   = 0;
+  double totalCost       = 0.0;
+  double subTotal        = 0.0;
+  double total           = 0.0;
+  double couponAmount    = 0.0;
+  int totalProducts      = 0;
   TextEditingController couponController = TextEditingController();
-  bool applyingCoupon = false;
+  bool applyingCoupon    = false;
 
   //
   addToCartFromDetailsPage({Product? product}) {
+
     if (product!.variantInfo != null && product.itemType == null) {
       int index = products.indexWhere((element) {
         if (element.productColor != null) {
-          return element.productColor!.id == product.productColor!.id;
+          return element.variantInfo!.pidId == product.variantInfo!.pidId
+              && element.productColor!.name == product.productColor!.name;
         }
         return false;
       });
@@ -40,12 +43,9 @@ class CartController extends GetxController {
       }
     } else if (product.variantInfo != null && product.itemType != null) {
       int index = products.indexWhere((element) {
-        print("color product-->${product.itemType}");
         if (element.productColor != null && element.itemType != null) {
-          print(element.productColor!.id);
-          print(product.itemType!.id);
-          return element.productColor!.id == product.productColor!.id &&
-              element.itemType!.id == product.itemType!.id;
+          return element.variantInfo!.pidId == element.variantInfo!.pidId &&
+              element.itemType!.id == product.itemType!.id && element.productColor!.name == product.productColor!.name;
         }
         return false;
       });
@@ -71,9 +71,57 @@ class CartController extends GetxController {
     calculateTotalProducts();
     calculateTotal();
     update();
-    ToastUtil()
-        .showToast(message: "Added to cart", color: AppColors.primaryColor);
+    ToastUtil().showToast(message: "Added to cart", color: AppColors.primaryColor);
+    calculateWeight();
+    products.forEach((element) {
+      element.productColor!=null
+          ? print(element.title!+"-->"+element.productColor!.name+"  id -->"+element.productColor!.id.toString())
+          : "";
+    });
+
   }
+
+  //
+  calculateWeight(){
+
+    weight = 0.0;
+    for (var element in products) {
+      if(element.productColor!=null){
+        switch (element.productColor!.sizeCode!.toLowerCase()) {
+          case 'gm':
+            weight += element.cartQuantity * element.productColor!.weight! * 0.001;
+          case 'kg':
+            weight += element.productColor!.weight! * element.cartQuantity;
+          case 'litre':
+            weight += element.productColor!.weight! * element.cartQuantity;
+          case 'liter':
+            weight += element.productColor!.weight! * element.cartQuantity;
+          case 'ml':
+            weight += element.cartQuantity * element.productColor!.weight! * 0.001;
+          default:
+        }
+      }else if(element.uom!=null){
+        switch (element.uom!.unit!.name!.toLowerCase()) {
+          case 'gm':
+            weight += element.cartQuantity * element.uom!.quantity! * 0.001;
+          case 'kg':
+            weight += element.uom!.quantity! * element.cartQuantity;
+          case 'litre':
+            weight += element.uom!.quantity! * element.cartQuantity;
+          case 'liter':
+            weight += element.uom!.quantity! * element.cartQuantity;
+            case 'ml':
+            weight +=  element.cartQuantity * element.uom!.quantity! * 0.001;
+          default:
+        }
+      }
+      print(element.title! + "-->"+weight.toString());
+    }
+    print("Total Weight--> "+ weight.toString() + " Kg");
+
+  }
+
+  double weight = 0.0;
 
   //
   addToCart(

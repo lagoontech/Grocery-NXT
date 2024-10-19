@@ -242,26 +242,23 @@ class EditAddressController extends GetxController{
         }
         quantity_ids = "$quantity_ids${element.cartQuantity},";
       }
-      final Uri uri = Uri.parse('http://grocerynxt.com/api/shippingaddresszipcode.php');
+      final Uri uri = Uri.parse('http://grocerynxt.com/api/shippingaddresszipcode_weight.php');
       final map = <String, dynamic>{};
       map['zipcode']    = zipcodeTEC.text;
-      map['productids'] = products_ids;
-      map['sizeid']     = size_ids;
-      map['qtyvid']     = quantity_ids;
+      map['overall_weight'] = cc.weight.toString();
       http.Response result = await http.post(
         uri,
         body: map,
       );
-      print(map);
       if(result.statusCode == 200){
         shippingCost = jsonDecode(result.body)["finalcost"].toString();
-        print(shippingCost);
       }
     }catch(e){
-      print(e);
+
     }
     fetchingShippingCharge = false;
     update();
+
   }
 
   //
@@ -275,8 +272,10 @@ class EditAddressController extends GetxController{
     if(address!.state!=null) {
       stateTEC.text = address!.state!.name;
     }
-    cityTEC.text    = address!.city!.name;
-    selectedCity    = City(name: address!.city!.name,id: addressId);
+    if(address!.city!=null){
+      cityTEC.text    = address!.city!.name;
+      selectedCity    = City(name: address!.city!.name,id: addressId);
+    }
     selectedState   = CountryState(id: address!.state!.id,name: address!.state!.name,countryId: address!.country!.id);
 
   }

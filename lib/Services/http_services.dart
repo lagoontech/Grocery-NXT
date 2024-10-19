@@ -30,7 +30,9 @@ class HttpService {
       uri = Uri.parse(apiEndPoint);
     }
     var client = http.Client();
-    print(postData);
+    if(kDebugMode){
+      log("$apiEndPoint-->"+postData.toString());
+    }
     try {
       var response = await client.post(
         uri,
@@ -38,14 +40,14 @@ class HttpService {
             ? {
                 'content-type': 'application/json',
                 'accept': 'application/json',
-                'authorization': 'Bearer '+await SharedPrefUtils().getToken(),
+                'authorization': 'Bearer '+await SharedPrefUtils().getToken() ?? "",
                 'app-secret-key': ApiConstants().paymentStatusUpdateKey,
               }
             : {'content-type': 'application/json'},
         body: json.encode(postData),
       );
       if(kDebugMode){
-        log(response.body);
+        log("$apiEndPoint-->"+response.body);
       }
       return response;
     } on SocketException catch (e) {
@@ -62,10 +64,11 @@ class HttpService {
       ToastUtil().showToast(color: Colors.red,message: "No Internet Connection");
       throw NoServiceFoundException('No Service Found');
     }
-    print(await SharedPrefUtils().getToken());
     var response;
     Uri uri = Uri.parse(BASE_URL + apiEndPoint);
-    print(uri.query);
+    if(kDebugMode){
+      log("$apiEndPoint-->"+uri.query.toString());
+    }
     var client = http.Client();
     try {
       response = await client
@@ -74,7 +77,7 @@ class HttpService {
                   ? {
                       'content-type': 'application/json',
                       'accept': 'application/json',
-                      'authorization': "Bearer "+await SharedPrefUtils().getToken() ?? "",
+                      'authorization': await SharedPrefUtils().getToken()==null?"":"Bearer "+await SharedPrefUtils().getToken() ?? "",
                       'x-api-key': "b8f4a0ba4537ad6c3ee41ec0a43549d1"
                     }
                   : {'content-type': 'application/json'})

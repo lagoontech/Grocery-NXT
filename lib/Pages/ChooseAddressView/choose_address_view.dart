@@ -8,7 +8,6 @@ import 'package:grocery_nxt/Pages/ChooseAddressView/Controller/choose_address_co
 import 'package:grocery_nxt/Pages/ChooseAddressView/Models/shipping_addresses_model.dart';
 import 'package:grocery_nxt/Pages/EditAddress/edit_address.dart';
 import 'package:grocery_nxt/Pages/Payment%20Screen/payment_screen.dart';
-import 'package:grocery_nxt/Pages/ProfileView/Views/ViewProfile/view_address.dart';
 import 'package:grocery_nxt/Utils/toast_util.dart';
 import 'package:grocery_nxt/Widgets/custom_appbar.dart';
 import 'package:grocery_nxt/Widgets/custom_circular_loader.dart';

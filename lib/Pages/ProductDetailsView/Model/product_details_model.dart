@@ -23,7 +23,9 @@ class ProductDetailsModel {
         required this.settingText,
         required this.userRatedAlready,
         this.productDeliveryOption,
-        this.variantInfo});
+        this.variantInfo,
+        this.coupons
+      });
 
   ProductDetailsModelProduct? product;
   dynamic productUrl;
@@ -44,6 +46,7 @@ class ProductDetailsModel {
   SettingText? settingText;
   dynamic userRatedAlready;
   List<ProductDeliveryOption>? productDeliveryOption;
+  Overallcouponcode ?coupons;
 
   factory ProductDetailsModel.fromJson(Map<String, dynamic> json) =>
       ProductDetailsModel(
@@ -88,6 +91,7 @@ class ProductDetailsModel {
             ? null
             : List<ProductDeliveryOption>.from(json["product_delivery_option"]
             .map((x) => ProductDeliveryOption.fromJson(x))),
+        coupons: Overallcouponcode.fromJson(json["overallcouponcode"])
       );
 }
 
@@ -639,7 +643,9 @@ class ProductColor {
     this.colorCode,
     this.sizeCode,
     this.itemTypes,
-    this.additionalPrice
+    this.additionalPrice,
+    this.regularPrice,
+    this.weight
   });
 
   dynamic id;
@@ -648,6 +654,8 @@ class ProductColor {
   String? sizeCode;
   List<ProductColor> ?itemTypes;
   double ?additionalPrice;
+  double ?regularPrice;
+  double ?weight;
 
 
   factory ProductColor.fromJson(Map<String, dynamic> json) => ProductColor(
@@ -655,6 +663,7 @@ class ProductColor {
     name: json["name"],
     colorCode: json["color_code"],
     sizeCode: json["size_code"],
+    weight: double.tryParse(json["weight"].toString()),
   );
 
   Map<String, dynamic> toJson() => {
@@ -662,6 +671,7 @@ class ProductColor {
     "name": name,
     "color_code": colorCode,
     "size_code": sizeCode,
+    "weight": weight
   };
 }
 
@@ -1193,6 +1203,38 @@ class ProductInventorySet {
     "Size": size,
     "Cheese": cheese,
     "hash": hash,
+  };
+}
+
+class Overallcouponcode {
+  String? allcouponcode;
+  String? allcategorycouponcode;
+  String? allsubcategorycouponcode;
+  String? allproductcouponcode;
+  String? customercouponcode;
+
+  Overallcouponcode({
+    this.allcouponcode,
+    this.allcategorycouponcode,
+    this.allsubcategorycouponcode,
+    this.allproductcouponcode,
+    this.customercouponcode,
+  });
+
+  factory Overallcouponcode.fromJson(Map<String, dynamic> json) => Overallcouponcode(
+    allcouponcode: json["allcouponcode"],
+    allcategorycouponcode: json["allcategorycouponcode"],
+    allsubcategorycouponcode: json["allsubcategorycouponcode"],
+    allproductcouponcode: json["allproductcouponcode"],
+    customercouponcode: json["customercouponcode"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "allcouponcode": allcouponcode,
+    "allcategorycouponcode": allcategorycouponcode,
+    "allsubcategorycouponcode": allsubcategorycouponcode,
+    "allproductcouponcode": allproductcouponcode,
+    "customercouponcode": customercouponcode,
   };
 }
 

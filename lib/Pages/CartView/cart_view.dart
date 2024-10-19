@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -25,6 +26,10 @@ class CartView extends StatelessWidget {
 
    @override
   Widget build(BuildContext context) {
+
+     if(kDebugMode){
+       cc.calculateWeight();
+     }
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -232,6 +237,7 @@ class CartView extends StatelessWidget {
                     if(cc.couponController.text.isNotEmpty){
                       await cc.applyCoupon();
                     }
+                    cc.calculateWeight();
                     Get.to(()=> ChooseAddressView());
                   },
                 ),
@@ -240,6 +246,10 @@ class CartView extends StatelessWidget {
           ):const SizedBox();
         }
       ),
+      floatingActionButton: kDebugMode?FloatingActionButton(
+          onPressed: (){},
+          child: kDebugMode ? Text(cc.weight.toStringAsFixed(2)+"kg") : SizedBox(),
+      ):SizedBox(),
     );
   }
 

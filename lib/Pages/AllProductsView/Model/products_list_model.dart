@@ -63,6 +63,9 @@ class Product {
   Color ?color;
   String? inventoryattribute;
   String? postInventoryId;
+  int ?weight;
+  String ?size;
+  Uom ?uom;
 
   Product({
     this.prdId,
@@ -90,7 +93,11 @@ class Product {
     this.productColor,
     this.color,
     this.inventoryattribute,
-    this.postInventoryId
+    this.postInventoryId,
+    this.itemType,
+    this.weight,
+    this.size,
+    this.uom,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
@@ -118,7 +125,9 @@ class Product {
     randomSecret: json["random_secret"],
     cartQuantity: json["cart_qty"] ?? 0,
     variantInfo: json["variant_info"] == null ? null : AdditionalInfoStore.fromJson(json["variant_info"]),
-    productColor: json["product_size"] == null ? null : ProductColor.fromJson(json["product_size"])
+    productColor: json["product_size"] == null ? null : ProductColor.fromJson(json["product_size"]),
+    itemType: json["item_type"] == null ? null : ProductColor.fromJson(json["item_type"]),
+    uom: json["uom"] != null ? Uom.fromJson(json["uom"]) : null
   );
 
   Map<String, dynamic> toJson() => {
@@ -132,6 +141,7 @@ class Product {
     "campaign_percentage": campaignPercentage,
     "variant_info": variantInfo?.toJson(),
     "product_size": productColor?.toJson(),
+    "item_type": itemType?.toJson(),
     "discount_price": discountPrice,
     "badge": badge?.toJson(),
     "campaign_product": campaignProduct,
@@ -160,12 +170,16 @@ class Product {
           ? randomSecret.toString().substring(15, 17)
           : "0"*/"0",
       "variant_id": postInventoryId,//productColor==null?"":productColor!.id!,
+      "color": itemType != null ? itemType!.id : "",
       "attributes": {},
       "used_categories": categoryId,
       //"vendor_id": vendorId ?? 'admin',
     },
     "stock": stockCount,
-    "subtotal": cartQuantity * discountPrice!
+    "subtotal": cartQuantity * discountPrice!,
+    "weight": weight,
+    "size": size,
+    "uom": uom?.toJson(),
   };
 }
 
@@ -284,3 +298,71 @@ class Link {
     "active": active,
   };
 }
+
+// To parse this JSON data, do
+//
+
+class Uom {
+  int? id;
+  int? productId;
+  int? unitId;
+  int? quantity;
+  Unit? unit;
+
+  Uom({
+    this.id,
+    this.productId,
+    this.unitId,
+    this.quantity,
+    this.unit,
+  });
+
+  factory Uom.fromJson(Map<String, dynamic> json) => Uom(
+    id: json["id"],
+    productId: json["product_id"],
+    unitId: json["unit_id"],
+    quantity: json["quantity"],
+    unit: json["unit"] == null ? null : Unit.fromJson(json["unit"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "product_id": productId,
+    "unit_id": unitId,
+    "quantity": quantity,
+    "unit": unit?.toJson(),
+  };
+}
+
+class Unit {
+  int? id;
+  String? name;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  dynamic deletedAt;
+
+  Unit({
+    this.id,
+    this.name,
+    this.createdAt,
+    this.updatedAt,
+    this.deletedAt,
+  });
+
+  factory Unit.fromJson(Map<String, dynamic> json) => Unit(
+    id: json["id"],
+    name: json["name"],
+    createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
+    updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
+    deletedAt: json["deleted_at"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+    "created_at": createdAt?.toIso8601String(),
+    "updated_at": updatedAt?.toIso8601String(),
+    "deleted_at": deletedAt,
+  };
+}
+
