@@ -756,13 +756,21 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
           child:
               const Text("Add to cart", style: TextStyle(color: Colors.white)),
           onTap: () {
+            if(vc.selectedVariant!=null
+                && vc.selectedVariant!.itemTypes!=null
+                && vc.selectedVariant!.itemTypes!.isNotEmpty
+                && vc.selectedType==null){
+              ToastUtil().showToast(
+                  color: Colors.red,
+                  message: "  Select a type");
+              return;
+            }
             if (vc.product!.stockCount! < vc.quantity!) {
               ToastUtil().showToast(
                   color: AppColors.primaryColor,
                   message: "Availabe stock: ${vc.product!.stockCount}");
               return;
             }
-            print(vc.product!.itemType);
             vc.product!.cartQuantity = vc.quantity!;
             if (vc.selectedType != null) {
               vc.product!.price = vc.selectedType!.regularPrice;

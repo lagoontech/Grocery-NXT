@@ -34,7 +34,8 @@ class CartItem extends StatelessWidget {
           cc.products.removeWhere(
                   (element) => element.prdId==product!.prdId
                   && element.variantInfo!.pidId==product!.variantInfo!.pidId
-                  && element.itemType!.id==product!.itemType!.id);
+                  && element.itemType!.id==product!.itemType!.id
+                  && element.productColor!.name == product!.productColor!.name );
         }else{
           cc.products.removeWhere((element) => element.prdId==product!.prdId);
         }

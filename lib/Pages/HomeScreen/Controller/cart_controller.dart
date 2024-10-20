@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:add_to_cart_animation/add_to_cart_animation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -32,7 +33,8 @@ class CartController extends GetxController {
       int index = products.indexWhere((element) {
         if (element.productColor != null) {
           return element.variantInfo!.pidId == product.variantInfo!.pidId
-              && element.productColor!.name == product.productColor!.name;
+              && element.productColor!.name == product.productColor!.name
+              && element.productColor!.id == product.productColor!.id;
         }
         return false;
       });
@@ -73,11 +75,6 @@ class CartController extends GetxController {
     update();
     ToastUtil().showToast(message: "Added to cart", color: AppColors.primaryColor);
     calculateWeight();
-    products.forEach((element) {
-      element.productColor!=null
-          ? print(element.title!+"-->"+element.productColor!.name+"  id -->"+element.productColor!.id.toString())
-          : "";
-    });
 
   }
 
@@ -115,9 +112,7 @@ class CartController extends GetxController {
           default:
         }
       }
-      print(element.title! + "-->"+weight.toString());
     }
-    print("Total Weight--> "+ weight.toString() + " Kg");
 
   }
 

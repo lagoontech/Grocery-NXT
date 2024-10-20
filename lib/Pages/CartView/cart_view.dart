@@ -95,7 +95,6 @@ class CartView extends StatelessWidget {
                 child: GetBuilder<CartController>(
                   builder: (cc) {
                     return Scrollbar(
-                      controller: cc.scrollController,
                       trackVisibility: true,
                       thumbVisibility: true,
                       thickness: 3,
