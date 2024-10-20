@@ -35,25 +35,22 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       builder: (context,w) {
         isIpad = MediaQuery.of(context).size.width>600;
-        return UpgradeAlert(
-          upgrader: Upgrader(),
-          child: GetMaterialApp(
-            debugShowCheckedModeBanner: false,
-            defaultTransition: Transition.native,
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xff23aa49)),
-              fontFamily: GoogleFonts.lato().fontFamily,
-              applyElevationOverlayColor: false,
-              useMaterial3: true,
-            ),
-            initialBinding: RootBinding(),
-            home: DefaultTextStyle(
-                style: TextStyle(
-                    fontSize: isIpad
-                        ? 12.sp
-                        : null),
-            child: SplashScreen()),
+        return GetMaterialApp(
+          debugShowCheckedModeBanner: false,
+          defaultTransition: Transition.native,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xff23aa49)),
+            fontFamily: GoogleFonts.lato().fontFamily,
+            applyElevationOverlayColor: false,
+            useMaterial3: true,
           ),
+          initialBinding: RootBinding(),
+          home: DefaultTextStyle(
+              style: TextStyle(
+                  fontSize: isIpad
+                      ? 12.sp
+                      : null),
+          child: SplashScreen()),
         );
       }
     );

@@ -29,15 +29,7 @@ class OrdersView extends StatelessWidget {
         color: AppColors.primaryColor,
       ),
       body: GetBuilder<OrderController>(builder: (vc) {
-        return vc.pendingOrders.isEmpty && vc.completedOrders.isEmpty
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Lottie.asset("assets/animations/empty_orders.json"),
-                  const Text("You have not ordered yet")
-                ],
-              )
-            : Container(
+        return Container(
                 color: Colors.white,
                 height: MediaQuery.of(context).size.height,
                 child: SmartRefresher(

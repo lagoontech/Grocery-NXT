@@ -20,9 +20,9 @@ class CartItem extends StatelessWidget {
 
     return Dismissible(
       key: ValueKey(product!.variantInfo!=null && product!.itemType == null
-          ? product!.variantInfo!.pidId
+          ? "${product!.variantInfo!.pidId}${product!.productColor!.name}"
           : product!.variantInfo!=null && product!.itemType!=null
-          ? "${product!.variantInfo!.pidId}${product!.itemType!.id}"
+          ? "${product!.variantInfo!.pidId}${product!.itemType!.id}${product!.itemType!.name}"
           : product!.prdId),
       onDismissed: (v){
         if(product!.variantInfo!=null && product!.itemType == null){
