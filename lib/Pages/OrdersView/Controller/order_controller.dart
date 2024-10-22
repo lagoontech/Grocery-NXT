@@ -8,7 +8,7 @@ import 'package:grocery_nxt/Pages/OrdersView/Model/processed_orders_model.dart';
 import 'package:grocery_nxt/Services/http_services.dart';
 import 'package:http/http.dart' as http;
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import '../Model/order_list_model.dart';
+import '../Model/order_list_model.dart' hide PaymentGateway,Status;
 import '../Model/order_pending_list_model.dart' as pendingModel;
 
 class OrderController extends GetxController with GetTickerProviderStateMixin{
@@ -60,6 +60,7 @@ class OrderController extends GetxController with GetTickerProviderStateMixin{
     }
     loadingOrders = false;
     update();
+
   }
 
   //
@@ -72,7 +73,7 @@ class OrderController extends GetxController with GetTickerProviderStateMixin{
       pendingOrdersPage++;
     }
     update();
-      var result = await HttpService.getRequest("user/orderpending-list?page=${pendingOrdersPage}",insertHeader: false);
+      var result = await HttpService.getRequest("user/orderpending-list?page=${pendingOrdersPage}");
       if(result is http.Response){
         if(result.statusCode==200){
           if(isLoading){
@@ -106,10 +107,17 @@ class OrderController extends GetxController with GetTickerProviderStateMixin{
       var result = await HttpService.getRequest("user/orderprocessing-list?page=${processedOrdersPage}");
       if(result is http.Response){
         if(result.statusCode==200){
+          List<ProcessedDatum> filteredOrders = [];
+          processingOrdersModelFromJson(result.body).processingOrders!.data!.forEach((element) {
+            if((element.order!.paymentGateway == PaymentGateway.RAZORPAY &&
+               element.order!.paymentStatus == null) || element.order!.paymentGateway != PaymentGateway.RAZORPAY ){
+              filteredOrders.add(element);
+            }
+          });
           if(isLoading){
-            processedOrders.addAll(processingOrdersModelFromJson(result.body).processingOrders!.data!);
+            processedOrders.addAll(filteredOrders);
           }else{
-            processedOrders = processingOrdersModelFromJson(result.body).processingOrders!.data!;
+            processedOrders = filteredOrders;
           }
         }
       }
