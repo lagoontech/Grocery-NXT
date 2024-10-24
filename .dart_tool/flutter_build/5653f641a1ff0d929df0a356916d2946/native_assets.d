@@ -1,0 +1,1 @@
+ /Users/lagoontech/Documents/GitHub/Grocery-NXT/.dart_tool/flutter_build/5653f641a1ff0d929df0a356916d2946/native_assets.yaml: 
