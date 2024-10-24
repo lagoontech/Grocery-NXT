@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -5,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:grocery_nxt/Pages/HomeScreen/Controller/cart_controller.dart';
 import 'package:grocery_nxt/Utils/toast_util.dart';
 import '../../../Constants/app_colors.dart';
+import '../../../Utils/shared_pref_utils.dart';
 import '../../AllProductsView/Model/products_list_model.dart';
 
 class CartItem extends StatelessWidget {
@@ -42,6 +45,11 @@ class CartItem extends StatelessWidget {
         cc.calculateTotalProducts();
         cc.calculateTotal();
         ToastUtil().showToast(color: AppColors.primaryColor,message: "Product Removed");
+        SharedPrefUtils.pref!.setStringList(
+            "products",
+            cc.products.map((e) {
+              return jsonEncode(e.toJson());
+            }).toList());
         cc.update();
       },
       background: Container(

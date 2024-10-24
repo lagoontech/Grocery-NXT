@@ -237,6 +237,7 @@ class CartView extends StatelessWidget {
                       await cc.applyCoupon();
                     }
                     cc.calculateWeight();
+                    cc.total = cc.subTotal;
                     Get.to(()=> ChooseAddressView());
                   },
                 ),

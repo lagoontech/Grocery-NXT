@@ -57,31 +57,61 @@ class ProductsSearchScreen extends StatelessWidget {
                       height: MediaQuery.of(context).viewPadding.top + 12.h),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: TextFormField(
-                      focusNode: vc.focusNode,
-                      controller: vc.searchTEC,
-                      onChanged: (v){
-                        vc.listenToSearch();
-                      },
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 4.w,vertical: 4.h),
-                        hintText: "Search Products",
-                        isDense: true,
-                        prefixIcon: Icon(
-                          Icons.search,
-                          color: AppColors.primaryColor,
+                    child: Row(
+                      children: [
+
+                        Container(
+                          width: MediaQuery.of(context).size.width*0.12,
+                          height: kToolbarHeight * 0.84,
+                          decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(12.r),
+                            border: Border.all(color: AppColors.primaryColor)
+                          ),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12.r),
+                            onTap: () {
+                              Get.back();
+                            },
+                            child: Icon(
+                              Icons.arrow_back, // Back arrow icon
+                              color: AppColors.primaryColor, // Customize icon color
+                              size: 20.sp, // Adjust icon size based on button size
+                            ),
+                          ),
                         ),
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: AppColors.primaryColor,
+
+                        SizedBox(width: 8.w),
+
+                        Expanded(
+                          child: TextFormField(
+                            focusNode: vc.focusNode,
+                            controller: vc.searchTEC,
+                            onChanged: (v){
+                              vc.listenToSearch();
+                            },
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(horizontal: 4.w,vertical: 4.h),
+                              hintText: "Search Products",
+                              isDense: true,
+                              prefixIcon: Icon(
+                                Icons.search,
+                                color: AppColors.primaryColor,
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: AppColors.primaryColor,
+                                  ),
+                                  borderRadius: BorderRadius.circular(12.r)),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: AppColors.primaryColor,
+                                  ),
+                                  borderRadius: BorderRadius.circular(12.r)),
                             ),
-                            borderRadius: BorderRadius.circular(12.r)),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: AppColors.primaryColor,
-                            ),
-                            borderRadius: BorderRadius.circular(12.r)),
-                      ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

@@ -67,7 +67,7 @@ class AllProductsListItem extends StatelessWidget {
                               MediaQuery.of(context).size.height * 0.28 * 0.2,
                           child: Center(
                             child: Text(
-                              product!.title!,
+                              product!.title!.capitalizeFirst!,
                               maxLines: 2,
                               style: TextStyle(
                                   fontSize: 10.sp,
@@ -130,6 +130,8 @@ class AllProductsListItem extends StatelessWidget {
                                   (element) => element.prdId == product!.prdId)
                               .toList()[0]
                               .cartQuantity;
+                        }else {
+                          quantity = 0;
                         }
                         return SizedBox(
                           width: double.infinity,
@@ -179,6 +181,15 @@ class AllProductsListItem extends StatelessWidget {
                                         : !hasProductInCart
                                             ? GestureDetector(
                                                 onTap: () async {
+                                                  if (quantity != null &&
+                                                      quantity ==
+                                                          product!
+                                                              .stockCount) {
+                                                    ToastUtil().showToast(
+                                                        message:
+                                                        "Stock limit reached");
+                                                    return;
+                                                  }
                                                   await vc
                                                       .runAddToCartAnimation(
                                                           cartKey);
@@ -193,6 +204,15 @@ class AllProductsListItem extends StatelessWidget {
                                   hasProductInCart
                                       ? GestureDetector(
                                           onTap: () async {
+                                            if (quantity != null &&
+                                                quantity ==
+                                                    product!
+                                                        .stockCount) {
+                                              ToastUtil().showToast(
+                                                  message:
+                                                  "Stock limit reached");
+                                              return;
+                                            }
                                             await vc
                                                 .runAddToCartAnimation(cartKey);
                                             cc.addToCart(product: product);

@@ -120,8 +120,7 @@ class AllProductsView extends StatelessWidget {
                                     isScrollable: true,
                                     tabAlignment: TabAlignment.start,
                                     indicatorColor: AppColors.primaryColor,
-                                    unselectedLabelStyle: const TextStyle(
-                                        color: Colors.black),
+                                    unselectedLabelStyle: const TextStyle(color: Colors.black),
                                     labelStyle: TextStyle(
                                         color: AppColors.primaryColor,
                                         fontWeight: FontWeight.w600,
@@ -129,7 +128,7 @@ class AllProductsView extends StatelessWidget {
                                     onTap: vc.onTabBarTapped,
                                     tabs: vc.categories
                                         .map((e) => Tab(
-                                              text: e!.name!,
+                                              text: e!.name!.capitalizeFirst!,
                                             ))
                                         .toList()),
                               ),
@@ -205,8 +204,7 @@ class AllProductsView extends StatelessWidget {
 
                               AnimationLimiter(
                                 child: GridView.builder(
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
+                                    physics: const NeverScrollableScrollPhysics(),
                                     padding: EdgeInsets.symmetric(
                                         horizontal: 16.w, vertical: 8.h),
                                     itemCount: vc.products.length,
@@ -229,8 +227,7 @@ class AllProductsView extends StatelessWidget {
                                         position: index,
                                         child: SlideAnimation(
                                           verticalOffset: 50.h,
-                                          duration:
-                                              const Duration(milliseconds: 750),
+                                          duration: const Duration(milliseconds: 750),
                                           child: FadeInAnimation(
                                             duration: const Duration(
                                                 milliseconds: 750),

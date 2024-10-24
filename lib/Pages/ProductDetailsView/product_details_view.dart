@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_rating_bar/custom_rating_bar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -31,9 +32,8 @@ class ProductDetailsView extends StatefulWidget {
 }
 
 class _ProductDetailsViewState extends State<ProductDetailsView> {
-
   ProductDetailsController vc = Get.put(ProductDetailsController());
-  CartController           cc = Get.find<CartController>();
+  CartController cc = Get.find<CartController>();
 
   @override
   void initState() {
@@ -66,7 +66,6 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                           color: AppColors.primaryColor.withOpacity(0.03),
                           child: Column(
                             children: [
-
                               Stack(
                                 children: [
                                   Container(
@@ -139,16 +138,17 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                   ),
                                 ],
                               ),
-
-                              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.02),
                               Container(
                                 padding: EdgeInsets.symmetric(horizontal: 24.w),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Container(
                                           width: MediaQuery.of(context)
@@ -311,7 +311,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                       children: [
                                         vc.selectedVariant != null
                                             ? Text(
-                                                "${vc.selectedVariant!.regularPrice}",
+                                                "${vc.selectedVariant!.regularPrice ?? ""}",
                                                 style: TextStyle(
                                                     fontSize: 15.sp,
                                                     decoration: TextDecoration
@@ -319,7 +319,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                               )
                                             : vc.selectedType != null
                                                 ? Text(
-                                                    "${vc.selectedType!.regularPrice}",
+                                                    "${vc.selectedType!.regularPrice ?? ""}",
                                                     style: TextStyle(
                                                         fontSize: 15.sp,
                                                         decoration:
@@ -327,7 +327,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                                                 .lineThrough),
                                                   )
                                                 : Text(
-                                                    "\u{20B9} ${vc.productDetails!.product!.price!.toString()}",
+                                                    "\u{20B9} ${vc.productDetails!.product!.price ?? ""}",
                                                     style: TextStyle(
                                                         fontSize: 15.sp,
                                                         decoration:
@@ -442,10 +442,8 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                                           vc.changeVariant();
                                                         },
                                                         child: Container(
-                                                          padding: EdgeInsets
-                                                              .symmetric(
-                                                                  horizontal:
-                                                                      4.w),
+                                                          padding: EdgeInsets.symmetric(
+                                                                  horizontal: 4.w),
                                                           margin:
                                                               EdgeInsets.only(
                                                                   right: 4.w),
@@ -484,8 +482,17 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                           )
                                         : const SizedBox(),
                                     SizedBox(height: 4.h),
-                                    Row(
+                                    vc.selectedType==null?Row(
                                       children: [
+                                        vc.selectedVariant!=null && vc.selectedVariant!.stockCount!=0
+                                            ? Text(
+                                          "In Stock",
+                                          style: TextStyle(
+                                              color:
+                                              AppColors.primaryColor,
+                                              fontWeight:
+                                              FontWeight.w600),
+                                        ) :
                                         vc.product!.stockCount != 0
                                             ? Text(
                                                 "In Stock",
@@ -505,7 +512,9 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
 
                                         //Text(vc.product!.stockCount.toString()),
                                       ],
-                                    ),
+                                    ): vc.selectedType!.stockCount !=0
+                                        ? const Text("In stock")
+                                        : const Text("Out of stock"),
                                     vc.productDetails!.avgRating != null
                                         ? Column(
                                             children: [
@@ -753,25 +762,38 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
       bottomNavigationBar: Padding(
         padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: 16.h),
         child: CustomButton(
-          child:
-              const Text("Add to cart", style: TextStyle(color: Colors.white)),
+          child: const Text("Add to cart", style: TextStyle(color: Colors.white)),
           onTap: () {
-            if(vc.selectedVariant!=null
-                && vc.selectedVariant!.itemTypes!=null
-                && vc.selectedVariant!.itemTypes!.isNotEmpty
-                && vc.selectedType==null){
-              ToastUtil().showToast(
-                  color: Colors.red,
-                  message: "  Select a type");
+            if (vc.selectedVariant != null &&
+                vc.selectedVariant!.itemTypes != null &&
+                vc.selectedVariant!.itemTypes!.isNotEmpty &&
+                vc.selectedType == null) {
+              ToastUtil().showToast(color: Colors.red, message: "Select a type");
               return;
             }
             if (vc.product!.stockCount! < vc.quantity!) {
               ToastUtil().showToast(
                   color: AppColors.primaryColor,
-                  message: "Availabe stock: ${vc.product!.stockCount}");
+                  message: "Available stock: ${vc.product!.stockCount}");
               return;
             }
             vc.product!.cartQuantity = vc.quantity!;
+            if(vc.selectedVariant==null && vc.product!.cartQuantity > vc.productDetails!.product!.inventory["stock_count"]){
+              ToastUtil().showToast(
+                  message: "Available stock: ${vc.product!.cartQuantity}");
+              return;
+            }
+            if (vc.selectedVariant != null && vc.product!.cartQuantity > vc.selectedVariant!.stockCount!) {
+              ToastUtil().showToast(
+                  message: " Available quantity: ${vc.product!.cartQuantity}");
+              return;
+            }
+            if(vc.selectedVariant!=null && vc.selectedVariant!.itemTypes!.isNotEmpty
+                 && vc.selectedType!.stockCount! < vc.product!.cartQuantity){
+              ToastUtil().showToast(
+                  message: "Available stock: ${vc.selectedType!.stockCount}");
+              return;
+            }
             if (vc.selectedType != null) {
               vc.product!.price = vc.selectedType!.regularPrice;
             }
@@ -779,6 +801,16 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
           },
         ),
       ),
+      floatingActionButton: GetBuilder<ProductDetailsController>(builder: (vc) {
+        return kDebugMode && vc.productDetails!=null
+            ? FloatingActionButton(
+                onPressed: () {},
+                child: Text(vc.selectedVariant != null
+                    ? vc.selectedVariant!.stockCount.toString()
+                    : vc.productDetails!.product!.inventory["stock_count"].toString()),
+              )
+            : const SizedBox();
+      }),
     );
   }
 

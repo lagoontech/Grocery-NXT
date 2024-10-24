@@ -534,8 +534,6 @@ class CampaignProduct {
     required this.campaignId,
     required this.campaignPrice,
     required this.unitsForSale,
-    required this.startDate,
-    required this.endDate,
     this.createdAt,
     this.updatedAt,
   });
@@ -545,8 +543,6 @@ class CampaignProduct {
   dynamic campaignId;
   double campaignPrice;
   dynamic unitsForSale;
-  DateTime startDate;
-  DateTime? endDate;
   dynamic createdAt;
   dynamic updatedAt;
 
@@ -559,9 +555,6 @@ class CampaignProduct {
             ? double.parse(json["campaign_price"])
             : json["campaign_price"].toDouble(),
         unitsForSale: json["units_for_sale"],
-        startDate: DateTime.parse(json["start_date"]),
-        endDate:
-        json["end_date"] == null ? null : DateTime.parse(json["end_date"]),
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
       );
@@ -572,8 +565,6 @@ class CampaignProduct {
     "campaign_id": campaignId,
     "campaign_price": campaignPrice,
     "units_for_sale": unitsForSale,
-    "start_date": startDate.toIso8601String(),
-    "end_date": endDate?.toIso8601String(),
     "created_at": createdAt,
     "updated_at": updatedAt,
   };
@@ -645,7 +636,8 @@ class ProductColor {
     this.itemTypes,
     this.additionalPrice,
     this.regularPrice,
-    this.weight
+    this.weight,
+    this.stockCount
   });
 
   dynamic id;
@@ -656,6 +648,7 @@ class ProductColor {
   double ?additionalPrice;
   double ?regularPrice;
   double ?weight;
+  int ?stockCount;
 
 
   factory ProductColor.fromJson(Map<String, dynamic> json) => ProductColor(
@@ -664,6 +657,7 @@ class ProductColor {
     colorCode: json["color_code"],
     sizeCode: json["size_code"],
     weight: double.tryParse(json["weight"].toString()),
+    stockCount: json["stock_count"]
   );
 
   Map<String, dynamic> toJson() => {
@@ -671,7 +665,8 @@ class ProductColor {
     "name": name,
     "color_code": colorCode,
     "size_code": sizeCode,
-    "weight": weight
+    "weight": weight,
+    "stock_count": stockCount
   };
 }
 

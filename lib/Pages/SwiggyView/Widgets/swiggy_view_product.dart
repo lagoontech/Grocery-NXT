@@ -179,6 +179,7 @@ class SwiggyViewProduct extends StatelessWidget {
                                                   .toList()[0]
                                                   .cartQuantity;
                                             }
+
                                             return Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment
@@ -241,6 +242,12 @@ class SwiggyViewProduct extends StatelessWidget {
                                                             ? GestureDetector(
                                                                 onTap:
                                                                     () async {
+                                                                      if(quantity!=null && quantity==product!.stockCount){
+                                                                        ToastUtil().showToast(
+                                                                            message: "Stock limit reached"
+                                                                        );
+                                                                        return;
+                                                                      }
                                                                   cc.addToCart(
                                                                       product:
                                                                           product);
@@ -281,9 +288,13 @@ class SwiggyViewProduct extends StatelessWidget {
                                                         width: 20.w,
                                                         child: GestureDetector(
                                                             onTap: () async {
-                                                              cc.addToCart(
-                                                                  product:
-                                                                      product);
+                                                              if(quantity!=null && quantity==product!.stockCount){
+                                                                ToastUtil().showToast(
+                                                                    message: "Stock limit reached"
+                                                                );
+                                                                return;
+                                                              }
+                                                              cc.addToCart(product: product);
                                                             },
                                                             child: const Center(
                                                                 child: Icon(

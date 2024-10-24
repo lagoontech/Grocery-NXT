@@ -1,11 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:grocery_nxt/Pages/LoginScreen/login_screen.dart';
 import 'package:grocery_nxt/Pages/OnboardingScreen/Controller/onboarding_controller.dart';
 import 'package:grocery_nxt/Widgets/custom_button.dart';
@@ -17,8 +13,8 @@ class OnboardingContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     bool isIpad = MediaQuery.of(context).size.width >600;
-    print(isIpad);
     return Container(
       decoration: BoxDecoration(
         gradient: RadialGradient(
@@ -26,7 +22,7 @@ class OnboardingContent extends StatelessWidget {
             AppColors.primaryColor.withOpacity(0.1),
             AppColors.primaryColor.withOpacity(0.0),
           ],
-          radius: 0.7,
+          radius: 0.2,
           focalRadius: 0.1,
           center: Alignment.center,
         ),

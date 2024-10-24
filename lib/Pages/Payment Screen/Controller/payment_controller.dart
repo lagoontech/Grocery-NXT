@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grocery_nxt/Constants/api_constants.dart';
 import 'package:grocery_nxt/Pages/ChooseAddressView/Controller/choose_address_controller.dart';
@@ -108,10 +109,9 @@ class PaymentController extends GetxController {
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();
        await response.stream.bytesToString().then((value) async {
-         print(value);
          if(response.statusCode==200) {
-           orderId     = jsonDecode(value)["order_id"];
-           totalAmount = jsonDecode(value)["total_amount"];
+           orderId         = jsonDecode(value)["order_id"];
+           totalAmount     = jsonDecode(value)["total_amount"];
            successResponse = OrderSuccessResponse.fromJson(jsonDecode(value));
            if(selectedOption!.name!.contains("razorpay")){
              Future.delayed(const Duration(milliseconds: 10),(){
@@ -140,10 +140,14 @@ class PaymentController extends GetxController {
              Get.to(()=>const OrderSuccessScreen());
            });
            }
+         }else {
+           ToastUtil().showToast(message: value,color: Colors.red);
          }
        });
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
     isPlacingOrder = false;
     update();

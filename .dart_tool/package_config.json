@@ -99,13 +99,13 @@
     },
     {
       "name": "connectivity_plus",
-      "rootUri": "file:///Users/lagoontech/.pub-cache/hosted/pub.dev/connectivity_plus-6.0.1",
+      "rootUri": "file:///Users/lagoontech/.pub-cache/hosted/pub.dev/connectivity_plus-6.1.0",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "connectivity_plus_platform_interface",
-      "rootUri": "file:///Users/lagoontech/.pub-cache/hosted/pub.dev/connectivity_plus_platform_interface-2.0.0",
+      "rootUri": "file:///Users/lagoontech/.pub-cache/hosted/pub.dev/connectivity_plus_platform_interface-2.0.1",
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
@@ -860,7 +860,7 @@
       "languageVersion": "3.3"
     }
   ],
-  "generated": "2024-10-22T05:23:41.325075Z",
+  "generated": "2024-10-24T09:13:43.477083Z",
   "generator": "pub",
   "generatorVersion": "3.3.0"
 }

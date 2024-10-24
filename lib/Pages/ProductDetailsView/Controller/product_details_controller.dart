@@ -50,6 +50,7 @@ class ProductDetailsController extends GetxController
                     element.itemTypes = [];
                   }
                   element.regularPrice = double.parse(detail.adregularPrice.toString());
+                  element.stockCount   = detail.stockCount;
                 }
               }
             }
@@ -61,7 +62,10 @@ class ProductDetailsController extends GetxController
                   if(element.itemTypes == null){
                     element.itemTypes = [];
                   }
-                  element.itemTypes!.add(ProductColor.fromJson(detail.productColor)..additionalPrice = element.additionalPrice..regularPrice = double.parse(detail.adregularPrice.toString()));
+                  element.itemTypes!.add(
+                      ProductColor.fromJson(detail.productColor)
+                        ..additionalPrice = element.additionalPrice..regularPrice = double.parse(detail.adregularPrice.toString())
+                        ..stockCount = element.stockCount);
                 }
               }
             }
@@ -108,7 +112,7 @@ class ProductDetailsController extends GetxController
       }
     }else{
       productDetails!.product!.salePrice = additionalInfos[index].additionalPrice;
-      product!.price = selectedVariant!.regularPrice;
+      product!.price                     = selectedVariant!.regularPrice;
       product!.discountPrice             = int.parse(additionalInfos[index].additionalPrice.ceil().toString());
     }
     product!.productColor    = productDetails!.productSizes![index];
